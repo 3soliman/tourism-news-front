@@ -3,8 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "set WATCHPACK_POLLING=1&& next dev -p 8069",
-    "dev:clean": "powershell -Command \"Get-NetTCPConnection -LocalPort 8069 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }\" && npm run dev",
+    "dev": "next dev -p 8069",
     "build": "next build",
     "start": "next start -p 8069",
     "lint": "eslint"

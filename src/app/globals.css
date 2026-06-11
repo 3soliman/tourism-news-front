@@ -2,22 +2,33 @@
 @plugin "@tailwindcss/typography";
 
 @theme inline {
-  --color-primary: #0ea5e9;
-  --color-primary-dark: #0284c7;
-  --color-primary-hover: #38bdf8;
-  --color-page-bg: #f8fafc;
-  --color-surface: #ffffff;
-  --color-text-dark: #0f172a;
-  --color-text-muted: #64748b;
-  --color-border: #e2e8f0;
-  --color-breaking: #ef4444;
-  --color-accent: #f97316;
-  --font-sans: var(--font-ibm-plex), var(--font-cairo), Arial, sans-serif;
+  /* Brand */
+  --color-primary: #0e4d49;
+  --color-primary-dark: #083a37;
+  --color-primary-hover: #14635d;
+
+  /* Surfaces */
+  --color-page-bg: #f2ece1;
+  --color-surface: #fffdf8;
+  --color-surface-alt: #ece4d6;
+
+  /* Ink */
+  --color-text-dark: #1b1813;
+  --color-text-muted: #6b6457;
+  --color-border: #ddd3c2;
+
+  /* Accents */
+  --color-breaking: #c8442f;
+  --color-accent: #c8442f;
+  --color-gold: #b98a2e;
+
+  --font-sans: var(--font-ibm-plex), Arial, sans-serif;
+  --font-display: var(--font-display), var(--font-ibm-plex), Georgia, serif;
 }
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #f2ece1;
+  --foreground: #1b1813;
 }
 
 html {
@@ -27,13 +38,17 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: var(--font-ibm-plex), Arial, sans-serif;
   overflow-x: hidden;
 }
 
+.font-display {
+  font-family: var(--font-display), var(--font-ibm-plex), Georgia, serif;
+}
+
 ::selection {
-  background: #0ea5e9;
-  color: white;
+  background: #0e4d49;
+  color: #fffdf8;
 }
 
 @keyframes marquee {
@@ -41,10 +56,22 @@ body {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(50%);
+    transform: translateX(-50%);
   }
 }
 
 .animate-marquee {
-  animation: marquee 30s linear infinite;
+  animation: marquee 32s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Editorial decorative rule */
+.rule-dotted {
+  background-image: radial-gradient(currentColor 1px, transparent 1px);
+  background-size: 6px 6px;
+  background-repeat: repeat-x;
+  background-position: center;
 }
