@@ -1,0 +1,27 @@
+export default function SocialFollowBox() {
+  const links = [
+    { label: "فيسبوك", color: "bg-blue-600" },
+    { label: "إكس", color: "bg-slate-800" },
+    { label: "واتساب", color: "bg-green-600" },
+    { label: "يوتيوب", color: "bg-red-600" },
+  ];
+
+  return (
+    <div className="rounded border border-border bg-surface p-4">
+      <h3 className="border-b border-border pb-2 text-sm font-black text-text-dark">
+        تابعنا
+      </h3>
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        {links.map((item) => (
+          <a
+            key={item.label}
+            href="#"
+            className={`rounded px-3 py-2 text-center text-xs font-bold text-white transition opacity-90 hover:opacity-100 ${item.color}`}
+          >
+            {item.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
