@@ -11,7 +11,7 @@ type SidebarProps = {
 
 export default function Sidebar({ latest, popular }: SidebarProps) {
   return (
-    <aside className="space-y-5">
+    <aside className="grid gap-5 md:grid-cols-2 xl:grid-cols-4 xl:items-start">
       <PopularTabs latest={latest} popular={popular} />
       <SocialFollowBox />
       <NewsletterBox />

@@ -41,7 +41,7 @@ export default function ShareButtons({ title, url }: ShareButtonsProps) {
         <button
           type="button"
           onClick={copyLink}
-          className="rounded bg-text-dark px-4 py-2 text-xs font-bold text-white transition hover:bg-slate-700"
+          className="rounded bg-primary px-4 py-2 text-xs font-bold text-white transition hover:bg-primary-dark"
         >
           نسخ الرابط
         </button>

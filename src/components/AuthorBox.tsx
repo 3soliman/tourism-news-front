@@ -23,6 +23,9 @@ export default function AuthorBox({ authorSlug }: AuthorBoxProps) {
         />
         <div>
           <span className="text-lg font-black text-text-dark">{author.name}</span>
+          <span className="mt-1 block text-xs font-bold text-primary">
+            {author.role}
+          </span>
           <p className="mt-2 text-sm leading-7 text-text-muted">{author.bio}</p>
           <span className="mt-2 inline-block text-sm font-bold text-primary">
             المزيد عن الكاتب ←

@@ -16,8 +16,8 @@ export default function PopularTabs({ latest, popular }: PopularTabsProps) {
     tab === "latest" ? latest : tab === "popular" ? popular : latest;
 
   return (
-    <div className="rounded border border-border bg-surface">
-      <div className="flex border-b border-border">
+    <div className="overflow-hidden rounded-lg editorial-card">
+      <div className="flex border-b border-border bg-page-bg">
         {(
           [
             ["popular", "الأكثر قراءة"],
@@ -29,9 +29,9 @@ export default function PopularTabs({ latest, popular }: PopularTabsProps) {
             key={key}
             type="button"
             onClick={() => setTab(key)}
-            className={`flex-1 px-2 py-3 text-xs font-bold transition ${
+            className={`flex-1 px-2 py-3 text-xs font-black transition ${
               tab === key
-                ? "border-b-2 border-primary bg-page-bg text-primary"
+                ? "bg-white text-primary"
                 : "text-text-muted hover:text-primary"
             }`}
           >
@@ -47,8 +47,8 @@ export default function PopularTabs({ latest, popular }: PopularTabsProps) {
         ) : (
           <ul className="space-y-3">
             {items.slice(0, 5).map((article, i) => (
-              <li key={article.id} className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-primary text-xs font-black text-white">
+              <li key={article.id} className="flex gap-3 rounded-md transition hover:bg-page-bg">
+                <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded bg-primary-dark text-xs font-black text-white">
                   {i + 1}
                 </span>
                 <div>

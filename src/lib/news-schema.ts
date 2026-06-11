@@ -1,7 +1,7 @@
 import type { Author } from "@/data/authors";
 import type { NewsArticle } from "@/data/news";
 import { toPublicationDate } from "@/lib/news-format";
-import { siteConfig } from "@/lib/site";
+import { siteConfig } from "@/data/site";
 
 export function buildNewsArticleSchema(
   article: NewsArticle,

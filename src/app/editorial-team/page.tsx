@@ -28,6 +28,7 @@ export default function EditorialTeamPage() {
               className="mx-auto h-24 w-24 rounded-full object-cover ring-2 ring-primary/20"
             />
             <h3 className="mt-4 text-lg font-black text-text-dark">{author.name}</h3>
+            <p className="mt-1 text-xs font-bold text-primary">{author.role}</p>
             <p className="mt-2 text-sm leading-7 text-text-muted">{author.bio}</p>
           </Link>
         ))}

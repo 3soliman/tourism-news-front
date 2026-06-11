@@ -7,18 +7,24 @@ const quickLinks = [
   { href: "/editorial-policy", label: "سياسة التحرير" },
 ];
 
+const socialLinks = [
+  { href: "#", label: "فيسبوك", icon: "f" },
+  { href: "#", label: "إكس", icon: "x" },
+  { href: "#", label: "واتساب", icon: "w" },
+];
+
 export default function TopBar() {
   return (
-    <div className="border-b border-border bg-surface text-sm text-text-muted">
-      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-2">
-        <p className="font-medium">
-          <span className="text-primary">آخر تحديثات السياحة</span>
-          <span className="mx-2 text-border">|</span>
-          {formatTodayDate()}
+    <div className="border-b border-[#d7e8ef] bg-[#eef7fb] text-xs text-[#48616d]">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2">
+        <p className="shrink-0 font-semibold text-[#244958]">{formatTodayDate()}</p>
+
+        <p className="hidden truncate text-center font-bold text-primary sm:block">
+          رصد يومي لأخبار السفر والوجهات والعروض
         </p>
 
-        <div className="flex flex-wrap items-center gap-4">
-          <nav className="hidden items-center gap-4 sm:flex">
+        <div className="flex shrink-0 items-center gap-3">
+          <nav className="hidden items-center gap-3 md:flex">
             {quickLinks.map((link) => (
               <Link
                 key={link.href}
@@ -30,28 +36,19 @@ export default function TopBar() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-2">
-            <a
-              href="#"
-              aria-label="فيسبوك"
-              className="flex h-7 w-7 items-center justify-center rounded bg-primary/10 text-xs font-bold text-primary transition hover:bg-primary hover:text-white"
-            >
-              f
-            </a>
-            <a
-              href="#"
-              aria-label="إكس"
-              className="flex h-7 w-7 items-center justify-center rounded bg-primary/10 text-xs font-bold text-primary transition hover:bg-primary hover:text-white"
-            >
-              x
-            </a>
-            <a
-              href="#"
-              aria-label="واتساب"
-              className="flex h-7 w-7 items-center justify-center rounded bg-primary/10 text-xs font-bold text-primary transition hover:bg-primary hover:text-white"
-            >
-              w
-            </a>
+          <span className="hidden h-3 w-px bg-[#c8dce4] md:block" aria-hidden="true" />
+
+          <div className="flex items-center gap-1.5">
+            {socialLinks.map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                aria-label={s.label}
+                className="flex h-6 w-6 items-center justify-center rounded-full border border-[#c8dce4] bg-white text-[10px] font-bold text-primary transition hover:bg-primary hover:text-white"
+              >
+                {s.icon}
+              </a>
+            ))}
           </div>
         </div>
       </div>

@@ -30,7 +30,7 @@ export const categories: Category[] = [
       "أخبار ومقالات عن أهم الوجهات السياحية التي يفضلها المسافرون العرب.",
   },
   {
-    slug: "international-travel",
+    slug: "international",
     label: "أخبار السفر الدولية",
     description:
       "متابعة أخبار السفر الدولي، التنقل، والتطورات التي تهم المسافرين حول العالم.",

@@ -1,6 +1,6 @@
 import { getRecentNews } from "@/data/news";
 import { toPublicationDate } from "@/lib/news-format";
-import { siteConfig } from "@/lib/site";
+import { siteConfig } from "@/data/site";
 
 function escapeXml(value: string) {
   return value

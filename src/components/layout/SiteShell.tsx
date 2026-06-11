@@ -5,11 +5,14 @@ import TopBar from "@/components/layout/TopBar";
 
 export default function SiteShell() {
   return (
-    <header className="sticky top-0 z-50">
+    <header>
       <TopBar />
-      <BreakingNewsBar />
       <SiteHeader />
-      <MainNav />
+
+      <div className="sticky top-0 z-50 shadow-xl shadow-black/15">
+        <MainNav />
+        <BreakingNewsBar />
+      </div>
     </header>
   );
 }

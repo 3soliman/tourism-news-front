@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { authors } from "@/data/authors";
 import { categories } from "@/data/categories";
 import { news } from "@/data/news";
-import { siteConfig } from "@/lib/site";
+import { siteConfig } from "@/data/site";
 
 const baseUrl = siteConfig.url;
 
@@ -12,7 +12,6 @@ const trustPages = [
   "/editorial-team",
   "/editorial-policy",
   "/privacy-policy",
-  "/terms-of-use",
   "/terms",
 ];
 
@@ -25,7 +24,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const categoryUrls = categories.map((category) => ({
-    url: `${baseUrl}/travel-news/category/${category.slug}`,
+    url: `${baseUrl}/travel-news/${category.slug}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: 0.85,

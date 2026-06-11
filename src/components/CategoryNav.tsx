@@ -21,7 +21,7 @@ export default function CategoryNav({ activeSlug }: CategoryNavProps) {
       {categories.map((category) => (
         <Link
           key={category.slug}
-          href={`/travel-news/category/${category.slug}`}
+          href={`/travel-news/${category.slug}`}
           className={`rounded px-4 py-2 text-sm font-bold transition ${
             activeSlug === category.slug
               ? "bg-primary text-white"

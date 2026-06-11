@@ -5,7 +5,7 @@ import NewsCard from "@/components/news/NewsCard";
 import SectionHeader from "@/components/news/SectionHeader";
 import { authors, getAuthorBySlug } from "@/data/authors";
 import { getNewsByAuthor } from "@/data/news";
-import { siteConfig } from "@/lib/site";
+import { siteConfig } from "@/data/site";
 
 type AuthorPageProps = {
   params: Promise<{ slug: string }>;
@@ -23,10 +23,10 @@ export async function generateMetadata({
   if (!author) return { title: "الكاتب غير موجود" };
   return {
     title: author.name,
-    description: author.bio,
+    description: `${author.role} - ${author.bio}`,
     openGraph: {
       title: author.name,
-      description: author.bio,
+      description: `${author.role} - ${author.bio}`,
       images: [author.image],
       type: "profile",
     },
@@ -58,7 +58,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
         />
         <div>
           <span className="bg-primary/10 px-3 py-1 text-sm font-bold text-primary">
-            كاتب في {siteConfig.name}
+            {author.role} في {siteConfig.name}
           </span>
           <h1 className="mt-3 text-3xl font-black text-text-dark">{author.name}</h1>
           <p className="mt-3 leading-8 text-text-muted">{author.bio}</p>
@@ -66,7 +66,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
       </div>
 
       <div className="mt-10">
-        <SectionHeader title={`مقالات ${author.name}`} />
+        <SectionHeader title={`أخبار ${author.name}`} />
         {authorNews.length > 0 ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {authorNews.map((article) => (

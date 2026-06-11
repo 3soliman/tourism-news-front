@@ -6,18 +6,20 @@ export default function BreakingNewsBar() {
   const items = [...breaking, ...breaking];
 
   return (
-    <div className="border-b border-border bg-breaking text-white">
+    <div className="border-t border-[#cfe8f4] bg-[#eaf6fb]">
       <div className="mx-auto flex max-w-7xl items-stretch">
-        <span className="flex shrink-0 items-center bg-black/20 px-4 py-2.5 text-sm font-black">
+        <span className="flex shrink-0 items-center gap-2 bg-breaking px-5 py-2 text-xs font-black text-white">
+          <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
           لا تفوتك
         </span>
-        <div className="relative flex-1 overflow-hidden py-2.5">
-          <div className="animate-marquee flex w-max gap-8 whitespace-nowrap px-4 text-sm font-semibold">
+
+        <div className="relative min-w-0 flex-1 overflow-hidden border-r border-[#cfe8f4] py-2">
+          <div className="animate-marquee-rtl flex w-max gap-10 whitespace-nowrap px-4 text-sm font-semibold text-[#244958]">
             {items.map((item, i) => (
               <Link
                 key={`${item.slug}-${i}`}
                 href={`/travel-news/${item.slug}`}
-                className="transition hover:underline"
+                className="transition hover:text-primary"
               >
                 {item.title}
               </Link>

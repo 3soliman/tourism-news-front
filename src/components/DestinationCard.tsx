@@ -14,7 +14,7 @@ export default function DestinationCard({ destination }: DestinationCardProps) {
           alt={destination.name}
           className="h-full w-full object-cover transition group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary-dark/85 to-transparent" />
         <div className="absolute bottom-3 right-3 text-white">
           <span className="text-xs font-bold">{destination.country}</span>
           <h3 className="text-xl font-black">{destination.name}</h3>
@@ -31,7 +31,7 @@ export default function DestinationCard({ destination }: DestinationCardProps) {
           </span>
         </div>
         <Link
-          href="/travel-news/category/destinations"
+          href="/travel-news/destinations"
           className="mt-3 inline-block bg-primary/10 px-4 py-2 text-sm font-bold text-primary"
         >
           تصفح المقالات

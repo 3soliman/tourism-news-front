@@ -10,9 +10,11 @@ export default function PageWithSidebar({ children }: PageWithSidebarProps) {
   const popular = getPopularNews(5);
 
   return (
-    <div className="mx-auto grid max-w-7xl gap-8 px-4 py-8 lg:grid-cols-[1fr_320px]">
+    <div className="mx-auto max-w-7xl px-4 py-8 lg:py-10">
       <div className="min-w-0">{children}</div>
-      <Sidebar latest={latest} popular={popular} />
+      <div className="mt-10 border-t border-border pt-8">
+        <Sidebar latest={latest} popular={popular} />
+      </div>
     </div>
   );
 }

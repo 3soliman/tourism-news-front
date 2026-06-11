@@ -1,14 +1,24 @@
 export type Author = {
   slug: string;
   name: string;
+  role: string;
   image: string;
   bio: string;
 };
 
 export const authors: Author[] = [
   {
+    slug: "soliman",
+    name: "سليمان الصباحي",
+    role: "رئيس التحرير",
+    image:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop",
+    bio: "يشرف على السياسة التحريرية للموقع ويركز على بناء محتوى سياحي عربي واضح وموثوق للمسافرين.",
+  },
+  {
     slug: "sara-al-zahrani",
     name: "سارة الزهراني",
+    role: "محررة الفنادق والإقامة",
     image:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop",
     bio: "كاتبة متخصصة في الفنادق والإقامة السياحية، تركز على تجارب العائلات والمسافرين العرب.",
@@ -16,6 +26,7 @@ export const authors: Author[] = [
   {
     slug: "omar-al-qahtani",
     name: "عمر القحطاني",
+    role: "محرر الوجهات السياحية",
     image:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop",
     bio: "محرر وجهات سياحية يغطي أهم المدن والتجارب السياحية في تركيا والشرق الأوسط.",
@@ -23,6 +34,7 @@ export const authors: Author[] = [
   {
     slug: "noura-al-saeed",
     name: "نورة السعيد",
+    role: "محررة نصائح السفر",
     image:
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=400&auto=format&fit=crop",
     bio: "كاتبة نصائح سفر تساعد المسافرين على اختيار الوقت المناسب والتخطيط لرحلات أكثر سلاسة.",

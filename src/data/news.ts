@@ -5,6 +5,8 @@ export type NewsArticle = {
   excerpt: string;
   category: string;
   categorySlug: string;
+  countrySlug: string;
+  destination?: string;
   authorSlug: string;
   image: string;
   publishedAt: string;
@@ -26,14 +28,16 @@ export const news: NewsArticle[] = [
       "دليل مختصر يساعد المسافرين العرب على اختيار أفضل فنادق إسطنبول المناسبة للعائلات من حيث الموقع والخدمات.",
     category: "أخبار الفنادق",
     categorySlug: "hotels",
-    authorSlug: "sara-al-zahrani",
+    countrySlug: "turkey",
+    destination: "إسطنبول",
+    authorSlug: "soliman",
     image:
       "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=1200&auto=format&fit=crop",
     publishedAt: "10 يونيو 2026",
     publishedAtISO: "2026-06-10T10:00:00+03:00",
     updatedAtISO: "2026-06-10T10:00:00+03:00",
     readingTime: "5 دقائق",
-    seoTitle: "أفضل فنادق إسطنبول للعائلات 2026 | أخبار السياحة",
+    seoTitle: "أفضل فنادق إسطنبول للعائلات 2026",
     seoDescription:
       "تعرف على أفضل فنادق إسطنبول للعائلات في 2026، مع نصائح لاختيار المنطقة المناسبة قبل الحجز.",
     keywords: ["فنادق إسطنبول", "فنادق عائلية", "سياحة تركيا"],
@@ -52,6 +56,8 @@ export const news: NewsArticle[] = [
       "تعرف على أهم المدن السياحية في تركيا، وأفضل الأوقات للسفر، ونصائح مهمة للعائلات قبل الحجز.",
     category: "أخبار الوجهات السياحية",
     categorySlug: "destinations",
+    countrySlug: "turkey",
+    destination: "إسطنبول",
     authorSlug: "omar-al-qahtani",
     image:
       "https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?q=80&w=1200&auto=format&fit=crop",
@@ -59,7 +65,7 @@ export const news: NewsArticle[] = [
     publishedAtISO: "2026-06-09T10:00:00+03:00",
     updatedAtISO: "2026-06-09T10:00:00+03:00",
     readingTime: "7 دقائق",
-    seoTitle: "دليل السياحة في تركيا للعوائل العربية | أخبار السياحة",
+    seoTitle: "دليل السياحة في تركيا للعوائل العربية",
     seoDescription:
       "دليل شامل عن السياحة في تركيا للعوائل العربية، يشمل المدن المناسبة، أفضل وقت للسفر، ونصائح قبل الرحلة.",
     keywords: ["سياحة تركيا", "دليل تركيا", "رحلات عائلية"],
@@ -77,7 +83,9 @@ export const news: NewsArticle[] = [
     excerpt:
       "متى تسافر إلى ماليزيا؟ تعرف على أفضل الشهور للسياحة، والفرق بين كوالالمبور، لنكاوي، وبينانج.",
     category: "أخبار السفر الدولية",
-    categorySlug: "international-travel",
+    categorySlug: "international",
+    countrySlug: "malaysia",
+    destination: "كوالالمبور",
     authorSlug: "noura-al-saeed",
     image:
       "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?q=80&w=1200&auto=format&fit=crop",
@@ -85,7 +93,7 @@ export const news: NewsArticle[] = [
     publishedAtISO: "2026-06-08T10:00:00+03:00",
     updatedAtISO: "2026-06-08T10:00:00+03:00",
     readingTime: "4 دقائق",
-    seoTitle: "أفضل وقت لزيارة ماليزيا للسياحة | أخبار السياحة",
+    seoTitle: "أفضل وقت لزيارة ماليزيا للسياحة",
     seoDescription:
       "تعرف على أفضل وقت للسفر إلى ماليزيا، وأهم النصائح قبل زيارة كوالالمبور، لنكاوي، وبينانج.",
     keywords: ["ماليزيا", "أفضل وقت للسفر", "كوالالمبور"],
@@ -104,6 +112,7 @@ export const news: NewsArticle[] = [
       "شركات طيران تعلن عن رحلات مباشرة جديدة إلى وجهات سياحية شائعة، مما يسهل التخطيط للرحلات العائلية.",
     category: "أخبار الطيران",
     categorySlug: "aviation",
+    countrySlug: "global",
     authorSlug: "omar-al-qahtani",
     image:
       "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1200&auto=format&fit=crop",
@@ -111,7 +120,7 @@ export const news: NewsArticle[] = [
     publishedAtISO: "2026-06-07T10:00:00+03:00",
     updatedAtISO: "2026-06-07T10:00:00+03:00",
     readingTime: "3 دقائق",
-    seoTitle: "خطوط طيران جديدة للمسافرين العرب 2026 | أخبار السياحة",
+    seoTitle: "خطوط طيران جديدة للمسافرين العرب 2026",
     seoDescription:
       "تعرف على أحدث خطوط الطيران والرحلات المباشرة التي تهم المسافرين العرب في 2026.",
     keywords: ["أخبار الطيران", "رحلات مباشرة", "شركات الطيران"],
@@ -130,6 +139,8 @@ export const news: NewsArticle[] = [
       "متابعة لأحدث متطلبات التأشيرات والإجراءات الإلكترونية للوجهات التي يزورها المسافرون العرب بكثرة.",
     category: "أخبار التأشيرات",
     categorySlug: "visas",
+    countrySlug: "egypt",
+    destination: "القاهرة",
     authorSlug: "noura-al-saeed",
     image:
       "https://images.unsplash.com/photo-1554224311-beee415c201f?q=80&w=1200&auto=format&fit=crop",
@@ -137,7 +148,7 @@ export const news: NewsArticle[] = [
     publishedAtISO: "2026-06-06T10:00:00+03:00",
     updatedAtISO: "2026-06-06T10:00:00+03:00",
     readingTime: "4 دقائق",
-    seoTitle: "تحديثات التأشيرات 2026 | أخبار السياحة",
+    seoTitle: "تحديثات التأشيرات 2026",
     seoDescription:
       "آخر أخبار التأشيرات ومتطلبات السفر للوجهات السياحية الشائعة بين المسافرين العرب.",
     keywords: ["تأشيرات", "متطلبات السفر", "فيزا إلكترونية"],
@@ -160,6 +171,10 @@ export function getLatestNews(limit = 3) {
 
 export function getNewsByCategory(categorySlug: string) {
   return news.filter((article) => article.categorySlug === categorySlug);
+}
+
+export function getNewsByCountry(countrySlug: string) {
+  return news.filter((article) => article.countrySlug === countrySlug);
 }
 
 export function getNewsByAuthor(authorSlug: string) {

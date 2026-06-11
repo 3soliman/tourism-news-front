@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title>Tourism News</title>
+  <rect width="512" height="512" rx="96" fill="#2d9cdb"/>
+  <circle cx="256" cy="256" r="156" fill="#ffffff" opacity=".95"/>
+  <path d="M108 286c48 34 105 51 171 51 51 0 94-10 129-31-29 58-88 98-156 98-67 0-125-38-154-94 3-8 6-16 10-24Z" fill="#ffd200"/>
+  <path d="M105 254c25-75 83-127 151-127 69 0 128 53 152 130-45-25-94-37-146-37-57 0-109 11-157 34Z" fill="#ffffff"/>
+  <path d="M256 104c39 44 59 96 59 156s-20 112-59 156c-39-44-59-96-59-156s20-112 59-156Z" fill="none" stroke="#244958" stroke-width="22"/>
+  <path d="M100 256h312M135 177c34 17 75 26 121 26s87-9 121-26M135 335c34-17 75-26 121-26s87 9 121 26" fill="none" stroke="#244958" stroke-linecap="round" stroke-width="22"/>
+  <path d="M352 114h64v64" fill="none" stroke="#f44336" stroke-linecap="round" stroke-linejoin="round" stroke-width="28"/>
+  <path d="m416 114-97 97" fill="none" stroke="#f44336" stroke-linecap="round" stroke-width="28"/>
+</svg>
