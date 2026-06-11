@@ -27,7 +27,7 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: var(--font-ibm-plex), var(--font-cairo), Arial, sans-serif;
   overflow-x: hidden;
 }
 
