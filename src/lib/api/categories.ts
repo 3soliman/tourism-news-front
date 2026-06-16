@@ -1,4 +1,5 @@
-import { apiFetch, apiFetchPaginated, isNotFoundError } from "@/lib/api/client";
+import { cache } from "react";
+import { apiFetch, isNotFoundError } from "@/lib/api/client";
 import {
   isConnectionError,
   markApiOffline,
@@ -6,7 +7,7 @@ import {
 import { mapCategories, mapCategory } from "@/lib/mappers";
 import type { ApiCategory, Category } from "@/types";
 
-export async function fetchCategories(): Promise<Category[]> {
+const loadCategories = cache(async (): Promise<Category[]> => {
   try {
     const data = await apiFetch<ApiCategory[]>("/categories");
     return mapCategories(data);
@@ -15,11 +16,9 @@ export async function fetchCategories(): Promise<Category[]> {
     if (isConnectionError(error)) markApiOffline();
     return [];
   }
-}
+});
 
-export async function fetchCategoryBySlug(
-  slug: string,
-): Promise<Category | null> {
+const loadCategoryBySlug = cache(async (slug: string): Promise<Category | null> => {
   try {
     const data = await apiFetch<ApiCategory>(`/categories/${slug}`);
     return mapCategory(data);
@@ -28,4 +27,14 @@ export async function fetchCategoryBySlug(
     if (isConnectionError(error)) markApiOffline();
     return null;
   }
+});
+
+export async function fetchCategories(): Promise<Category[]> {
+  return loadCategories();
+}
+
+export async function fetchCategoryBySlug(
+  slug: string,
+): Promise<Category | null> {
+  return loadCategoryBySlug(slug);
 }

@@ -1,17 +1,8 @@
+import { cache } from "react";
 import { apiFetch } from "@/lib/api/client";
 import { isConnectionError, markApiOffline } from "@/lib/api/connection";
 import { mapSiteSettings } from "@/lib/mappers";
 import type { ApiSiteSettings, SiteConfig } from "@/types";
-
-export async function getSiteConfig(): Promise<SiteConfig> {
-  try {
-    const data = await apiFetch<ApiSiteSettings>("/site-settings");
-    return mapSiteSettings(data);
-  } catch (error) {
-    if (isConnectionError(error)) markApiOffline();
-    return fallbackSiteConfig;
-  }
-}
 
 export const fallbackSiteConfig: SiteConfig = {
   name: "أخبار السياحة",
@@ -27,3 +18,17 @@ export const fallbackSiteConfig: SiteConfig = {
   ],
   author: "فريق أخبار السياحة",
 };
+
+const loadSiteConfig = cache(async (): Promise<SiteConfig> => {
+  try {
+    const data = await apiFetch<ApiSiteSettings>("/site-settings");
+    return mapSiteSettings(data);
+  } catch (error) {
+    if (isConnectionError(error)) markApiOffline();
+    return fallbackSiteConfig;
+  }
+});
+
+export async function getSiteConfig(): Promise<SiteConfig> {
+  return loadSiteConfig();
+}

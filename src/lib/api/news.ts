@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { apiFetch, apiFetchPaginated, isNotFoundError } from "@/lib/api/client";
 import { isConnectionError, markApiOffline } from "@/lib/api/connection";
 import {
@@ -5,7 +6,7 @@ import {
   mapNewsArticle,
   mapNewsArticles,
 } from "@/lib/mappers";
-import type { ApiNewsArticle, NewsArticle } from "@/types";
+import type { ApiNewsArticle, NewsArticle, PaginationMeta } from "@/types";
 
 type NewsQuery = {
   per_page?: number;
@@ -34,49 +35,69 @@ function buildNewsQuery(query: NewsQuery = {}) {
   return qs ? `/news?${qs}` : "/news";
 }
 
-export async function fetchNews(query: NewsQuery = {}): Promise<NewsArticle[]> {
+const loadNews = cache(async (path: string): Promise<NewsArticle[]> => {
   try {
-    const { data } = await apiFetchPaginated<ApiNewsArticle>(buildNewsQuery(query));
+    const { data } = await apiFetchPaginated<ApiNewsArticle>(path);
     return enrichArticlesWithCountries(mapNewsArticles(data));
   } catch (error) {
     if (isConnectionError(error)) markApiOffline();
     return [];
   }
+});
+
+const loadNewsPaginated = cache(
+  async (
+    path: string,
+  ): Promise<{ articles: NewsArticle[]; meta: PaginationMeta }> => {
+    try {
+      const { data, meta } = await apiFetchPaginated<ApiNewsArticle>(path);
+
+      return {
+        articles: await enrichArticlesWithCountries(mapNewsArticles(data)),
+        meta,
+      };
+    } catch (error) {
+      if (isConnectionError(error)) markApiOffline();
+      return { articles: [], meta: {} as PaginationMeta };
+    }
+  },
+);
+
+const loadNewsBySlug = cache(
+  async (
+    slug: string,
+  ): Promise<(NewsArticle & { related: NewsArticle[] }) | null> => {
+    try {
+      const article = await apiFetch<ApiNewsArticle>(`/news/${slug}`);
+      const mapped = mapNewsArticle(article);
+      const related = mapNewsArticles(article.related ?? []);
+      const [enriched, enrichedRelated] = await Promise.all([
+        enrichArticlesWithCountries([mapped]),
+        enrichArticlesWithCountries(related),
+      ]);
+      return { ...(enriched[0] ?? mapped), related: enrichedRelated };
+    } catch (error) {
+      if (isNotFoundError(error)) return null;
+      if (isConnectionError(error)) markApiOffline();
+      return null;
+    }
+  },
+);
+
+export async function fetchNews(query: NewsQuery = {}): Promise<NewsArticle[]> {
+  return loadNews(buildNewsQuery(query));
 }
 
 export async function fetchNewsPaginated(query: NewsQuery = {}) {
-  try {
-    const { data, meta } = await apiFetchPaginated<ApiNewsArticle>(
-      buildNewsQuery(query),
-    );
-
-    return {
-      articles: enrichArticlesWithCountries(mapNewsArticles(data)),
-      meta,
-    };
-  } catch (error) {
-    if (isConnectionError(error)) markApiOffline();
-    return { articles: [], meta: {} };
-  }
+  const path = buildNewsQuery(query);
+  const { articles, meta } = await loadNewsPaginated(path);
+  return { articles, meta };
 }
 
 export async function fetchNewsBySlug(
   slug: string,
 ): Promise<(NewsArticle & { related: NewsArticle[] }) | null> {
-  try {
-    const article = await apiFetch<ApiNewsArticle>(`/news/${slug}`);
-    const mapped = mapNewsArticle(article);
-    const related = mapNewsArticles(article.related ?? []);
-    const [enriched, enrichedRelated] = await Promise.all([
-      enrichArticlesWithCountries([mapped]),
-      enrichArticlesWithCountries(related),
-    ]);
-    return { ...(enriched[0] ?? mapped), related: enrichedRelated };
-  } catch (error) {
-    if (isNotFoundError(error)) return null;
-    if (isConnectionError(error)) markApiOffline();
-    return null;
-  }
+  return loadNewsBySlug(slug);
 }
 
 export async function fetchNewsByCategory(
@@ -106,18 +127,13 @@ export async function fetchRecentNews(hours = 48, googleNewsOnly = false): Promi
 
 export async function fetchAllNewsSlugs(): Promise<string[]> {
   try {
-    const { data, meta } = await apiFetchPaginated<ApiNewsArticle>(
-      "/news?per_page=100",
-    );
-
-    const slugs = data.map((item) => item.slug);
+    const { articles, meta } = await fetchNewsPaginated({ per_page: 100 });
+    const slugs = articles.map((item) => item.slug);
 
     if ((meta.last_page ?? 1) > 1) {
       for (let page = 2; page <= (meta.last_page ?? 1); page++) {
-        const next = await apiFetchPaginated<ApiNewsArticle>(
-          `/news?per_page=100&page=${page}`,
-        );
-        slugs.push(...next.data.map((item) => item.slug));
+        const next = await fetchNewsPaginated({ per_page: 100, page });
+        slugs.push(...next.articles.map((item) => item.slug));
       }
     }
 

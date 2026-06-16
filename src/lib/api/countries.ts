@@ -1,9 +1,10 @@
+import { cache } from "react";
 import { apiFetch } from "@/lib/api/client";
 import { isConnectionError, markApiOffline } from "@/lib/api/connection";
 import { mapCountries } from "@/lib/mappers";
 import type { ApiCountry, Country } from "@/types";
 
-export async function fetchCountries(): Promise<Country[]> {
+const loadCountries = cache(async (): Promise<Country[]> => {
   try {
     const data = await apiFetch<ApiCountry[]>("/countries");
     return mapCountries(data);
@@ -11,6 +12,10 @@ export async function fetchCountries(): Promise<Country[]> {
     if (isConnectionError(error)) markApiOffline();
     return [];
   }
+});
+
+export async function fetchCountries(): Promise<Country[]> {
+  return loadCountries();
 }
 
 export async function getCountryBySlug(slug: string): Promise<Country | undefined> {

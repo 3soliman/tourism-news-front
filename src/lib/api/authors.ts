@@ -1,9 +1,10 @@
+import { cache } from "react";
 import { apiFetch, isNotFoundError } from "@/lib/api/client";
 import { isConnectionError, markApiOffline } from "@/lib/api/connection";
 import { mapAuthor, mapAuthors } from "@/lib/mappers";
 import type { ApiAuthor, Author } from "@/types";
 
-export async function fetchAuthors(): Promise<Author[]> {
+const loadAuthors = cache(async (): Promise<Author[]> => {
   try {
     const data = await apiFetch<ApiAuthor[]>("/authors");
     return mapAuthors(data);
@@ -11,9 +12,9 @@ export async function fetchAuthors(): Promise<Author[]> {
     if (isConnectionError(error)) markApiOffline();
     return [];
   }
-}
+});
 
-export async function fetchAuthorBySlug(slug: string): Promise<Author | null> {
+const loadAuthorBySlug = cache(async (slug: string): Promise<Author | null> => {
   try {
     const data = await apiFetch<ApiAuthor>(`/authors/${slug}`);
     return mapAuthor(data);
@@ -22,4 +23,12 @@ export async function fetchAuthorBySlug(slug: string): Promise<Author | null> {
     if (isConnectionError(error)) markApiOffline();
     return null;
   }
+});
+
+export async function fetchAuthors(): Promise<Author[]> {
+  return loadAuthors();
+}
+
+export async function fetchAuthorBySlug(slug: string): Promise<Author | null> {
+  return loadAuthorBySlug(slug);
 }

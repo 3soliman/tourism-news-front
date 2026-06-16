@@ -109,7 +109,7 @@ export default async function ArticleDetailsPage({
     const [categoryNews, activeCountry] = await Promise.all([
       fetchNews({
         category: categoryPage.slug,
-        per_page: 100,
+        per_page: 24,
         ...(countrySlug ? { country: countrySlug } : {}),
       }),
       countrySlug ? getCountryBySlug(countrySlug) : Promise.resolve(undefined),
