@@ -24,10 +24,13 @@ export class ApiError extends Error {
 
 type FetchOptions = RequestInit;
 
+const API_TIMEOUT_MS = 8_000;
+
 async function request<T>(url: string, init: FetchOptions = {}): Promise<T> {
   const response = await fetch(url, {
     ...init,
     cache: "no-store",
+    signal: init.signal ?? AbortSignal.timeout(API_TIMEOUT_MS),
     headers: {
       Accept: "application/json",
       ...init.headers,
@@ -59,6 +62,7 @@ export async function apiFetchPaginated<T>(
   const response = await fetch(url, {
     ...options,
     cache: "no-store",
+    signal: options.signal ?? AbortSignal.timeout(API_TIMEOUT_MS),
     headers: {
       Accept: "application/json",
       ...options.headers,

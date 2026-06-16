@@ -27,9 +27,14 @@ export function isConnectionError(error: unknown): boolean {
   }
 
   if (error instanceof Error) {
+    if (error.name === "AbortError" || error.name === "TimeoutError") {
+      return true;
+    }
+
     return (
       error.message.includes("fetch failed") ||
-      error.message.includes("ECONNREFUSED")
+      error.message.includes("ECONNREFUSED") ||
+      error.message.includes("timed out")
     );
   }
 

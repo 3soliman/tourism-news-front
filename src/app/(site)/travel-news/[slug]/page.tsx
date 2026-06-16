@@ -13,10 +13,11 @@ import NewsCard from "@/components/news/NewsCard";
 import SectionHeader from "@/components/news/SectionHeader";
 import ShareButtons from "@/components/ShareButtons";
 import { fetchAuthorBySlug } from "@/lib/api/authors";
-import { fetchCategories, fetchCategoryBySlug } from "@/lib/api/categories";
-import { fetchNews, fetchNewsBySlug } from "@/lib/api/news";
+import { fetchCategories } from "@/lib/api/categories";
+import { fetchNews } from "@/lib/api/news";
 import { getCountryBySlug } from "@/lib/api/countries";
 import { isApiOnline } from "@/lib/api/connection";
+import { resolveTravelNewsSlug } from "@/lib/api/travel-news-slug";
 import { buildNewsArticleSchema } from "@/lib/news-schema";
 import { formatPublishedAt } from "@/lib/news-format";
 import { getSiteConfig } from "@/lib/site";
@@ -29,68 +30,73 @@ type ArticlePageProps = {
 export async function generateMetadata({
   params,
 }: ArticlePageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const [category, siteConfig] = await Promise.all([
-    fetchCategoryBySlug(slug),
-    getSiteConfig(),
-  ]);
+  try {
+    const { slug } = await params;
+    const [resolved, siteConfig] = await Promise.all([
+      resolveTravelNewsSlug(slug),
+      getSiteConfig(),
+    ]);
 
-  if (category) {
-    const categoryUrl = `${siteConfig.url}/travel-news/${category.slug}`;
+    if (resolved.kind === "category") {
+      const categoryUrl = `${siteConfig.url}/travel-news/${resolved.category.slug}`;
 
-    return {
-      title: category.label,
-      description: category.description,
-      alternates: { canonical: categoryUrl },
-      openGraph: {
-        title: category.label,
-        description: category.description,
-        url: categoryUrl,
-        siteName: siteConfig.name,
-        locale: "ar_AR",
-        type: "website",
-      },
-      robots: { index: true, follow: true },
-    };
-  }
+      return {
+        title: resolved.category.label,
+        description: resolved.category.description,
+        alternates: { canonical: categoryUrl },
+        openGraph: {
+          title: resolved.category.label,
+          description: resolved.category.description,
+          url: categoryUrl,
+          siteName: siteConfig.name,
+          locale: "ar_AR",
+          type: "website",
+        },
+        robots: { index: true, follow: true },
+      };
+    }
 
-  const article = await fetchNewsBySlug(slug);
+    if (resolved.kind === "article") {
+      const article = resolved.article;
+      const articleUrl = `${siteConfig.url}/travel-news/${article.slug}`;
 
-  if (!article) {
+      return {
+        title: article.seoTitle,
+        description: article.seoDescription,
+        keywords: article.keywords,
+        alternates: { canonical: articleUrl },
+        openGraph: {
+          title: article.seoTitle,
+          description: article.seoDescription,
+          url: articleUrl,
+          siteName: siteConfig.name,
+          images: [{ url: article.image, width: 1200, height: 630, alt: article.title }],
+          locale: "ar_AR",
+          type: "article",
+          publishedTime: article.publishedAtISO,
+          modifiedTime: article.updatedAtISO,
+          authors: [article.authorName || siteConfig.author],
+        },
+        twitter: {
+          card: "summary_large_image",
+          title: article.seoTitle,
+          description: article.seoDescription,
+          images: [article.image],
+        },
+        robots: { index: true, follow: true },
+      };
+    }
+
     return {
       title: "المقال غير موجود",
       robots: { index: false, follow: false },
     };
+  } catch {
+    return {
+      title: "أخبار السياحة",
+      robots: { index: true, follow: true },
+    };
   }
-
-  const author = await fetchAuthorBySlug(article.authorSlug);
-  const articleUrl = `${siteConfig.url}/travel-news/${article.slug}`;
-
-  return {
-    title: article.seoTitle,
-    description: article.seoDescription,
-    keywords: article.keywords,
-    alternates: { canonical: articleUrl },
-    openGraph: {
-      title: article.seoTitle,
-      description: article.seoDescription,
-      url: articleUrl,
-      siteName: siteConfig.name,
-      images: [{ url: article.image, width: 1200, height: 630, alt: article.title }],
-      locale: "ar_AR",
-      type: "article",
-      publishedTime: article.publishedAtISO,
-      modifiedTime: article.updatedAtISO,
-      authors: [author?.name ?? siteConfig.author],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: article.seoTitle,
-      description: article.seoDescription,
-      images: [article.image],
-    },
-    robots: { index: true, follow: true },
-  };
 }
 
 export default async function ArticleDetailsPage({
@@ -99,13 +105,14 @@ export default async function ArticleDetailsPage({
 }: ArticlePageProps) {
   const { slug } = await params;
   const { country: countrySlug } = await searchParams;
-  const [categories, categoryPage, siteConfig] = await Promise.all([
+  const [categories, resolved, siteConfig] = await Promise.all([
     fetchCategories(),
-    fetchCategoryBySlug(slug),
+    resolveTravelNewsSlug(slug),
     getSiteConfig(),
   ]);
 
-  if (categoryPage) {
+  if (resolved.kind === "category") {
+    const categoryPage = resolved.category;
     const [categoryNews, activeCountry] = await Promise.all([
       fetchNews({
         category: categoryPage.slug,
@@ -171,8 +178,6 @@ export default async function ArticleDetailsPage({
     );
   }
 
-  const article = await fetchNewsBySlug(slug);
-
   if (!isApiOnline()) {
     return (
       <PageWithSidebar>
@@ -181,8 +186,11 @@ export default async function ArticleDetailsPage({
     );
   }
 
-  if (!article) notFound();
+  if (resolved.kind !== "article") {
+    notFound();
+  }
 
+  const article = resolved.article;
   const author = await fetchAuthorBySlug(article.authorSlug);
   const category = categories.find((item) => item.slug === article.categorySlug);
   const articleUrl = `${siteConfig.url}/travel-news/${article.slug}`;

@@ -1,27 +1,22 @@
-import DOMPurify from "isomorphic-dompurify";
-import { paragraphsToDisplayHtml } from "@/lib/article-content";
+"use client";
+
+import dynamic from "next/dynamic";
+
+const ArticleBodyClient = dynamic(() => import("@/components/news/ArticleBodyClient"), {
+  ssr: false,
+  loading: () => (
+    <div className="mt-8 space-y-4">
+      <div className="h-4 w-full animate-pulse rounded bg-surface-alt" />
+      <div className="h-4 w-11/12 animate-pulse rounded bg-surface-alt" />
+      <div className="h-4 w-10/12 animate-pulse rounded bg-surface-alt" />
+    </div>
+  ),
+});
 
 type ArticleBodyProps = {
   paragraphs: string[];
 };
 
-const SANITIZE_OPTIONS = {
-  ADD_ATTR: ["target", "rel", "style", "class"],
-  ADD_TAGS: ["span"],
-};
-
 export default function ArticleBody({ paragraphs }: ArticleBodyProps) {
-  const html = DOMPurify.sanitize(
-    paragraphsToDisplayHtml(paragraphs),
-    SANITIZE_OPTIONS,
-  );
-
-  if (!html) return null;
-
-  return (
-    <div
-      className="article-body prose prose-lg mt-8 max-w-none leading-9 prose-headings:font-black prose-headings:text-text-dark prose-p:text-text-muted prose-a:text-primary prose-blockquote:border-primary prose-blockquote:text-text-dark"
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
-  );
+  return <ArticleBodyClient paragraphs={paragraphs} />;
 }
