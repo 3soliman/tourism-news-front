@@ -10,6 +10,7 @@ import {
   updateAdminCategory,
 } from "@/lib/api/admin-categories";
 import type { AdminCategoryFormInput } from "@/types";
+import { isSeoSyncedWithSource } from "@/lib/seo-field-sync";
 
 type CategoryFormProps = {
   mode: "create" | "edit";
@@ -26,12 +27,34 @@ export default function CategoryForm({
   const [form, setForm] = useState<AdminCategoryFormInput>(initial);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [seoTitleSynced, setSeoTitleSynced] = useState(() =>
+    isSeoSyncedWithSource(initial.name, initial.seo_title),
+  );
+  const [seoDescriptionSynced, setSeoDescriptionSynced] = useState(() =>
+    isSeoSyncedWithSource(initial.description, initial.seo_description),
+  );
 
   const updateField = <K extends keyof AdminCategoryFormInput>(
     key: K,
     value: AdminCategoryFormInput[K],
   ) => {
     setForm((current) => ({ ...current, [key]: value }));
+  };
+
+  const handleNameChange = (name: string) => {
+    setForm((current) => ({
+      ...current,
+      name,
+      ...(seoTitleSynced ? { seo_title: name } : {}),
+    }));
+  };
+
+  const handleDescriptionChange = (description: string) => {
+    setForm((current) => ({
+      ...current,
+      description,
+      ...(seoDescriptionSynced ? { seo_description: description } : {}),
+    }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -75,7 +98,7 @@ export default function CategoryForm({
               type="text"
               required
               value={form.name}
-              onChange={(event) => updateField("name", event.target.value)}
+              onChange={(event) => handleNameChange(event.target.value)}
               className={admin.input}
             />
           </label>
@@ -97,7 +120,7 @@ export default function CategoryForm({
             <textarea
               rows={2}
               value={form.description}
-              onChange={(event) => updateField("description", event.target.value)}
+              onChange={(event) => handleDescriptionChange(event.target.value)}
               className={admin.textarea}
             />
           </label>
@@ -133,7 +156,10 @@ export default function CategoryForm({
             <input
               type="text"
               value={form.seo_title}
-              onChange={(event) => updateField("seo_title", event.target.value)}
+              onChange={(event) => {
+                setSeoTitleSynced(false);
+                updateField("seo_title", event.target.value);
+              }}
               className={admin.input}
             />
           </label>
@@ -143,7 +169,10 @@ export default function CategoryForm({
             <textarea
               rows={2}
               value={form.seo_description}
-              onChange={(event) => updateField("seo_description", event.target.value)}
+              onChange={(event) => {
+                setSeoDescriptionSynced(false);
+                updateField("seo_description", event.target.value);
+              }}
               className={admin.textarea}
             />
           </label>

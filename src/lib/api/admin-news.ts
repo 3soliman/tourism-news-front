@@ -1,6 +1,6 @@
 import { ApiError } from "@/lib/api/client";
-import { isConnectionError } from "@/lib/api/connection";
 import { adminRequest, type ApiEnvelope } from "@/lib/api/admin-request";
+import { toApiMutationError } from "@/lib/api/mutation-error";
 import {
   mapNewsArticle,
 } from "@/lib/mappers";
@@ -12,7 +12,8 @@ import type {
   NewsArticle,
   PaginationMeta,
 } from "@/types";
-import { resolveMediaUrl } from "@/lib/media-url";
+import { resolveMediaUrl, toStoredMediaPath } from "@/lib/media-url";
+import { isoToDatetimeLocalValue } from "@/lib/datetime-local";
 
 type AdminNewsEnvelope<T> = ApiEnvelope<T> & {
   meta?: PaginationMeta;
@@ -123,28 +124,7 @@ export async function fetchAdminNewsById(id: number): Promise<AdminNewsRecord | 
 }
 
 function toMutationError(error: unknown): AdminMutationResult {
-  if (isConnectionError(error)) {
-    return {
-      ok: false,
-      offline: true,
-      message: "تعذر الاتصال بالـ API. تأكد أن Laravel يعمل على المنفذ 8070.",
-    };
-  }
-
-  if (error instanceof ApiError) {
-    const body = (error as ApiError & { body?: ApiEnvelope<unknown> }).body;
-
-    return {
-      ok: false,
-      message: body?.message ?? `فشل الطلب (${error.status})`,
-      errors: body?.errors,
-    };
-  }
-
-  return {
-    ok: false,
-    message: error instanceof Error ? error.message : "حدث خطأ غير متوقع",
-  };
+  return toApiMutationError(error);
 }
 
 export async function createAdminNews(
@@ -196,11 +176,11 @@ export function toAdminNewsFormInput(article: AdminNewsRecord): AdminNewsFormInp
     category_id: article.categoryId,
     author_id: article.authorId,
     country_id: article.countryId,
-    image: resolveMediaUrl(article.image),
+    image: toStoredMediaPath(article.image),
     destination: article.destination ?? "",
     status: article.status,
     published_at: article.publishedAtISO
-      ? new Date(article.publishedAtISO).toISOString().slice(0, 16)
+      ? isoToDatetimeLocalValue(article.publishedAtISO)
       : "",
     reading_time: article.readingTime,
     seo_title: article.seoTitle,
@@ -210,7 +190,7 @@ export function toAdminNewsFormInput(article: AdminNewsRecord): AdminNewsFormInp
     canonical_url: article.canonicalUrl,
     og_title: article.ogTitle,
     og_description: article.ogDescription,
-    og_image: resolveMediaUrl(article.ogImage),
+    og_image: toStoredMediaPath(article.ogImage),
     robots_index: article.robotsIndex,
     robots_follow: article.robotsFollow,
     schema_status: article.schemaStatus,
@@ -229,8 +209,8 @@ export function buildNewsPayload(
 
   const payload: AdminNewsPayload = {
     ...form,
-    image: resolveMediaUrl(form.image),
-    og_image: resolveMediaUrl(form.og_image),
+    image: toStoredMediaPath(form.image),
+    og_image: toStoredMediaPath(form.og_image),
     content_paragraphs: paragraphs.filter((paragraph) => paragraph.trim() !== ""),
     country_id: form.country_id || null,
     published_at: form.published_at

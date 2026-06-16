@@ -14,12 +14,22 @@ import {
   paragraphsToEditorHtml,
 } from "@/lib/article-content";
 import {
+  normalizeMediaUrlsInHtml,
+  resolveMediaUrlsInHtml,
+} from "@/lib/media-url";
+import {
   buildNewsPayload,
   createAdminNews,
   updateAdminNews,
 } from "@/lib/api/admin-news";
 import type { AdminNewsFormInput, AdminNewsPayload } from "@/types";
 import type { Author, Category, Country } from "@/types";
+import {
+  isSeoSyncedWithSource,
+  maybeSyncOgDescription,
+  maybeSyncOgTitle,
+} from "@/lib/seo-field-sync";
+import { toDatetimeLocalValue } from "@/lib/datetime-local";
 
 const statusOptions = [
   { value: "draft", label: "مسودة" },
@@ -51,11 +61,20 @@ export default function NewsForm({
   const router = useRouter();
   const [form, setForm] = useState<AdminNewsFormInput>(initial);
   const [contentHtml, setContentHtml] = useState(
-    paragraphsToEditorHtml(initial.content_paragraphs),
+    resolveMediaUrlsInHtml(paragraphsToEditorHtml(initial.content_paragraphs)),
   );
   const [keywordsText, setKeywordsText] = useState(initial.keywords.join("، "));
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [seoTitleSynced, setSeoTitleSynced] = useState(() =>
+    isSeoSyncedWithSource(initial.title, initial.seo_title),
+  );
+  const [seoDescriptionSynced, setSeoDescriptionSynced] = useState(() =>
+    isSeoSyncedWithSource(initial.excerpt, initial.seo_description),
+  );
+  const [publishedAtSynced, setPublishedAtSynced] = useState(() =>
+    mode === "create" ? true : !initial.published_at,
+  );
 
   const updateField = <K extends keyof AdminNewsFormInput>(
     key: K,
@@ -64,39 +83,106 @@ export default function NewsForm({
     setForm((current) => ({ ...current, [key]: value }));
   };
 
+  const handleTitleChange = (title: string) => {
+    setForm((current) => {
+      const next = { ...current, title };
+
+      if (seoTitleSynced) {
+        next.seo_title = title;
+        const ogTitle = maybeSyncOgTitle(title, current.seo_title, current.og_title);
+        if (ogTitle !== undefined) {
+          next.og_title = ogTitle;
+        }
+      }
+
+      return next;
+    });
+  };
+
+  const handleExcerptChange = (excerpt: string) => {
+    setForm((current) => {
+      const next = { ...current, excerpt };
+
+      if (seoDescriptionSynced) {
+        next.seo_description = excerpt;
+        const ogDescription = maybeSyncOgDescription(
+          excerpt,
+          current.seo_description,
+          current.og_description,
+        );
+        if (ogDescription !== undefined) {
+          next.og_description = ogDescription;
+        }
+      }
+
+      return next;
+    });
+  };
+
+  const handleSeoTitleChange = (seo_title: string) => {
+    setSeoTitleSynced(false);
+    updateField("seo_title", seo_title);
+  };
+
+  const handleSeoDescriptionChange = (seo_description: string) => {
+    setSeoDescriptionSynced(false);
+    updateField("seo_description", seo_description);
+  };
+
+  const handleStatusChange = (status: string) => {
+    setForm((current) => {
+      const next = { ...current, status };
+
+      if (
+        publishedAtSynced &&
+        (status === "published" || status === "scheduled")
+      ) {
+        next.published_at = toDatetimeLocalValue();
+      }
+
+      return next;
+    });
+  };
+
+  const handlePublishedAtChange = (published_at: string) => {
+    setPublishedAtSynced(false);
+    updateField("published_at", published_at);
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setSubmitting(true);
     setError(null);
 
-    const contentParagraphs = editorHtmlToParagraphs(contentHtml);
+    const contentParagraphs = editorHtmlToParagraphs(
+      normalizeMediaUrlsInHtml(contentHtml),
+    );
     if (contentParagraphs.length === 0) {
       setSubmitting(false);
       setError("محتوى الخبر مطلوب.");
       return;
     }
 
+    const resolvedPublishedAt =
+      publishedAtSynced &&
+      (form.status === "published" || form.status === "scheduled")
+        ? toDatetimeLocalValue()
+        : form.published_at;
+
+    const formForSubmit = {
+      ...form,
+      published_at: resolvedPublishedAt,
+      content_paragraphs: contentParagraphs,
+      keywords: keywordsText
+        .split(/[،,]/)
+        .map((keyword) => keyword.trim())
+        .filter(Boolean),
+    };
+
     const payload =
       mode === "create"
-        ? buildNewsPayload(
-            {
-              ...form,
-              content_paragraphs: contentParagraphs,
-              keywords: keywordsText
-                .split(/[،,]/)
-                .map((keyword) => keyword.trim())
-                .filter(Boolean),
-            },
-            { forCreate: true },
-          )
-        : buildNewsPayload({
-            ...form,
-            content_paragraphs: contentParagraphs,
-            keywords: keywordsText
-              .split(/[،,]/)
-              .map((keyword) => keyword.trim())
-              .filter(Boolean),
-          });
+        ? buildNewsPayload(formForSubmit, { forCreate: true })
+        : buildNewsPayload(formForSubmit);
 
     const result =
       mode === "create"
@@ -134,7 +220,7 @@ export default function NewsForm({
               <input
                 required
                 value={form.title}
-                onChange={(event) => updateField("title", event.target.value)}
+                onChange={(event) => handleTitleChange(event.target.value)}
                 className={admin.input}
               />
             </label>
@@ -155,7 +241,7 @@ export default function NewsForm({
               <textarea
                 required
                 value={form.excerpt}
-                onChange={(event) => updateField("excerpt", event.target.value)}
+                onChange={(event) => handleExcerptChange(event.target.value)}
                 className={admin.textarea}
                 rows={2}
               />
@@ -202,17 +288,17 @@ export default function NewsForm({
 
             {mode === "create" ? (
               <div>
-                <span className={admin.label}>الكاتب</span>
+                <span className={admin.label}>الكاتب (مستخدم)</span>
                 <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-bold text-slate-700">
                   {currentAuthorName ?? "المستخدم الحالي"}
                 </p>
                 <p className="mt-1 text-[11px] text-slate-500">
-                  يُسجَّل الخبر تلقائياً باسمك ككاتب.
+                  يُسجَّل الخبر تلقائياً باسمك.
                 </p>
               </div>
             ) : (
               <label>
-                <span className={admin.label}>الكاتب</span>
+                <span className={admin.label}>الكاتب (مستخدم)</span>
                 <select
                   required
                   value={form.author_id || ""}
@@ -265,7 +351,7 @@ export default function NewsForm({
               <span className={admin.label}>الحالة</span>
               <select
                 value={form.status}
-                onChange={(event) => updateField("status", event.target.value)}
+                onChange={(event) => handleStatusChange(event.target.value)}
                 className={admin.select}
               >
                 {statusOptions.map((option) => (
@@ -281,7 +367,7 @@ export default function NewsForm({
               <input
                 type="datetime-local"
                 value={form.published_at}
-                onChange={(event) => updateField("published_at", event.target.value)}
+                onChange={(event) => handlePublishedAtChange(event.target.value)}
                 className={admin.input}
               />
             </label>
@@ -303,6 +389,8 @@ export default function NewsForm({
         form={form}
         keywordsText={keywordsText}
         onKeywordsChange={setKeywordsText}
+        onSeoTitleChange={handleSeoTitleChange}
+        onSeoDescriptionChange={handleSeoDescriptionChange}
         onChange={updateField}
       />
     </form>

@@ -12,9 +12,14 @@ export const metadata: Metadata = {
 
 const emptyForm: ManagedUserFormInput = {
   name: "",
+  public_name: "",
   email: "",
   password: "",
   status: "active",
+  slug: "",
+  author_title: "",
+  bio: "",
+  image: "",
   role_ids: [],
 };
 

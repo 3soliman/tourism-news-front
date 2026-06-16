@@ -3,6 +3,7 @@
 import { Editor } from "@tinymce/tinymce-react";
 import { admin } from "@/components/admin/admin-ui";
 import { uploadAdminMedia } from "@/lib/api/admin-media";
+import { resolveMediaUrl } from "@/lib/media-url";
 
 const TINYMCE_CDN = "https://cdn.jsdelivr.net/npm/tinymce@8.6.0";
 
@@ -98,7 +99,7 @@ export default function AdminTinyEditor({
               throw new Error(result.message);
             }
 
-            return result.data.url;
+            return resolveMediaUrl(result.data.url);
           },
           paste_data_images: true,
           image_caption: true,

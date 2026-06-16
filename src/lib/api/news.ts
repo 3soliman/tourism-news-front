@@ -17,6 +17,7 @@ type NewsQuery = {
   search?: string;
   recent_hours?: number;
   google_news_only?: boolean;
+  sort?: "latest" | "popular";
 };
 
 function buildNewsQuery(query: NewsQuery = {}) {
@@ -30,6 +31,7 @@ function buildNewsQuery(query: NewsQuery = {}) {
   if (query.search) params.set("search", query.search);
   if (query.recent_hours) params.set("recent_hours", String(query.recent_hours));
   if (query.google_news_only) params.set("google_news_only", "1");
+  if (query.sort === "popular") params.set("sort", "popular");
 
   const qs = params.toString();
   return qs ? `/news?${qs}` : "/news";
@@ -125,6 +127,10 @@ export async function fetchRecentNews(hours = 48, googleNewsOnly = false): Promi
   return fetchNews({ recent_hours: hours, per_page: 100, google_news_only: googleNewsOnly });
 }
 
+export async function fetchPopularNews(limit = 5): Promise<NewsArticle[]> {
+  return fetchNews({ sort: "popular", per_page: limit });
+}
+
 export async function fetchAllNewsSlugs(): Promise<string[]> {
   try {
     const { articles, meta } = await fetchNewsPaginated({ per_page: 100 });
@@ -146,7 +152,11 @@ export async function fetchAllNewsSlugs(): Promise<string[]> {
 
 export function getPopularNews(articles: NewsArticle[], limit = 5) {
   return [...articles]
-    .sort((a, b) => b.publishedAtISO.localeCompare(a.publishedAtISO))
+    .sort((a, b) => {
+      const viewsDiff = (b.viewsCount ?? 0) - (a.viewsCount ?? 0);
+      if (viewsDiff !== 0) return viewsDiff;
+      return b.publishedAtISO.localeCompare(a.publishedAtISO);
+    })
     .slice(0, limit);
 }
 

@@ -6,10 +6,6 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const ROTATE_MS = 7000;
-const fallbackImages = [
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1200&auto=format&fit=crop",
-];
 
 type SiteHeaderProps = {
   headerImages?: string[];
@@ -94,14 +90,14 @@ function HeaderBackground({
   );
 }
 
-export default function SiteHeader({ headerImages = fallbackImages }: SiteHeaderProps) {
+export default function SiteHeader({ headerImages = [] }: SiteHeaderProps) {
   const [activeImage, setActiveImage] = useState(0);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isHomePage = pathname === "/";
   const isArticlePage = /^\/travel-news\/[^/]+$/.test(pathname);
   const isCompactPage = isArticlePage || (!isHomePage && pathname.startsWith("/travel-news"));
-  const slides = [...new Set(headerImages)];
+  const slides = [...new Set(headerImages.filter(Boolean))];
   const currentQuery = searchParams.get("q") ?? "";
 
   useEffect(() => {
@@ -121,10 +117,12 @@ export default function SiteHeader({ headerImages = fallbackImages }: SiteHeader
     return () => clearInterval(timer);
   }, [slides.length]);
 
+  const showBackground = slides.length > 0;
+
   if (isCompactPage) {
     return (
       <div className="relative overflow-hidden bg-primary">
-        <HeaderBackground slides={slides} activeImage={activeImage} />
+        {showBackground ? <HeaderBackground slides={slides} activeImage={activeImage} /> : null}
 
         <div className="relative mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3">
           <SiteLogo compact />
@@ -136,7 +134,7 @@ export default function SiteHeader({ headerImages = fallbackImages }: SiteHeader
 
   return (
     <div className="relative overflow-hidden bg-primary">
-      <HeaderBackground slides={slides} activeImage={activeImage} />
+      {showBackground ? <HeaderBackground slides={slides} activeImage={activeImage} /> : null}
 
       <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-5">
         <SiteLogo />

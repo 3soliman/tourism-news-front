@@ -1,12 +1,18 @@
 import { ApiError } from "@/lib/api/client";
-import { isConnectionError } from "@/lib/api/connection";
 import { adminRequest, type ApiEnvelope } from "@/lib/api/admin-request";
+import { toApiMutationError } from "@/lib/api/mutation-error";
+import { toStoredMediaPath } from "@/lib/media-url";
 
 export type ApiManagedUser = {
   id: number;
   name: string;
+  public_name: string | null;
   email: string;
   status: string;
+  slug: string | null;
+  author_title: string | null;
+  bio: string | null;
+  image: string | null;
   last_seen_at: string | null;
   roles: { id: number; name: string; slug: string }[];
   permissions: string[];
@@ -16,8 +22,13 @@ export type ApiManagedUser = {
 export type ManagedUserRecord = {
   id: number;
   name: string;
+  publicName: string;
   email: string;
   status: string;
+  slug: string;
+  authorTitle: string;
+  bio: string;
+  image: string;
   lastSeenAt: string | null;
   roles: { id: number; name: string; slug: string }[];
   isSuperAdmin: boolean;
@@ -25,9 +36,14 @@ export type ManagedUserRecord = {
 
 export type ManagedUserFormInput = {
   name: string;
+  public_name: string;
   email: string;
   password: string;
   status: "active" | "inactive";
+  slug: string;
+  author_title: string;
+  bio: string;
+  image: string;
   role_ids: number[];
 };
 
@@ -39,8 +55,13 @@ function mapManagedUser(raw: ApiManagedUser): ManagedUserRecord {
   return {
     id: raw.id,
     name: raw.name,
+    publicName: raw.public_name ?? "",
     email: raw.email,
     status: raw.status,
+    slug: raw.slug ?? "",
+    authorTitle: raw.author_title ?? "",
+    bio: raw.bio ?? "",
+    image: raw.image ?? "",
     lastSeenAt: raw.last_seen_at,
     roles: raw.roles ?? [],
     isSuperAdmin: raw.is_super_admin ?? false,
@@ -48,28 +69,7 @@ function mapManagedUser(raw: ApiManagedUser): ManagedUserRecord {
 }
 
 function toMutationError(error: unknown): AdminMutationResult {
-  if (isConnectionError(error)) {
-    return {
-      ok: false,
-      offline: true,
-      message: "تعذر الاتصال بالـ API. تأكد أن Laravel يعمل على المنفذ 8070.",
-    };
-  }
-
-  if (error instanceof ApiError) {
-    const body = (error as ApiError & { body?: ApiEnvelope<unknown> }).body;
-
-    return {
-      ok: false,
-      message: body?.message ?? `فشل الطلب (${error.status})`,
-      errors: body?.errors,
-    };
-  }
-
-  return {
-    ok: false,
-    message: error instanceof Error ? error.message : "حدث خطأ غير متوقع",
-  };
+  return toApiMutationError(error);
 }
 
 export async function fetchAdminUsersList(): Promise<ManagedUserRecord[]> {
@@ -139,9 +139,14 @@ export function toManagedUserFormInput(
 ): ManagedUserFormInput {
   return {
     name: user.name,
+    public_name: user.publicName,
     email: user.email,
     password: "",
     status: user.status === "inactive" ? "inactive" : "active",
+    slug: user.slug,
+    author_title: user.authorTitle,
+    bio: user.bio,
+    image: toStoredMediaPath(user.image),
     role_ids: user.roles.map((role) => role.id),
   };
 }

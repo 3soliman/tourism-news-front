@@ -59,7 +59,9 @@ export default function PopularTabs({ latest, popular }: PopularTabsProps) {
                     {article.title}
                   </Link>
                   <p className="mt-1 text-xs text-text-muted">
-                    {article.publishedAt}
+                    {tab === "popular" && article.viewsCount > 0
+                      ? `${article.viewsCount.toLocaleString("ar")} قراءة`
+                      : article.publishedAt}
                   </p>
                 </div>
               </li>

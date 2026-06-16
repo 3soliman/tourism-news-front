@@ -1,13 +1,15 @@
 import { ApiError } from "@/lib/api/client";
 import { isConnectionError } from "@/lib/api/connection";
 import { getClientAdminToken } from "@/lib/auth/token";
+import {
+  API_OFFLINE_MESSAGE,
+} from "@/lib/api/messages";
 import type { UploadedMedia } from "@/types";
-import { resolveMediaUrl } from "@/lib/media-url";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8070/api";
 
-const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+const MAX_UPLOAD_BYTES = 2 * 1024 * 1024;
 
 type UploadEnvelope = {
   success: boolean;
@@ -42,7 +44,7 @@ function messageFromHtmlResponse(text: string): string {
     normalized.includes("unable to create a temporary file")
     || normalized.includes("failed to upload")
   ) {
-    return "تعذر رفع الملف على الخادم. أوقف php artisan serve وشغّل serve-dev.bat من مجلد tourism-news-backend.";
+    return "تعذر رفع الملف على الخادم. يرجى المحاولة لاحقاً.";
   }
 
   if (
@@ -50,7 +52,7 @@ function messageFromHtmlResponse(text: string): string {
     || normalized.includes("post content-length")
     || normalized.includes("too large")
   ) {
-    return "حجم الصورة كبير جداً. الحد الأقصى 10 ميجابايت.";
+    return "حجم الصورة كبير جداً. الحد الأقصى 2 ميجابايت.";
   }
 
   return "استجابة غير صالحة من الخادم أثناء رفع الصورة.";
@@ -61,7 +63,7 @@ function toUploadError(error: unknown): MediaUploadResult {
     return {
       ok: false,
       offline: true,
-      message: "تعذر الاتصال بالـ API. تأكد أن Laravel يعمل على المنفذ 8070.",
+      message: "تعذر الاتصال بالخادم. يرجى المحاولة لاحقاً.",
     };
   }
 
@@ -88,7 +90,7 @@ export async function uploadAdminMedia(
   if (file.size > MAX_UPLOAD_BYTES) {
     return {
       ok: false,
-      message: "حجم الصورة يجب ألا يتجاوز 10 ميجابايت.",
+      message: "حجم الصورة يجب ألا يتجاوز 2 ميجابايت.",
     };
   }
 
@@ -129,7 +131,7 @@ export async function uploadAdminMedia(
 
     return {
       ok: true,
-      data: { ...json.data, url: resolveMediaUrl(json.data.url) },
+      data: json.data,
     };
   } catch (error) {
     return toUploadError(error);

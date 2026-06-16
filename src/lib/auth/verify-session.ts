@@ -1,38 +1,44 @@
+import { cache } from "react";
 import type { AdminUser } from "@/types";
 import { getServerAdminToken } from "@/lib/auth/token";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8070/api";
 
+const SESSION_TIMEOUT_MS = 5_000;
+
 type MeEnvelope = {
   success: boolean;
   data: AdminUser;
 };
 
-export async function verifyAdminSession(): Promise<AdminUser | null> {
-  const token = await getServerAdminToken();
+export const verifyAdminSession = cache(
+  async (): Promise<AdminUser | null> => {
+    const token = await getServerAdminToken();
 
-  if (!token) {
-    return null;
-  }
-
-  try {
-    const response = await fetch(`${API_URL}/me`, {
-      cache: "no-store",
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
+    if (!token) {
       return null;
     }
 
-    const json = (await response.json()) as MeEnvelope;
+    try {
+      const response = await fetch(`${API_URL}/me`, {
+        cache: "no-store",
+        signal: AbortSignal.timeout(SESSION_TIMEOUT_MS),
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    return json.success ? json.data : null;
-  } catch {
-    return null;
-  }
-}
+      if (!response.ok) {
+        return null;
+      }
+
+      const json = (await response.json()) as MeEnvelope;
+
+      return json.success ? json.data : null;
+    } catch {
+      return null;
+    }
+  },
+);

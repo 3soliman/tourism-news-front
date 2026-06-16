@@ -1,5 +1,7 @@
 "use client";
 
+import { API_OFFLINE_MESSAGE } from "@/lib/api/messages";
+
 type SiteErrorProps = {
   error: Error & { digest?: string };
   reset: () => void;
@@ -19,10 +21,9 @@ export default function SiteError({ error, reset }: SiteErrorProps) {
         </h1>
         <p className="mt-4 leading-8 text-text-muted">
           {isApiError
-            ? "لا يمكن عرض المحتوى لأن واجهة الـ API غير متاحة حاليًا. تأكد من تشغيل Laravel على المنفذ 8070."
+            ? API_OFFLINE_MESSAGE
             : "حدث خطأ أثناء تحميل الصفحة. حاول مرة أخرى."}
         </p>
-        <p className="mt-2 text-xs text-text-muted">{error.message}</p>
         <button
           type="button"
           onClick={reset}

@@ -40,19 +40,6 @@ const routePermissionRules: RoutePermissionRule[] = [
   },
 
   {
-    pattern: /^\/admin\/authors\/create$/,
-    permission: AdminPermission.AUTHORS_CREATE,
-  },
-  {
-    pattern: /^\/admin\/authors\/\d+\/edit$/,
-    permission: AdminPermission.AUTHORS_UPDATE,
-  },
-  {
-    pattern: /^\/admin\/authors(?:\/|$)/,
-    permission: AdminPermission.AUTHORS_VIEW,
-  },
-
-  {
     pattern: /^\/admin\/pages\/[^/]+\/edit$/,
     permission: AdminPermission.PAGES_UPDATE,
   },

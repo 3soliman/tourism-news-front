@@ -63,12 +63,6 @@ export const adminNavItems: AdminNavItem[] = [
     permission: AdminPermission.COUNTRIES_VIEW,
   },
   {
-    href: "/admin/authors",
-    label: "الكتّاب",
-    icon: Users,
-    permission: AdminPermission.AUTHORS_VIEW,
-  },
-  {
     href: "/admin/pages",
     label: "صفحات الثقة",
     icon: FileText,
@@ -127,12 +121,6 @@ export const adminNavGroups: AdminNavGroup[] = [
         label: "الدول",
         icon: MapPin,
         permission: AdminPermission.COUNTRIES_VIEW,
-      },
-      {
-        href: "/admin/authors",
-        label: "الكتّاب",
-        icon: Users,
-        permission: AdminPermission.AUTHORS_VIEW,
       },
       {
         href: "/admin/pages",

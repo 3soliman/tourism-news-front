@@ -1,6 +1,5 @@
-import { ApiError } from "@/lib/api/client";
-import { isConnectionError } from "@/lib/api/connection";
 import { adminRequest } from "@/lib/api/admin-request";
+import { toApiMutationError } from "@/lib/api/mutation-error";
 import {
   clearClientAdminToken,
   getClientAdminToken,
@@ -26,28 +25,7 @@ export type AuthResult<T = AdminUser> =
   | { ok: false; offline?: boolean; message: string; errors?: Record<string, string[]> };
 
 function toAuthError(error: unknown): AuthResult {
-  if (isConnectionError(error)) {
-    return {
-      ok: false,
-      offline: true,
-      message: "تعذر الاتصال بالـ API. تأكد أن Laravel يعمل على المنفذ 8070.",
-    };
-  }
-
-  if (error instanceof ApiError) {
-    const body = (error as ApiError & { body?: { message?: string; errors?: Record<string, string[]> } }).body;
-
-    return {
-      ok: false,
-      message: body?.message ?? `فشل الطلب (${error.status})`,
-      errors: body?.errors,
-    };
-  }
-
-  return {
-    ok: false,
-    message: error instanceof Error ? error.message : "حدث خطأ غير متوقع",
-  };
+  return toApiMutationError(error);
 }
 
 export async function loginAdmin(

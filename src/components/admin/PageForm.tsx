@@ -9,6 +9,7 @@ import { admin } from "@/components/admin/admin-ui";
 import { updateAdminPage } from "@/lib/api/admin-pages";
 import { getTrustPagePath } from "@/lib/api/pages";
 import type { AdminPageFormInput } from "@/types";
+import { isSeoSyncedWithSource } from "@/lib/seo-field-sync";
 
 type PageFormProps = {
   slug: string;
@@ -20,12 +21,34 @@ export default function PageForm({ slug, initial }: PageFormProps) {
   const [form, setForm] = useState<AdminPageFormInput>(initial);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [seoTitleSynced, setSeoTitleSynced] = useState(() =>
+    isSeoSyncedWithSource(initial.title, initial.seoTitle),
+  );
+  const [seoDescriptionSynced, setSeoDescriptionSynced] = useState(() =>
+    isSeoSyncedWithSource(initial.description, initial.seoDescription),
+  );
 
   const updateField = <K extends keyof AdminPageFormInput>(
     key: K,
     value: AdminPageFormInput[K],
   ) => {
     setForm((current) => ({ ...current, [key]: value }));
+  };
+
+  const handleTitleChange = (title: string) => {
+    setForm((current) => ({
+      ...current,
+      title,
+      ...(seoTitleSynced ? { seoTitle: title } : {}),
+    }));
+  };
+
+  const handleDescriptionChange = (description: string) => {
+    setForm((current) => ({
+      ...current,
+      description,
+      ...(seoDescriptionSynced ? { seoDescription: description } : {}),
+    }));
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -77,7 +100,7 @@ export default function PageForm({ slug, initial }: PageFormProps) {
               type="text"
               required
               value={form.title}
-              onChange={(event) => updateField("title", event.target.value)}
+              onChange={(event) => handleTitleChange(event.target.value)}
               className={admin.input}
             />
           </label>
@@ -86,7 +109,7 @@ export default function PageForm({ slug, initial }: PageFormProps) {
             <span className={admin.label}>الوصف المختصر</span>
             <textarea
               value={form.description}
-              onChange={(event) => updateField("description", event.target.value)}
+              onChange={(event) => handleDescriptionChange(event.target.value)}
               className={admin.textarea}
             />
           </label>
@@ -124,7 +147,10 @@ export default function PageForm({ slug, initial }: PageFormProps) {
             <input
               type="text"
               value={form.seoTitle}
-              onChange={(event) => updateField("seoTitle", event.target.value)}
+              onChange={(event) => {
+                setSeoTitleSynced(false);
+                updateField("seoTitle", event.target.value);
+              }}
               className={admin.input}
             />
           </label>
@@ -133,7 +159,10 @@ export default function PageForm({ slug, initial }: PageFormProps) {
             <span className={admin.label}>وصف SEO</span>
             <textarea
               value={form.seoDescription}
-              onChange={(event) => updateField("seoDescription", event.target.value)}
+              onChange={(event) => {
+                setSeoDescriptionSynced(false);
+                updateField("seoDescription", event.target.value);
+              }}
               className={admin.textarea}
             />
           </label>

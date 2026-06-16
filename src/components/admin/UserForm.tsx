@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import DashboardSection from "@/components/dashboard/DashboardSection";
 import AdminFormHeader from "@/components/admin/AdminFormHeader";
+import MediaUploadField from "@/components/admin/MediaUploadField";
 import { admin } from "@/components/admin/admin-ui";
 import {
   createAdminUser,
@@ -11,6 +12,7 @@ import {
   type ManagedUserFormInput,
 } from "@/lib/api/admin-users";
 import type { AdminRoleRecord } from "@/lib/api/admin-roles";
+import { toStoredMediaPath } from "@/lib/media-url";
 
 type UserFormProps = {
   mode: "create" | "edit";
@@ -56,8 +58,13 @@ export default function UserForm({
 
     const payload: Partial<ManagedUserFormInput> = {
       name: form.name.trim(),
+      public_name: form.public_name.trim(),
       email: form.email.trim(),
       status: form.status,
+      slug: form.slug.trim() || undefined,
+      author_title: form.author_title.trim(),
+      bio: form.bio.trim(),
+      image: toStoredMediaPath(form.image.trim()),
       role_ids: form.role_ids,
     };
 
@@ -70,8 +77,13 @@ export default function UserForm({
         ? await createAdminUser({
             ...form,
             name: form.name.trim(),
+            public_name: form.public_name.trim(),
             email: form.email.trim(),
             password: form.password,
+            slug: form.slug.trim(),
+            author_title: form.author_title.trim(),
+            bio: form.bio.trim(),
+            image: toStoredMediaPath(form.image.trim()),
           })
         : await updateAdminUser(userId!, payload);
 
@@ -101,7 +113,7 @@ export default function UserForm({
       <DashboardSection title="بيانات الحساب">
         <div className={admin.formGrid2}>
           <label>
-            <span className={admin.label}>الاسم</span>
+            <span className={admin.label}>اسم الحساب</span>
             <input
               required
               value={form.name}
@@ -109,6 +121,7 @@ export default function UserForm({
                 setForm((current) => ({ ...current, name: event.target.value }))
               }
               className={admin.input}
+              placeholder="للاستخدام الداخلي في لوحة التحكم"
             />
           </label>
 
@@ -162,6 +175,82 @@ export default function UserForm({
               <option value="inactive">معطّل</option>
             </select>
           </label>
+        </div>
+      </DashboardSection>
+
+      <DashboardSection title="الملف العام للكاتب">
+        <p className="mb-3 text-xs font-medium text-slate-500">
+          كل مستخدم هو كاتب. هذه البيانات تظهر في صفحة الكاتب وفي توقيع المقالات.
+        </p>
+        <div className={admin.formGrid2}>
+          <label>
+            <span className={admin.label}>الاسم الظاهر للجمهور</span>
+            <input
+              required
+              value={form.public_name}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  public_name: event.target.value,
+                }))
+              }
+              className={admin.input}
+              placeholder="يظهر في المقالات وصفحة الكاتب"
+            />
+          </label>
+
+          <label>
+            <span className={admin.label}>المعرّف (slug)</span>
+            <input
+              dir="ltr"
+              value={form.slug}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  slug: event.target.value.toLowerCase().replace(/\s+/g, "-"),
+                }))
+              }
+              className={admin.input}
+              placeholder="يُولَّد تلقائياً إن تُرك فارغاً"
+            />
+          </label>
+
+          <label>
+            <span className={admin.label}>المسمى التحريري</span>
+            <input
+              value={form.author_title}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  author_title: event.target.value,
+                }))
+              }
+              className={admin.input}
+              placeholder="مثال: محرر الوجهات"
+            />
+          </label>
+        </div>
+
+        <label className="mt-3 block">
+          <span className={admin.label}>نبذة</span>
+          <textarea
+            rows={4}
+            value={form.bio}
+            onChange={(event) =>
+              setForm((current) => ({ ...current, bio: event.target.value }))
+            }
+            className={admin.textarea}
+          />
+        </label>
+
+        <div className="mt-3">
+          <MediaUploadField
+            label="الصورة"
+            value={form.image}
+            onChange={(value) =>
+              setForm((current) => ({ ...current, image: value }))
+            }
+          />
         </div>
       </DashboardSection>
 

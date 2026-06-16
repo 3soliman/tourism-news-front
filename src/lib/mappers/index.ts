@@ -1,3 +1,4 @@
+import { resolveMediaUrl } from "@/lib/media-url";
 import {
   ApiAuthor,
   ApiCategory,
@@ -12,7 +13,6 @@ import {
   NewsArticle,
   SiteConfig,
 } from "@/types";
-import { resolveMediaUrl } from "@/lib/media-url";
 
 function formatPublishedAt(iso?: string): string {
   if (!iso) return "";
@@ -50,6 +50,7 @@ export function mapNewsArticle(raw: ApiNewsArticle): NewsArticle {
     seoDescription: raw.seo?.description ?? raw.excerpt,
     keywords: raw.seo?.keywords ?? [],
     content: raw.content_paragraphs ?? [],
+    viewsCount: raw.views_count ?? 0,
   };
 }
 
@@ -142,6 +143,8 @@ export function mapSiteSettings(raw: ApiSiteSettings): SiteConfig {
     backgroundImages:
       backgroundImages.length > 0
         ? backgroundImages
+            .map((url) => resolveMediaUrl(String(url)))
+            .filter(Boolean)
         : [
             "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1920&auto=format&fit=crop",
             "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920&auto=format&fit=crop",

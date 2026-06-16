@@ -56,13 +56,6 @@ const quickActions = [
     accent: "bg-amber-600",
     permission: AdminPermission.COUNTRIES_CREATE,
   },
-  {
-    href: "/admin/authors/create",
-    label: "كاتب",
-    icon: Users,
-    accent: "bg-emerald-600",
-    permission: AdminPermission.AUTHORS_CREATE,
-  },
 ];
 
 type AdminDashboardProps = {
@@ -407,7 +400,7 @@ export default function AdminDashboard({
             { href: "/admin/analytics", label: "مراقبة القراءة", icon: Eye },
             { href: "/admin/categories", label: "التصنيفات", icon: LayoutGrid },
             { href: "/admin/countries", label: "الدول", icon: MapPin },
-            { href: "/admin/authors", label: "الكتّاب", icon: Users },
+            { href: "/admin/users", label: "المستخدمون", icon: Users },
             { href: "/admin/pages", label: "صفحات الثقة", icon: FileText },
             { href: "/admin/seo", label: "السيو", icon: BarChart3 },
             { href: "/admin/settings", label: "الإعدادات", icon: Settings },

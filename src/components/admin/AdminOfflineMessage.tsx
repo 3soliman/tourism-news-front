@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { API_LOAD_FAILED_MESSAGE, API_OFFLINE_MESSAGE } from "@/lib/api/messages";
 import { RefreshCw, ServerOff } from "lucide-react";
 
 type AdminOfflineMessageProps = {
@@ -9,8 +10,8 @@ type AdminOfflineMessageProps = {
 };
 
 export default function AdminOfflineMessage({
-  title = "تعذر الاتصال بالـ API",
-  description = "تأكد أن سيرفر Laravel يعمل على المنفذ 8070 ثم أعد المحاولة.",
+  title = API_OFFLINE_MESSAGE,
+  description = API_LOAD_FAILED_MESSAGE,
 }: AdminOfflineMessageProps) {
   return (
     <section className="rounded-xl border border-amber-200 bg-white p-8 text-center shadow-sm sm:p-12">

@@ -7,6 +7,7 @@ import {
 } from "@/lib/api/admin";
 import type { AdminNewsFormInput } from "@/types";
 import { verifyAdminSession } from "@/lib/auth/verify-session";
+import { toDatetimeLocalValue } from "@/lib/datetime-local";
 
 export const dynamic = "force-dynamic";
 
@@ -31,7 +32,7 @@ function buildEmptyForm(
     image: "",
     destination: "",
     status: "draft",
-    published_at: "",
+    published_at: toDatetimeLocalValue(),
     reading_time: "",
     seo_title: "",
     seo_description: "",
@@ -69,7 +70,8 @@ export default async function AdminNewsCreatePage() {
     );
   }
 
-  const currentAuthorName = user?.author?.name ?? user?.name ?? "المستخدم الحالي";
+  const currentAuthorName =
+    user?.public_name?.trim() || user?.display_name || user?.name || "المستخدم الحالي";
 
   return (
     <NewsForm

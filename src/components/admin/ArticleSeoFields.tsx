@@ -22,6 +22,8 @@ type ArticleSeoFieldsProps = {
   form: AdminNewsFormInput;
   keywordsText: string;
   onKeywordsChange: (value: string) => void;
+  onSeoTitleChange: (value: string) => void;
+  onSeoDescriptionChange: (value: string) => void;
   onChange: <K extends keyof AdminNewsFormInput>(
     key: K,
     value: AdminNewsFormInput[K],
@@ -32,6 +34,8 @@ export default function ArticleSeoFields({
   form,
   keywordsText,
   onKeywordsChange,
+  onSeoTitleChange,
+  onSeoDescriptionChange,
   onChange,
 }: ArticleSeoFieldsProps) {
   return (
@@ -41,7 +45,7 @@ export default function ArticleSeoFields({
           <span className={admin.label}>SEO Title</span>
           <input
             value={form.seo_title}
-            onChange={(event) => onChange("seo_title", event.target.value)}
+            onChange={(event) => onSeoTitleChange(event.target.value)}
             className={admin.input}
             placeholder="عنوان يظهر في نتائج البحث"
           />
@@ -51,7 +55,7 @@ export default function ArticleSeoFields({
           <span className={admin.label}>SEO Description</span>
           <textarea
             value={form.seo_description}
-            onChange={(event) => onChange("seo_description", event.target.value)}
+            onChange={(event) => onSeoDescriptionChange(event.target.value)}
             className={admin.textarea}
             rows={2}
             placeholder="وصف الميتا"

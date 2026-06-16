@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { ImagePlus, Loader2 } from "lucide-react";
 import { admin } from "@/components/admin/admin-ui";
 import { uploadAdminMedia } from "@/lib/api/admin-media";
-import { resolveMediaUrl } from "@/lib/media-url";
+import { resolveMediaUrl, toStoredMediaPath } from "@/lib/media-url";
 
 type MediaUploadFieldProps = {
   label: string;
@@ -13,6 +13,7 @@ type MediaUploadFieldProps = {
   required?: boolean;
   placeholder?: string;
   previewClassName?: string;
+  showUrlInput?: boolean;
 };
 
 export default function MediaUploadField({
@@ -20,8 +21,9 @@ export default function MediaUploadField({
   value,
   onChange,
   required = false,
-  placeholder = "https://...",
+  placeholder = "/storage/... أو https://...",
   previewClassName = "h-16 w-24 rounded object-cover",
+  showUrlInput = true,
 }: MediaUploadFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -44,24 +46,26 @@ export default function MediaUploadField({
       return;
     }
 
-    onChange(resolveMediaUrl(result.data.url));
+    onChange(toStoredMediaPath(result.data.url));
   };
 
   const previewUrl = resolveMediaUrl(value);
 
   return (
     <div className="space-y-1.5">
-      <span className={admin.label}>{label}</span>
+      {label ? <span className={admin.label}>{label}</span> : null}
 
-      <input
-        type="url"
-        required={required}
-        dir="ltr"
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        placeholder={placeholder}
-        className={admin.input}
-      />
+      {showUrlInput ? (
+        <input
+          type="text"
+          required={required}
+          dir="ltr"
+          value={value}
+          onChange={(event) => onChange(toStoredMediaPath(event.target.value))}
+          placeholder={placeholder}
+          className={admin.input}
+        />
+      ) : null}
 
       <div className="flex flex-wrap items-center gap-2">
         <input
@@ -87,7 +91,7 @@ export default function MediaUploadField({
         </button>
 
         <span className="text-[10px] font-medium text-slate-400">
-          JPG, PNG, WEBP — حتى 10MB
+          JPG, PNG, WEBP — حتى 2MB
         </span>
       </div>
 

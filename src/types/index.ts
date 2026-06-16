@@ -20,6 +20,7 @@ export type NewsArticle = {
   seoDescription: string;
   keywords: string[];
   content: string[];
+  viewsCount: number;
 };
 
 export type Category = {
@@ -177,6 +178,7 @@ export type ApiNewsArticle = {
   };
   published_at_iso?: string;
   updated_at_iso?: string;
+  views_count?: number;
   related?: ApiNewsArticle[];
 };
 
@@ -227,8 +229,12 @@ export type AdminAuthorFormInput = {
 export type AdminUser = {
   id: number;
   name: string;
+  public_name?: string | null;
+  display_name?: string;
   email: string;
   status: string;
+  slug?: string | null;
+  author_title?: string | null;
   roles: {
     id: number;
     name: string;
@@ -236,11 +242,6 @@ export type AdminUser = {
   }[];
   permissions: string[];
   is_super_admin: boolean;
-  author?: {
-    id: number;
-    name: string;
-    slug: string;
-  } | null;
 };
 
 export type ApiCountry = {

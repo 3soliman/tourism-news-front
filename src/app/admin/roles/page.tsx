@@ -22,7 +22,7 @@ export default async function AdminRolesPage() {
       <div className={admin.page}>
         <AdminListHeader
           title="الأدوار والصلاحيات"
-          description="اختر دورًا وعدّل صلاحياته من جدول مضغوط."
+          description="أنشئ دورًا جديدًا أو عدّل صلاحيات الأدوار الحالية."
         />
         <AdminDataState
           result={
@@ -39,7 +39,7 @@ export default async function AdminRolesPage() {
     <div className={admin.page}>
       <AdminListHeader
         title="الأدوار والصلاحيات"
-        description="اختر دورًا وعدّل صلاحياته من جدول مضغوط."
+        description="أنشئ دورًا جديدًا أو عدّل صلاحيات الأدوار الحالية."
       />
 
       <RolePermissionsPanel

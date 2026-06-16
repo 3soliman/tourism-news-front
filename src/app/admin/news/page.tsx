@@ -160,17 +160,18 @@ export default async function AdminNewsPage({ searchParams }: AdminNewsPageProps
 
             <section className={admin.tableWrap}>
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[980px] table-fixed border-collapse text-xs">
+                <table className="w-full min-w-[1040px] table-fixed border-collapse text-xs">
                   <thead>
                     <tr className="border-b border-slate-200 bg-slate-50 text-slate-500">
-                      <th className={`${admin.th} w-[28%]`}>العنوان</th>
-                      <th className={`${admin.th} w-[12%]`}>التصنيف</th>
-                      <th className={`${admin.th} w-[10%]`}>الدولة</th>
-                      <th className={`${admin.th} w-[8%]`}>القراءات</th>
-                      <th className={`${admin.th} w-[12%]`}>آخر قراءة</th>
-                      <th className={`${admin.th} w-[8%]`}>الحالة</th>
-                      <th className={`${admin.th} w-[12%]`}>تاريخ النشر</th>
-                      <th className={`${admin.th} w-[10%]`}>الإجراءات</th>
+                      <th className={`${admin.th} w-[26%]`}>العنوان</th>
+                      <th className={`${admin.th} w-[11%]`}>التصنيف</th>
+                      <th className={`${admin.th} w-[9%]`}>الكاتب</th>
+                      <th className={`${admin.th} w-[9%]`}>الدولة</th>
+                      <th className={`${admin.th} w-[7%]`}>القراءات</th>
+                      <th className={`${admin.th} w-[11%]`}>آخر قراءة</th>
+                      <th className={`${admin.th} w-[7%]`}>الحالة</th>
+                      <th className={`${admin.th} w-[11%]`}>تاريخ النشر</th>
+                      <th className={`${admin.th} w-[9%]`}>الإجراءات</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -196,6 +197,14 @@ export default async function AdminNewsPage({ searchParams }: AdminNewsPageProps
                         <td className={`${admin.td} truncate`}>
                           <span className="font-semibold text-sky-600">
                             {article.category || "—"}
+                          </span>
+                        </td>
+                        <td className={admin.td}>
+                          <span
+                            className="block truncate font-semibold text-slate-600"
+                            title={article.authorName || undefined}
+                          >
+                            {article.authorName || "—"}
                           </span>
                         </td>
                         <td className={admin.td}>

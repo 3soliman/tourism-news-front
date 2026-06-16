@@ -6,19 +6,24 @@ import { fetchCategories } from "@/lib/api/categories";
 import { fetchCountries } from "@/lib/api/countries";
 import { isApiOnline } from "@/lib/api/connection";
 import { fetchNews } from "@/lib/api/news";
+import { resolveMediaUrl } from "@/lib/media-url";
+import { getSiteConfig } from "@/lib/site";
 
 type PublicLayoutProps = {
   children: React.ReactNode;
 };
 
 export default async function PublicLayout({ children }: PublicLayoutProps) {
-  const [categories, countries, breakingNews] = await Promise.all([
+  const [categories, countries, breakingNews, siteConfig] = await Promise.all([
     fetchCategories(),
     fetchCountries(),
     fetchNews({ per_page: 15 }),
+    getSiteConfig(),
   ]);
 
-  const headerImages = breakingNews.slice(0, 6).map((article) => article.image);
+  const headerImages = siteConfig.backgroundImages
+    .map((image) => resolveMediaUrl(image))
+    .filter(Boolean);
 
   return (
     <SiteFrame>

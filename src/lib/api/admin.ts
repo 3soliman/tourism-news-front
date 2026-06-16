@@ -1,9 +1,4 @@
 import {
-  fetchAdminAuthorsList,
-  fetchAdminAuthorById,
-  type AdminAuthorRecord,
-} from "@/lib/api/admin-authors";
-import {
   fetchAdminCategoriesList,
   fetchAdminCategoryById,
   type AdminCategoryRecord,
@@ -27,7 +22,7 @@ import {
   fetchAdminUserById,
   type ManagedUserRecord,
 } from "@/lib/api/admin-users";
-import type { TrustPage } from "@/types";
+import type { Author, TrustPage } from "@/types";
 import { fetchAdminNewsList, fetchAdminNewsById, type AdminNewsListQuery } from "@/lib/api/admin-news";
 import { isConnectionError } from "@/lib/api/connection";
 import type { PaginationMeta } from "@/types";
@@ -76,9 +71,21 @@ export async function loadAdminNewsById(
   }
 }
 
-export async function loadAdminAuthors(): Promise<AdminLoadResult<AdminAuthorRecord[]>> {
+export async function loadAdminAuthors(): Promise<AdminLoadResult<Author[]>> {
   try {
-    const authors = await fetchAdminAuthorsList();
+    const users = await fetchAdminUsersList();
+    const authors = users
+      .filter((user) => user.slug)
+      .map((user) => ({
+        id: user.id,
+        slug: user.slug,
+        name: user.publicName || user.name,
+        role: user.authorTitle,
+        image: user.image,
+        bio: user.bio,
+        isActive: user.status === "active",
+      }));
+
     return { status: "success", data: authors };
   } catch (error) {
     return toOfflineOrError(error);
@@ -87,15 +94,26 @@ export async function loadAdminAuthors(): Promise<AdminLoadResult<AdminAuthorRec
 
 export async function loadAdminAuthorById(
   id: number,
-): Promise<AdminLoadResult<AdminAuthorRecord>> {
+): Promise<AdminLoadResult<Author>> {
   try {
-    const author = await fetchAdminAuthorById(id);
+    const user = await fetchAdminUserById(id);
 
-    if (!author) {
+    if (!user || !user.slug) {
       return { status: "error", message: "not-found" };
     }
 
-    return { status: "success", data: author };
+    return {
+      status: "success",
+      data: {
+        id: user.id,
+        slug: user.slug,
+        name: user.publicName || user.name,
+        role: user.authorTitle,
+        image: user.image,
+        bio: user.bio,
+        isActive: user.status === "active",
+      },
+    };
   } catch (error) {
     return toOfflineOrError(error);
   }

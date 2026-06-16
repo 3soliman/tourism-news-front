@@ -24,7 +24,7 @@ export default async function AdminRootLayout({
 
   if (pathname === "/admin/login") {
     return (
-      <div className="min-h-screen bg-[#f7faff] text-[#17243a]">
+      <div className="min-h-screen bg-[#f7faff] text-[#17243a] antialiased">
         {children}
       </div>
     );
@@ -33,7 +33,7 @@ export default async function AdminRootLayout({
   const user = await verifyAdminSession();
 
   if (!user) {
-    redirect("/admin/login");
+    redirect("/admin/login?stale=1");
   }
 
   if (!canAccessAdmin(user)) {

@@ -1,13 +1,15 @@
 import Sidebar from "@/components/sidebar/Sidebar";
-import { fetchNews, getPopularNews } from "@/lib/api/news";
+import { fetchNews, fetchPopularNews } from "@/lib/api/news";
 
 type PageWithSidebarProps = {
   children: React.ReactNode;
 };
 
 export default async function PageWithSidebar({ children }: PageWithSidebarProps) {
-  const latest = await fetchNews({ per_page: 20 });
-  const popular = getPopularNews(latest, 5);
+  const [latest, popular] = await Promise.all([
+    fetchNews({ per_page: 20 }),
+    fetchPopularNews(5),
+  ]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-5 lg:py-6">

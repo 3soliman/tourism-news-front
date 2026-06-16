@@ -10,6 +10,7 @@ import {
   createAdminCountry,
   updateAdminCountry,
 } from "@/lib/api/admin-countries";
+import { toStoredMediaPath } from "@/lib/media-url";
 import type { AdminCountryFormInput } from "@/types";
 
 type CountryFormProps = {
@@ -44,7 +45,7 @@ export default function CountryForm({
       ...form,
       code: form.code.trim(),
       flag: form.flag.trim(),
-      image: form.image.trim(),
+      image: toStoredMediaPath(form.image.trim()),
       region: form.region.trim(),
     };
 

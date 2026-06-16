@@ -2,6 +2,7 @@
 
 import DOMPurify from "isomorphic-dompurify";
 import { paragraphsToDisplayHtml, parseEditorContent } from "@/lib/article-content";
+import { resolveMediaUrlsInHtml } from "@/lib/media-url";
 import "@/styles/article-builder.css";
 
 type ArticleBodyProps = {
@@ -42,7 +43,7 @@ function sanitizeCss(css: string) {
 }
 
 export default function ArticleBody({ paragraphs }: ArticleBodyProps) {
-  const raw = paragraphsToDisplayHtml(paragraphs);
+  const raw = resolveMediaUrlsInHtml(paragraphsToDisplayHtml(paragraphs));
   const { html, css } = parseEditorContent(raw);
   const safeHtml = DOMPurify.sanitize(html, SANITIZE_OPTIONS);
   const safeCss = sanitizeCss(css);

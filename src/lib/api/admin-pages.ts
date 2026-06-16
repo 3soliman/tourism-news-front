@@ -1,6 +1,6 @@
 import { ApiError } from "@/lib/api/client";
-import { isConnectionError } from "@/lib/api/connection";
 import { adminRequest, type ApiEnvelope } from "@/lib/api/admin-request";
+import { toApiMutationError } from "@/lib/api/mutation-error";
 import type { AdminPageFormInput, ApiPage, TrustPage } from "@/types";
 import { mapTrustPage } from "@/lib/api/pages";
 
@@ -20,28 +20,7 @@ function toPayload(input: AdminPageFormInput) {
 }
 
 function toMutationError(error: unknown): AdminMutationResult {
-  if (isConnectionError(error)) {
-    return {
-      ok: false,
-      offline: true,
-      message: "تعذر الاتصال بالـ API. تأكد أن Laravel يعمل على المنفذ 8070.",
-    };
-  }
-
-  if (error instanceof ApiError) {
-    const body = (error as ApiError & { body?: ApiEnvelope<unknown> }).body;
-
-    return {
-      ok: false,
-      message: body?.message ?? `فشل الطلب (${error.status})`,
-      errors: body?.errors,
-    };
-  }
-
-  return {
-    ok: false,
-    message: error instanceof Error ? error.message : "حدث خطأ غير متوقع",
-  };
+  return toApiMutationError(error);
 }
 
 export function toAdminPageFormInput(page: TrustPage): AdminPageFormInput {

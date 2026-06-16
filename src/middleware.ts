@@ -11,13 +11,15 @@ export function middleware(request: NextRequest) {
   requestHeaders.set("x-pathname", pathname);
 
   if (pathname === LOGIN_PATH) {
-    if (token) {
-      return NextResponse.redirect(new URL("/admin", request.url));
-    }
-
-    return NextResponse.next({
+    const response = NextResponse.next({
       request: { headers: requestHeaders },
     });
+
+    if (request.nextUrl.searchParams.get("stale") === "1") {
+      response.cookies.delete(ADMIN_TOKEN_COOKIE);
+    }
+
+    return response;
   }
 
   if (!token) {

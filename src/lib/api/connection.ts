@@ -18,12 +18,12 @@ export function isApiOnline() {
 }
 
 export function isConnectionError(error: unknown): boolean {
-  if (error instanceof TypeError) {
-    return true;
+  if (error instanceof ApiError) {
+    return false;
   }
 
-  if (error instanceof ApiError) {
-    return error.status >= 500;
+  if (error instanceof TypeError) {
+    return true;
   }
 
   if (error instanceof Error) {
@@ -34,7 +34,8 @@ export function isConnectionError(error: unknown): boolean {
     return (
       error.message.includes("fetch failed") ||
       error.message.includes("ECONNREFUSED") ||
-      error.message.includes("timed out")
+      error.message.includes("timed out") ||
+      error.message.includes("Failed to fetch")
     );
   }
 

@@ -1,6 +1,6 @@
 import { ApiError } from "@/lib/api/client";
-import { isConnectionError } from "@/lib/api/connection";
 import { adminRequest, type ApiEnvelope } from "@/lib/api/admin-request";
+import { toApiMutationError } from "@/lib/api/mutation-error";
 
 export type ApiPermission = {
   id: number;
@@ -31,6 +31,13 @@ export type RoleMutationResult =
   | { ok: true; data: AdminRoleRecord }
   | { ok: false; offline?: boolean; message: string; errors?: Record<string, string[]> };
 
+export type AdminRoleCreatePayload = {
+  name: string;
+  slug: string;
+  description?: string | null;
+  permission_ids: number[];
+};
+
 function mapRole(raw: ApiRole): AdminRoleRecord {
   return {
     id: raw.id,
@@ -44,28 +51,7 @@ function mapRole(raw: ApiRole): AdminRoleRecord {
 }
 
 function toMutationError(error: unknown): RoleMutationResult {
-  if (isConnectionError(error)) {
-    return {
-      ok: false,
-      offline: true,
-      message: "تعذر الاتصال بالـ API. تأكد أن Laravel يعمل على المنفذ 8070.",
-    };
-  }
-
-  if (error instanceof ApiError) {
-    const body = (error as ApiError & { body?: ApiEnvelope<unknown> }).body;
-
-    return {
-      ok: false,
-      message: body?.message ?? `فشل الطلب (${error.status})`,
-      errors: body?.errors,
-    };
-  }
-
-  return {
-    ok: false,
-    message: error instanceof Error ? error.message : "حدث خطأ غير متوقع",
-  };
+  return toApiMutationError(error);
 }
 
 export async function fetchAdminRolesList(): Promise<AdminRoleRecord[]> {
@@ -76,6 +62,39 @@ export async function fetchAdminRolesList(): Promise<AdminRoleRecord[]> {
 export async function fetchAdminPermissionsList(): Promise<ApiPermission[]> {
   const json = await adminRequest<ApiPermission[]>("/admin/roles/permissions/list");
   return json.data;
+}
+
+export async function createAdminRole(
+  payload: AdminRoleCreatePayload,
+): Promise<RoleMutationResult> {
+  try {
+    const json = await adminRequest<ApiRole>("/admin/roles", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+
+    return { ok: true, data: mapRole(json.data) };
+  } catch (error) {
+    return toMutationError(error);
+  }
+}
+
+export async function deleteAdminRole(
+  roleId: number,
+): Promise<{ ok: true } | { ok: false; message: string }> {
+  try {
+    await adminRequest<null>(`/admin/roles/${roleId}`, {
+      method: "DELETE",
+    });
+
+    return { ok: true };
+  } catch (error) {
+    const result = toMutationError(error);
+    if (result.ok) {
+      return { ok: false, message: "حدث خطأ غير متوقع" };
+    }
+    return { ok: false, message: result.message };
+  }
 }
 
 export async function updateAdminRolePermissions(
