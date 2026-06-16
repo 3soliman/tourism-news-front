@@ -151,6 +151,8 @@ export type AdminNewsPayload = Omit<AdminNewsFormInput, "published_at"> & {
   published_at: string | null;
 };
 
+export type AdminNewsCreatePayload = Omit<AdminNewsPayload, "author_id">;
+
 export type ApiNewsArticle = {
   id: number;
   slug: string;
@@ -234,6 +236,11 @@ export type AdminUser = {
   }[];
   permissions: string[];
   is_super_admin: boolean;
+  author?: {
+    id: number;
+    name: string;
+    slug: string;
+  } | null;
 };
 
 export type ApiCountry = {

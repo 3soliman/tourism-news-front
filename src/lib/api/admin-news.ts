@@ -5,6 +5,7 @@ import {
   mapNewsArticle,
 } from "@/lib/mappers";
 import type {
+  AdminNewsCreatePayload,
   AdminNewsFormInput,
   AdminNewsPayload,
   ApiAdminNewsArticle,
@@ -147,7 +148,7 @@ function toMutationError(error: unknown): AdminMutationResult {
 }
 
 export async function createAdminNews(
-  payload: AdminNewsPayload,
+  payload: AdminNewsCreatePayload,
 ): Promise<AdminMutationResult> {
   try {
     const json = await adminRequest<ApiAdminNewsArticle>("/admin/news", {
@@ -218,12 +219,15 @@ export function toAdminNewsFormInput(article: AdminNewsRecord): AdminNewsFormInp
   };
 }
 
-export function buildNewsPayload(form: AdminNewsFormInput): AdminNewsPayload {
+export function buildNewsPayload(
+  form: AdminNewsFormInput,
+  options?: { forCreate?: boolean },
+): AdminNewsPayload | AdminNewsCreatePayload {
   const paragraphs = form.content_paragraphs.length
     ? form.content_paragraphs
     : [""];
 
-  return {
+  const payload: AdminNewsPayload = {
     ...form,
     image: resolveMediaUrl(form.image),
     og_image: resolveMediaUrl(form.og_image),
@@ -234,4 +238,11 @@ export function buildNewsPayload(form: AdminNewsFormInput): AdminNewsPayload {
       : null,
     keywords: form.keywords.filter(Boolean),
   };
+
+  if (options?.forCreate) {
+    const { author_id: _authorId, ...createPayload } = payload;
+    return createPayload;
+  }
+
+  return payload;
 }

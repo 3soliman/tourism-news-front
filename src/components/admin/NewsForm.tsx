@@ -5,7 +5,8 @@ import { useState } from "react";
 import DashboardSection from "@/components/dashboard/DashboardSection";
 import ArticleSeoFields from "@/components/admin/ArticleSeoFields";
 import AdminFormHeader from "@/components/admin/AdminFormHeader";
-import AdminRichTextEditor from "@/components/admin/AdminRichTextEditor";
+import AdminContentEditor from "@/components/admin/AdminContentEditor";
+import "@/styles/admin-tinymce.css";
 import MediaUploadField from "@/components/admin/MediaUploadField";
 import { admin } from "@/components/admin/admin-ui";
 import {
@@ -17,7 +18,7 @@ import {
   createAdminNews,
   updateAdminNews,
 } from "@/lib/api/admin-news";
-import type { AdminNewsFormInput } from "@/types";
+import type { AdminNewsFormInput, AdminNewsPayload } from "@/types";
 import type { Author, Category, Country } from "@/types";
 
 const statusOptions = [
@@ -35,6 +36,7 @@ type NewsFormProps = {
   categories: Category[];
   countries: Country[];
   authors: Author[];
+  currentAuthorName?: string;
 };
 
 export default function NewsForm({
@@ -44,6 +46,7 @@ export default function NewsForm({
   categories,
   countries,
   authors,
+  currentAuthorName,
 }: NewsFormProps) {
   const router = useRouter();
   const [form, setForm] = useState<AdminNewsFormInput>(initial);
@@ -73,19 +76,32 @@ export default function NewsForm({
       return;
     }
 
-    const payload = buildNewsPayload({
-      ...form,
-      content_paragraphs: contentParagraphs,
-      keywords: keywordsText
-        .split(/[،,]/)
-        .map((keyword) => keyword.trim())
-        .filter(Boolean),
-    });
+    const payload =
+      mode === "create"
+        ? buildNewsPayload(
+            {
+              ...form,
+              content_paragraphs: contentParagraphs,
+              keywords: keywordsText
+                .split(/[،,]/)
+                .map((keyword) => keyword.trim())
+                .filter(Boolean),
+            },
+            { forCreate: true },
+          )
+        : buildNewsPayload({
+            ...form,
+            content_paragraphs: contentParagraphs,
+            keywords: keywordsText
+              .split(/[،,]/)
+              .map((keyword) => keyword.trim())
+              .filter(Boolean),
+          });
 
     const result =
       mode === "create"
         ? await createAdminNews(payload)
-        : await updateAdminNews(articleId!, payload);
+        : await updateAdminNews(articleId!, payload as AdminNewsPayload);
 
     setSubmitting(false);
 
@@ -134,7 +150,7 @@ export default function NewsForm({
               />
             </label>
 
-            <label>
+            <label className="xl:col-span-2">
               <span className={admin.label}>ملخص الخبر</span>
               <textarea
                 required
@@ -145,12 +161,13 @@ export default function NewsForm({
               />
             </label>
 
-            <AdminRichTextEditor
-              label="محتوى الخبر"
-              value={contentHtml}
-              onChange={setContentHtml}
-              placeholder="اكتب محتوى الخبر — عناوين، فقرات، روابط، ألوان، ونوع الخط..."
-            />
+            <div className="xl:col-span-2">
+              <AdminContentEditor
+                label="محتوى الخبر"
+                value={contentHtml}
+                onChange={setContentHtml}
+              />
+            </div>
 
             <MediaUploadField
               label="صورة الخبر"
@@ -183,24 +200,36 @@ export default function NewsForm({
               </select>
             </label>
 
-            <label>
-              <span className={admin.label}>الكاتب</span>
-              <select
-                required
-                value={form.author_id || ""}
-                onChange={(event) => updateField("author_id", Number(event.target.value))}
-                className={admin.select}
-              >
-                <option value="" disabled>
-                  اختر الكاتب
-                </option>
-                {authors.map((author) => (
-                  <option key={author.slug} value={author.id}>
-                    {author.name}
+            {mode === "create" ? (
+              <div>
+                <span className={admin.label}>الكاتب</span>
+                <p className="rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-bold text-slate-700">
+                  {currentAuthorName ?? "المستخدم الحالي"}
+                </p>
+                <p className="mt-1 text-[11px] text-slate-500">
+                  يُسجَّل الخبر تلقائياً باسمك ككاتب.
+                </p>
+              </div>
+            ) : (
+              <label>
+                <span className={admin.label}>الكاتب</span>
+                <select
+                  required
+                  value={form.author_id || ""}
+                  onChange={(event) => updateField("author_id", Number(event.target.value))}
+                  className={admin.select}
+                >
+                  <option value="" disabled>
+                    اختر الكاتب
                   </option>
-                ))}
-              </select>
-            </label>
+                  {authors.map((author) => (
+                    <option key={author.slug} value={author.id}>
+                      {author.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
 
             <label>
               <span className={admin.label}>الدولة</span>

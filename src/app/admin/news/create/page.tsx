@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import AdminOfflineMessage from "@/components/admin/AdminOfflineMessage";
 import NewsForm from "@/components/admin/NewsForm";
 import {
-  loadAdminAuthors,
   loadAdminCategories,
   loadAdminCountries,
 } from "@/lib/api/admin";
 import type { AdminNewsFormInput } from "@/types";
+import { verifyAdminSession } from "@/lib/auth/verify-session";
 
 export const dynamic = "force-dynamic";
 
@@ -16,11 +16,9 @@ export const metadata: Metadata = {
 
 function buildEmptyForm(
   categories: Awaited<ReturnType<typeof loadAdminCategories>>,
-  authors: Awaited<ReturnType<typeof loadAdminAuthors>>,
 ): AdminNewsFormInput {
   const categoryId =
     categories.status === "success" ? (categories.data[0]?.id ?? 0) : 0;
-  const authorId = authors.status === "success" ? (authors.data[0]?.id ?? 0) : 0;
 
   return {
     title: "",
@@ -28,7 +26,7 @@ function buildEmptyForm(
     excerpt: "",
     content_paragraphs: [],
     category_id: categoryId,
-    author_id: authorId,
+    author_id: 0,
     country_id: null,
     image: "",
     destination: "",
@@ -52,40 +50,35 @@ function buildEmptyForm(
 }
 
 export default async function AdminNewsCreatePage() {
-  const [categories, countries, authors] = await Promise.all([
+  const [categories, countries, user] = await Promise.all([
     loadAdminCategories(),
     loadAdminCountries(),
-    loadAdminAuthors(),
+    verifyAdminSession(),
   ]);
 
-  if (
-    categories.status === "offline" ||
-    countries.status === "offline" ||
-    authors.status === "offline"
-  ) {
+  if (categories.status === "offline" || countries.status === "offline") {
     return <AdminOfflineMessage />;
   }
 
-  if (
-    categories.status !== "success" ||
-    countries.status !== "success" ||
-    authors.status !== "success"
-  ) {
+  if (categories.status !== "success" || countries.status !== "success") {
     return (
       <AdminOfflineMessage
         title="تعذر تحميل بيانات النموذج"
-        description="لم نتمكن من جلب التصنيفات أو الدول أو الكتّاب."
+        description="لم نتمكن من جلب التصنيفات أو الدول."
       />
     );
   }
 
+  const currentAuthorName = user?.author?.name ?? user?.name ?? "المستخدم الحالي";
+
   return (
     <NewsForm
       mode="create"
-      initial={buildEmptyForm(categories, authors)}
+      initial={buildEmptyForm(categories)}
       categories={categories.data}
       countries={countries.data}
-      authors={authors.data}
+      authors={[]}
+      currentAuthorName={currentAuthorName}
     />
   );
 }

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.20",
+    "@tinymce/tinymce-react": "^6.3.0",
     "@tiptap/extension-color": "^3.26.1",
     "@tiptap/extension-font-family": "^3.26.1",
     "@tiptap/extension-highlight": "^3.26.1",
