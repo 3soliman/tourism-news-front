@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { getAuthorBySlug } from "@/data/authors";
+import { fetchAuthorBySlug } from "@/lib/api/authors";
 
 type AuthorBoxProps = {
   authorSlug: string;
 };
 
-export default function AuthorBox({ authorSlug }: AuthorBoxProps) {
-  const author = getAuthorBySlug(authorSlug);
+export default async function AuthorBox({ authorSlug }: AuthorBoxProps) {
+  const author = await fetchAuthorBySlug(authorSlug);
   if (!author) return null;
 
   return (

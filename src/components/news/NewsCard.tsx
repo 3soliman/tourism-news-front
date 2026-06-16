@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { getCountryBySlug } from "@/data/countries";
-import type { NewsArticle } from "@/data/news";
+import type { NewsArticle } from "@/types";
 
 type NewsCardProps = {
   article: NewsArticle;
@@ -11,7 +10,8 @@ export default function NewsCard({
   article,
   variant = "vertical",
 }: NewsCardProps) {
-  const country = getCountryBySlug(article.countrySlug);
+  const countryName = article.countryName;
+  const countryFlag = article.countryFlag;
 
   if (variant === "horizontal") {
     return (
@@ -34,12 +34,12 @@ export default function NewsCard({
             >
               {article.category}
             </Link>
-            {country ? (
+            {countryName ? (
               <Link
-                href={`/travel-news?country=${country.slug}`}
+                href={`/travel-news?country=${article.countrySlug}`}
                 className="text-[11px] font-black text-primary"
               >
-                {country.flag} {country.name}
+                {countryFlag} {countryName}
               </Link>
             ) : null}
           </div>
@@ -98,12 +98,12 @@ export default function NewsCard({
           >
             {article.category}
           </Link>
-          {country ? (
+          {countryName ? (
             <Link
-              href={`/travel-news?country=${country.slug}`}
+              href={`/travel-news?country=${article.countrySlug}`}
               className="rounded-sm bg-surface-alt px-2 py-1 text-[11px] font-black text-primary"
             >
-              {country.flag} {country.name}
+              {countryFlag} {countryName}
             </Link>
           ) : null}
         </div>

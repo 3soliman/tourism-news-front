@@ -1,4 +1,4 @@
-import type { NewsArticle } from "@/data/news";
+import type { NewsArticle } from "@/types";
 
 export function formatPublishedAt(iso: string) {
   return new Intl.DateTimeFormat("ar", {

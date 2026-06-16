@@ -1,65 +1,58 @@
 import type { MetadataRoute } from "next";
-import { authors } from "@/data/authors";
-import { categories } from "@/data/categories";
-import { news } from "@/data/news";
-import { siteConfig } from "@/data/site";
+import { fetchAuthors } from "@/lib/api/authors";
+import { fetchCategories } from "@/lib/api/categories";
+import { fetchAllNewsSlugs } from "@/lib/api/news";
+import { getSiteConfig } from "@/lib/site";
 
-const baseUrl = siteConfig.url;
+export const dynamic = "force-dynamic";
 
-const trustPages = [
-  "/about",
-  "/contact",
-  "/editorial-team",
-  "/editorial-policy",
-  "/privacy-policy",
-  "/terms",
-];
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const siteConfig = await getSiteConfig();
+  const baseUrl = siteConfig.url;
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const articleUrls = news.map((article) => ({
-    url: `${baseUrl}/travel-news/${article.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.8,
-  }));
+  const staticPages = [
+    "",
+    "/travel-news",
+    "/destinations",
+    "/about",
+    "/contact",
+    "/editorial-team",
+    "/editorial-policy",
+    "/privacy-policy",
+    "/terms",
+    "/terms-of-use",
+  ];
 
-  const categoryUrls = categories.map((category) => ({
-    url: `${baseUrl}/travel-news/${category.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.85,
-  }));
-
-  const authorUrls = authors.map((author) => ({
-    url: `${baseUrl}/authors/${author.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-  }));
-
-  const trustPageUrls = trustPages.map((path) => ({
-    url: `${baseUrl}${path}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: 0.6,
-  }));
+  const [newsSlugs, categories, authors] = await Promise.all([
+    fetchAllNewsSlugs(),
+    fetchCategories(),
+    fetchAuthors(),
+  ]);
 
   return [
-    {
-      url: baseUrl,
+    ...staticPages.map((path) => ({
+      url: `${baseUrl}${path}`,
       lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/travel-news`,
+      changeFrequency: "daily" as const,
+      priority: path === "" ? 1 : 0.8,
+    })),
+    ...newsSlugs.map((slug) => ({
+      url: `${baseUrl}/travel-news/${slug}`,
       lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.9,
-    },
-    ...trustPageUrls,
-    ...authorUrls,
-    ...categoryUrls,
-    ...articleUrls,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })),
+    ...categories.map((category) => ({
+      url: `${baseUrl}/travel-news/${category.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })),
+    ...authors.map((author) => ({
+      url: `${baseUrl}/authors/${author.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
   ];
 }

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { categories } from "@/data/categories";
+import type { Category } from "@/types";
 
 const trustLinks = [
   { href: "/about", label: "من نحن" },
@@ -10,7 +10,11 @@ const trustLinks = [
   { href: "/terms", label: "شروط الاستخدام" },
 ];
 
-export default function Footer() {
+type FooterProps = {
+  categories: Category[];
+};
+
+export default function Footer({ categories }: FooterProps) {
   return (
     <footer className="border-t-4 border-accent bg-[#eef7fb] text-[#244958]">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 md:grid-cols-4">
@@ -18,7 +22,7 @@ export default function Footer() {
           <h3 className="text-xl font-black text-primary">أخبار السياحة</h3>
           <p className="mt-3 text-sm leading-7 text-text-muted">
             بوابة عربية متخصصة في أخبار السياحة والسفر، الوجهات، الفنادق،
-            التأشيرات، والعروض للمسافرين العرب.
+            التأشيرات، ونصائح السفر للمسافرين العرب.
           </p>
         </div>
 

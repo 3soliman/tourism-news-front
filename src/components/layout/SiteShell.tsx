@@ -1,17 +1,33 @@
+import { Suspense } from "react";
 import BreakingNewsBar from "@/components/layout/BreakingNewsBar";
 import MainNav from "@/components/layout/MainNav";
 import SiteHeader from "@/components/layout/SiteHeader";
 import TopBar from "@/components/layout/TopBar";
+import type { Category, Country, NewsArticle } from "@/types";
 
-export default function SiteShell() {
+type SiteShellProps = {
+  categories: Category[];
+  countries: Country[];
+  breakingNews: NewsArticle[];
+  headerImages: string[];
+};
+
+export default function SiteShell({
+  categories,
+  countries,
+  breakingNews,
+  headerImages,
+}: SiteShellProps) {
   return (
     <header>
       <TopBar />
-      <SiteHeader />
+      <Suspense fallback={null}>
+        <SiteHeader headerImages={headerImages} />
+      </Suspense>
 
       <div className="sticky top-0 z-50 shadow-xl shadow-black/15">
-        <MainNav />
-        <BreakingNewsBar />
+        <MainNav categories={categories} countries={countries} />
+        <BreakingNewsBar articles={breakingNews} />
       </div>
     </header>
   );

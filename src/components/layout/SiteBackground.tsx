@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { siteConfig } from "@/data/site";
+import { fallbackSiteConfig as siteConfig } from "@/lib/site";
 
 const ROTATE_MS = 8000;
 const FADE_MS = 1200;

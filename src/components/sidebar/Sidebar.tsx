@@ -1,4 +1,4 @@
-import type { NewsArticle } from "@/data/news";
+import type { NewsArticle } from "@/types";
 import PopularTabs from "@/components/sidebar/PopularTabs";
 import SocialFollowBox from "@/components/sidebar/SocialFollowBox";
 import NewsletterBox from "@/components/sidebar/NewsletterBox";

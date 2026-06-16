@@ -20,7 +20,7 @@ export default function TopBar() {
         <p className="shrink-0 font-semibold text-[#244958]">{formatTodayDate()}</p>
 
         <p className="hidden truncate text-center font-bold text-primary sm:block">
-          رصد يومي لأخبار السفر والوجهات والعروض
+          رصد يومي لأخبار السفر والوجهات
         </p>
 
         <div className="flex shrink-0 items-center gap-3">

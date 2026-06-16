@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Destination } from "@/data/destinations";
+import type { Destination } from "@/types";
 
 type DestinationCardProps = {
   destination: Destination;

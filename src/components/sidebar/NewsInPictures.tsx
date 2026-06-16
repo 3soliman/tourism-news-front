@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { NewsArticle } from "@/data/news";
+import type { NewsArticle } from "@/types";
 
 type NewsInPicturesProps = {
   articles: NewsArticle[];

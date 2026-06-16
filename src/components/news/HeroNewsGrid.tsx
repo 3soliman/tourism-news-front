@@ -1,4 +1,4 @@
-import type { NewsArticle } from "@/data/news";
+import type { NewsArticle } from "@/types";
 import FeaturedNewsCard from "@/components/news/FeaturedNewsCard";
 
 type HeroNewsGridProps = {

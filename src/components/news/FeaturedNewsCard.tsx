@@ -1,9 +1,9 @@
 import Link from "next/link";
-import type { NewsArticle } from "@/data/news";
+import type { NewsArticle } from "@/types";
 
 type FeaturedNewsCardProps = {
   article: NewsArticle;
-  size?: "large" | "small";
+  size?: "large" | "medium" | "small";
 };
 
 export default function FeaturedNewsCard({
@@ -35,6 +35,36 @@ export default function FeaturedNewsCard({
             {article.excerpt}
           </p>
           <p className="mt-4 text-xs font-semibold text-white/75">
+            {article.publishedAt} · {article.readingTime}
+          </p>
+        </div>
+      </Link>
+    );
+  }
+
+  if (size === "medium") {
+    return (
+      <Link
+        href={`/travel-news/${article.slug}`}
+        className="group flex flex-col overflow-hidden rounded-sm bg-white editorial-card transition hover:-translate-y-0.5 hover:border-primary/45"
+      >
+        <div className="image-shine relative aspect-[16/10] overflow-hidden bg-surface-alt">
+          <img
+            src={article.image}
+            alt={article.title}
+            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          />
+        </div>
+
+        <div className="flex flex-col p-3">
+          <span className="text-[11px] font-black text-breaking">{article.category}</span>
+          <h3 className="mt-1.5 line-clamp-2 text-base font-black leading-7 text-text-dark transition group-hover:text-primary">
+            {article.title}
+          </h3>
+          <p className="mt-1.5 line-clamp-2 text-xs leading-6 text-text-muted">
+            {article.excerpt}
+          </p>
+          <p className="mt-2 text-[11px] font-semibold text-text-muted">
             {article.publishedAt} · {article.readingTime}
           </p>
         </div>

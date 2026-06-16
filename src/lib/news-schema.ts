@@ -1,11 +1,11 @@
-import type { Author } from "@/data/authors";
-import type { NewsArticle } from "@/data/news";
+import type { Author, NewsArticle } from "@/types";
 import { toPublicationDate } from "@/lib/news-format";
-import { siteConfig } from "@/data/site";
+import type { SiteConfig } from "@/types";
 
 export function buildNewsArticleSchema(
   article: NewsArticle,
-  author?: Author,
+  author: Author | null | undefined,
+  siteConfig: SiteConfig,
   articleUrl?: string,
   categoryLabel?: string,
 ) {

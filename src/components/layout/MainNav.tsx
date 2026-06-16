@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Search, X } from "lucide-react";
-import { useState } from "react";
-import { categories } from "@/data/categories";
+import { Menu, X } from "lucide-react";
+import { Suspense, useState } from "react";
+import CountryFilterDropdown from "@/components/CountryFilterDropdown";
+import type { Category, Country } from "@/types";
 
 const navItems = [
   { href: "/", label: "الرئيسية" },
@@ -14,11 +15,15 @@ const navItems = [
   { href: "/travel-news/hotels", label: "أخبار الفنادق" },
   { href: "/travel-news/destinations", label: "أخبار الوجهات" },
   { href: "/travel-news/international", label: "السفر الدولي" },
-  { href: "/offers", label: "العروض السياحية" },
   { href: "/contact", label: "اتصل بنا" },
 ];
 
-export default function MainNav() {
+type MainNavProps = {
+  categories: Category[];
+  countries: Country[];
+};
+
+export default function MainNav({ categories, countries }: MainNavProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -40,9 +45,9 @@ export default function MainNav() {
           </button>
         </div>
 
-        <div className={`${open ? "block" : "hidden"} border-t border-white/15 lg:flex lg:items-center lg:justify-between lg:border-0`}>
+        <div className={`${open ? "block" : "hidden"} border-t border-white/15 lg:block lg:border-0`}>
           <ul className="py-2 lg:flex lg:py-0">
-            {navItems.map((item) => (
+            {navItems.slice(0, 7).map((item) => (
               <li key={item.href} className="group relative">
                 <Link
                   href={item.href}
@@ -74,15 +79,31 @@ export default function MainNav() {
                 )}
               </li>
             ))}
-          </ul>
 
-          <Link
-            href="/travel-news"
-            className="mb-3 flex items-center justify-center gap-2 rounded-sm bg-breaking px-4 py-2 text-sm font-black text-white transition hover:bg-red-600 lg:mb-0"
-          >
-            <Search size={16} />
-            بحث الأخبار
-          </Link>
+            <Suspense fallback={null}>
+              <CountryFilterDropdown
+                countries={countries}
+                categories={categories}
+                onNavigate={() => setOpen(false)}
+              />
+            </Suspense>
+
+            {navItems.slice(7).map((item) => (
+              <li key={item.href} className="group relative">
+                <Link
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className={`block rounded-sm px-3 py-3 text-sm font-black transition lg:my-2 lg:py-2.5 ${
+                    isActive(item.href)
+                      ? "bg-accent text-[#244958]"
+                      : "hover:bg-white/12 hover:text-accent"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </nav>

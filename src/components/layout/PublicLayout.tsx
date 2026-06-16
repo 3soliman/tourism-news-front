@@ -1,0 +1,36 @@
+import ApiOfflineBanner from "@/components/ApiOfflineBanner";
+import Footer from "@/components/layout/Footer";
+import SiteFrame from "@/components/layout/SiteFrame";
+import SiteShell from "@/components/layout/SiteShell";
+import { fetchCategories } from "@/lib/api/categories";
+import { fetchCountries } from "@/lib/api/countries";
+import { isApiOnline } from "@/lib/api/connection";
+import { fetchNews } from "@/lib/api/news";
+
+type PublicLayoutProps = {
+  children: React.ReactNode;
+};
+
+export default async function PublicLayout({ children }: PublicLayoutProps) {
+  const [categories, countries, breakingNews] = await Promise.all([
+    fetchCategories(),
+    fetchCountries(),
+    fetchNews({ per_page: 15 }),
+  ]);
+
+  const headerImages = breakingNews.slice(0, 6).map((article) => article.image);
+
+  return (
+    <SiteFrame>
+      <SiteShell
+        categories={categories}
+        countries={countries}
+        breakingNews={breakingNews}
+        headerImages={headerImages}
+      />
+      {!isApiOnline() ? <ApiOfflineBanner /> : null}
+      <main className="bg-page-bg">{children}</main>
+      <Footer categories={categories} />
+    </SiteFrame>
+  );
+}
