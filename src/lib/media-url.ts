@@ -18,6 +18,10 @@ function extractStoragePath(url: string): string | null {
   return match?.[0] ?? null;
 }
 
+function isImageKitUrl(url: string): boolean {
+  return /^https?:\/\/ik\.imagekit\.io\//i.test(url.trim());
+}
+
 export function toStoredMediaPath(url?: string | null): string {
   if (!url) {
     return "";
@@ -35,7 +39,7 @@ export function toStoredMediaPath(url?: string | null): string {
     return storagePath;
   }
 
-  if (/^https?:\/\//i.test(trimmed)) {
+  if (isImageKitUrl(trimmed) || /^https?:\/\//i.test(trimmed)) {
     return trimmed;
   }
 
