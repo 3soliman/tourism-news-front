@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CookiePreferencesLink from "@/components/cookies/CookiePreferencesLink";
 import type { Category } from "@/types";
 
 const trustLinks = [
@@ -7,6 +8,7 @@ const trustLinks = [
   { href: "/editorial-team", label: "هيئة التحرير" },
   { href: "/editorial-policy", label: "سياسة التحرير" },
   { href: "/privacy-policy", label: "سياسة الخصوصية" },
+  { href: "/cookie-policy", label: "سياسة ملفات تعريف الارتباط" },
   { href: "/terms", label: "شروط الاستخدام" },
 ];
 
@@ -57,6 +59,9 @@ export default function Footer({ categories }: FooterProps) {
                 </Link>
               </li>
             ))}
+            <li>
+              <CookiePreferencesLink />
+            </li>
           </ul>
         </div>
 

@@ -9,7 +9,7 @@ type BreakingNewsBarProps = {
 };
 
 const MIN_TICKER_SECONDS = 70;
-const TICKER_PIXELS_PER_SECOND = 42;
+const TICKER_PIXELS_PER_SECOND = 62;
 
 function buildTickerItems(articles: NewsArticle[]) {
   if (articles.length === 0) return [];

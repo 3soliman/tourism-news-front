@@ -118,6 +118,21 @@ body {
   animation-play-state: paused;
 }
 
+@keyframes cookie-consent-rise {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.cookie-consent-panel {
+  animation: cookie-consent-rise 0.35s ease-out;
+}
+
 .breaking-marquee-track {
   animation: marquee-rtl linear infinite;
 }

@@ -1,4 +1,5 @@
 import ApiOfflineBanner from "@/components/ApiOfflineBanner";
+import CookieConsentBanner from "@/components/cookies/CookieConsentBanner";
 import Footer from "@/components/layout/Footer";
 import SiteFrame from "@/components/layout/SiteFrame";
 import SiteShell from "@/components/layout/SiteShell";
@@ -45,6 +46,7 @@ export default async function PublicLayout({ children }: PublicLayoutProps) {
       {!isApiOnline() ? <ApiOfflineBanner /> : null}
       <main className="bg-page-bg">{children}</main>
       <Footer categories={categories} />
+      <CookieConsentBanner />
     </SiteFrame>
   );
 }
