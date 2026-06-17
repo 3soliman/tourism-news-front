@@ -46,10 +46,11 @@ export function optimizeImageUrl(
 }
 
 export const IMAGE_WIDTHS = {
-  header: 1280,
-  hero: 900,
-  card: 640,
-  thumb: 320,
+  header: 720,
+  headerDesktop: 1080,
+  hero: 720,
+  card: 480,
+  thumb: 240,
   avatar: 96,
-  sidebar: 240,
+  sidebar: 200,
 } as const;

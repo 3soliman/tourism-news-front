@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Search } from "lucide-react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import HeaderSearchSuspense from "@/components/layout/HeaderSearchQuery";
 
 const ROTATE_MS = 7000;
 
@@ -31,37 +31,6 @@ function SiteLogo({ compact = false }: { compact?: boolean }) {
         <span className="block text-[11px] font-bold text-primary">Tourism News</span>
       </span>
     </Link>
-  );
-}
-
-function HeaderSearch({ currentQuery, compact = false }: { currentQuery: string; compact?: boolean }) {
-  return (
-    <form
-      action="/travel-news"
-      className={`flex items-center gap-2 rounded bg-white shadow-2xl shadow-black/15 ${
-        compact
-          ? "min-w-0 flex-1 px-3 py-2 md:max-w-md"
-          : "mx-auto w-full max-w-3xl gap-3 px-4 py-3"
-      }`}
-    >
-      <input
-        name="q"
-        type="search"
-        defaultValue={currentQuery}
-        key={currentQuery}
-        placeholder="ابحث في أخبار السياحة..."
-        className="min-w-0 flex-1 bg-transparent text-sm text-text-dark outline-none placeholder:text-text-muted"
-      />
-      <button
-        type="submit"
-        aria-label="بحث"
-        className={`grid place-items-center rounded-sm text-primary-dark transition hover:bg-surface-alt ${
-          compact ? "h-8 w-8" : "h-10 w-10"
-        }`}
-      >
-        <Search size={compact ? 18 : 22} />
-      </button>
-    </form>
   );
 }
 
@@ -93,12 +62,11 @@ function HeaderBackground({
 export default function SiteHeader({ headerImages = [] }: SiteHeaderProps) {
   const [activeImage, setActiveImage] = useState(0);
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const isHomePage = pathname === "/";
   const isArticlePage = /^\/travel-news\/[^/]+$/.test(pathname);
-  const isCompactPage = isArticlePage || (!isHomePage && pathname.startsWith("/travel-news"));
+  const isCompactPage =
+    isArticlePage || (!isHomePage && pathname.startsWith("/travel-news"));
   const slides = [...new Set(headerImages.filter(Boolean))];
-  const currentQuery = searchParams.get("q") ?? "";
 
   useEffect(() => {
     if (!slides[0]) return;
@@ -131,7 +99,7 @@ export default function SiteHeader({ headerImages = [] }: SiteHeaderProps) {
 
         <div className="relative mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3">
           <SiteLogo compact />
-          <HeaderSearch currentQuery={currentQuery} compact />
+          <HeaderSearchSuspense compact />
         </div>
       </div>
     );
@@ -174,7 +142,7 @@ export default function SiteHeader({ headerImages = [] }: SiteHeaderProps) {
       </div>
 
       <div className="relative bg-white/22 px-4 py-5 backdrop-blur-sm">
-        <HeaderSearch currentQuery={currentQuery} />
+        <HeaderSearchSuspense />
       </div>
     </div>
   );

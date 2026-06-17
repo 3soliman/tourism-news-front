@@ -93,7 +93,7 @@ export default function NewsCard({
           alt={article.title}
           className="object-cover transition duration-500 group-hover:scale-105"
           displayWidth={IMAGE_WIDTHS.card}
-          sizes="(max-width: 768px) 50vw, 400px"
+          sizes="(max-width: 768px) 50vw, 360px"
         />
       </Link>
       <div className="p-4">

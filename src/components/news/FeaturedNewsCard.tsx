@@ -26,7 +26,7 @@ export default function FeaturedNewsCard({
             alt={article.title}
             className="object-cover transition duration-700 group-hover:scale-105"
             displayWidth={IMAGE_WIDTHS.hero}
-            sizes="(max-width: 1024px) 100vw, 900px"
+            sizes="(max-width: 768px) 100vw, 720px"
             priority={priority}
           />
         </span>

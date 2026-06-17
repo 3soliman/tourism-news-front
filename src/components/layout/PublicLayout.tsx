@@ -22,14 +22,16 @@ export default async function PublicLayout({ children }: PublicLayoutProps) {
     getSiteConfig(),
   ]);
 
-  const headerImages = siteConfig.backgroundImages
-    .map((image) =>
-      optimizeImageUrl(resolveMediaUrl(image), {
-        width: IMAGE_WIDTHS.header,
-        quality: 75,
-      }),
-    )
+  const rawHeaderImages = siteConfig.backgroundImages
+    .map((image) => resolveMediaUrl(image))
     .filter(Boolean);
+
+  const headerImages = rawHeaderImages.map((image) =>
+    optimizeImageUrl(image, {
+      width: IMAGE_WIDTHS.header,
+      quality: 70,
+    }),
+  );
 
   return (
     <SiteFrame>
@@ -38,6 +40,7 @@ export default async function PublicLayout({ children }: PublicLayoutProps) {
         countries={countries}
         breakingNews={breakingNews}
         headerImages={headerImages}
+        headerPreloadSrc={rawHeaderImages[0]}
       />
       {!isApiOnline() ? <ApiOfflineBanner /> : null}
       <main className="bg-page-bg">{children}</main>

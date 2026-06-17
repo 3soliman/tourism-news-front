@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import BreakingNewsBar from "@/components/layout/BreakingNewsBar";
 import HeaderImagePreload from "@/components/layout/HeaderImagePreload";
 import MainNav from "@/components/layout/MainNav";
@@ -11,6 +10,7 @@ type SiteShellProps = {
   countries: Country[];
   breakingNews: NewsArticle[];
   headerImages: string[];
+  headerPreloadSrc?: string;
 };
 
 export default function SiteShell({
@@ -18,21 +18,13 @@ export default function SiteShell({
   countries,
   breakingNews,
   headerImages,
+  headerPreloadSrc,
 }: SiteShellProps) {
   return (
     <header>
-      <HeaderImagePreload src={headerImages[0]} />
+      <HeaderImagePreload src={headerPreloadSrc ?? headerImages[0]} />
       <TopBar />
-      <Suspense
-        fallback={
-          <div
-            className="min-h-[72px] bg-primary md:min-h-[520px]"
-            aria-hidden
-          />
-        }
-      >
-        <SiteHeader headerImages={headerImages} />
-      </Suspense>
+      <SiteHeader headerImages={headerImages} />
 
       <div className="sticky top-0 z-50 shadow-xl shadow-black/15">
         <MainNav categories={categories} countries={countries} />
