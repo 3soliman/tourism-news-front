@@ -101,27 +101,32 @@ export default function SiteHeader({ headerImages = [] }: SiteHeaderProps) {
   const currentQuery = searchParams.get("q") ?? "";
 
   useEffect(() => {
-    slides.forEach((src) => {
-      const image = new Image();
-      image.src = src;
-    });
+    if (!slides[0]) return;
+
+    const image = new Image();
+    image.src = slides[0];
   }, [slides]);
 
   useEffect(() => {
     if (slides.length <= 1) return;
 
     const timer = setInterval(() => {
-      setActiveImage((current) => (current + 1) % slides.length);
+      setActiveImage((current) => {
+        const next = (current + 1) % slides.length;
+        const image = new Image();
+        image.src = slides[next];
+        return next;
+      });
     }, ROTATE_MS);
 
     return () => clearInterval(timer);
-  }, [slides.length]);
+  }, [slides]);
 
   const showBackground = slides.length > 0;
 
   if (isCompactPage) {
     return (
-      <div className="relative overflow-hidden bg-primary">
+      <div className="relative min-h-[72px] overflow-hidden bg-primary">
         {showBackground ? <HeaderBackground slides={slides} activeImage={activeImage} /> : null}
 
         <div className="relative mx-auto flex max-w-7xl flex-wrap items-center gap-3 px-4 py-3">
@@ -133,7 +138,7 @@ export default function SiteHeader({ headerImages = [] }: SiteHeaderProps) {
   }
 
   return (
-    <div className="relative overflow-hidden bg-primary">
+    <div className="relative min-h-[520px] overflow-hidden bg-primary sm:min-h-[560px]">
       {showBackground ? <HeaderBackground slides={slides} activeImage={activeImage} /> : null}
 
       <div className="relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-5">

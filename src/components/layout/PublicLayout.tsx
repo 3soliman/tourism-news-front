@@ -7,6 +7,7 @@ import { fetchCountries } from "@/lib/api/countries";
 import { isApiOnline } from "@/lib/api/connection";
 import { fetchNews } from "@/lib/api/news";
 import { resolveMediaUrl } from "@/lib/media-url";
+import { IMAGE_WIDTHS, optimizeImageUrl } from "@/lib/optimize-image";
 import { getSiteConfig } from "@/lib/site";
 
 type PublicLayoutProps = {
@@ -22,7 +23,12 @@ export default async function PublicLayout({ children }: PublicLayoutProps) {
   ]);
 
   const headerImages = siteConfig.backgroundImages
-    .map((image) => resolveMediaUrl(image))
+    .map((image) =>
+      optimizeImageUrl(resolveMediaUrl(image), {
+        width: IMAGE_WIDTHS.header,
+        quality: 75,
+      }),
+    )
     .filter(Boolean);
 
   return (

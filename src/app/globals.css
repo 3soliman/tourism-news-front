@@ -111,7 +111,7 @@ body {
 
 .breaking-ticker {
   direction: rtl;
-  animation: breaking-ticker-ar var(--ticker-duration, 36s) linear infinite;
+  animation: breaking-ticker-ar linear infinite;
 }
 
 .breaking-ticker:hover {

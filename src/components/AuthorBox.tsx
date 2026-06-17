@@ -1,6 +1,7 @@
 import Link from "next/link";
 import SafeImage from "@/components/SafeImage";
 import { fetchAuthorBySlug } from "@/lib/api/authors";
+import { IMAGE_WIDTHS } from "@/lib/optimize-image";
 import type { Author } from "@/types";
 
 type AuthorBoxProps = {
@@ -22,6 +23,11 @@ export default async function AuthorBox({ authorSlug, author: initial }: AuthorB
         <SafeImage
           src={author.image}
           alt={author.name}
+          width={64}
+          height={64}
+          fill={false}
+          displayWidth={IMAGE_WIDTHS.avatar}
+          sizes="64px"
           className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-primary/20"
         />
         <div>

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { ZoomIn } from "lucide-react";
 import ImageLightboxOverlay from "@/components/ImageLightboxOverlay";
+import { resolveMediaUrl } from "@/lib/media-url";
+import { IMAGE_WIDTHS, optimizeImageUrl } from "@/lib/optimize-image";
 
 type ZoomableImageProps = {
   src?: string | null;
@@ -18,11 +20,16 @@ export default function ZoomableImage({
   caption,
 }: ZoomableImageProps) {
   const [open, setOpen] = useState(false);
-  const resolved = src?.trim();
+  const resolved = resolveMediaUrl(src)?.trim();
 
   if (!resolved) {
     return null;
   }
+
+  const displaySrc = optimizeImageUrl(resolved, {
+    width: IMAGE_WIDTHS.card,
+    quality: 80,
+  });
 
   return (
     <>
@@ -33,7 +40,7 @@ export default function ZoomableImage({
           className="relative block w-full cursor-zoom-in overflow-hidden rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           aria-label={`تكبير الصورة: ${alt}`}
         >
-          <img src={resolved} alt={alt} className={className} />
+          <img src={displaySrc} alt={alt} className={className} loading="lazy" />
           <span
             className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 transition duration-200 group-hover:bg-black/20"
             aria-hidden

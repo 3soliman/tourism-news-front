@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import BreakingNewsBar from "@/components/layout/BreakingNewsBar";
+import HeaderImagePreload from "@/components/layout/HeaderImagePreload";
 import MainNav from "@/components/layout/MainNav";
 import SiteHeader from "@/components/layout/SiteHeader";
 import TopBar from "@/components/layout/TopBar";
@@ -20,8 +21,16 @@ export default function SiteShell({
 }: SiteShellProps) {
   return (
     <header>
+      <HeaderImagePreload src={headerImages[0]} />
       <TopBar />
-      <Suspense fallback={null}>
+      <Suspense
+        fallback={
+          <div
+            className="min-h-[72px] bg-primary md:min-h-[520px]"
+            aria-hidden
+          />
+        }
+      >
         <SiteHeader headerImages={headerImages} />
       </Suspense>
 

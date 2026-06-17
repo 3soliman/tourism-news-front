@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SafeImage from "@/components/SafeImage";
+import { IMAGE_WIDTHS } from "@/lib/optimize-image";
 import type { NewsArticle } from "@/types";
 
 type NewsCardProps = {
@@ -24,7 +25,9 @@ export default function NewsCard({
           <SafeImage
             src={article.image}
             alt={article.title}
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+            className="object-cover transition duration-500 group-hover:scale-105"
+            displayWidth={IMAGE_WIDTHS.thumb}
+            sizes="(max-width: 640px) 108px, 150px"
           />
         </Link>
         <div className="min-w-0 flex-1">
@@ -88,7 +91,9 @@ export default function NewsCard({
         <SafeImage
           src={article.image}
           alt={article.title}
-          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          className="object-cover transition duration-500 group-hover:scale-105"
+          displayWidth={IMAGE_WIDTHS.card}
+          sizes="(max-width: 768px) 50vw, 400px"
         />
       </Link>
       <div className="p-4">

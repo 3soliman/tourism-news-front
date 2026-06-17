@@ -1,4 +1,6 @@
 import Link from "next/link";
+import SafeImage from "@/components/SafeImage";
+import { IMAGE_WIDTHS } from "@/lib/optimize-image";
 import type { NewsArticle } from "@/types";
 
 type NewsInPicturesProps = {
@@ -16,12 +18,14 @@ export default function NewsInPictures({ articles }: NewsInPicturesProps) {
           <Link
             key={article.id}
             href={`/travel-news/${article.slug}`}
-            className="group relative aspect-square overflow-hidden rounded"
+            className="group relative aspect-square overflow-hidden rounded bg-surface-alt"
           >
-            <img
+            <SafeImage
               src={article.image}
               alt={article.title}
-              className="h-full w-full object-cover transition group-hover:scale-110"
+              className="object-cover transition group-hover:scale-110"
+              displayWidth={IMAGE_WIDTHS.sidebar}
+              sizes="(max-width: 1280px) 25vw, 180px"
             />
             <div className="absolute inset-0 bg-primary-dark/55 opacity-0 transition group-hover:opacity-100" />
             <span className="absolute bottom-1 right-1 left-1 line-clamp-2 text-[10px] font-bold text-white opacity-0 transition group-hover:opacity-100">

@@ -1,14 +1,18 @@
 import Link from "next/link";
+import SafeImage from "@/components/SafeImage";
+import { IMAGE_WIDTHS } from "@/lib/optimize-image";
 import type { NewsArticle } from "@/types";
 
 type FeaturedNewsCardProps = {
   article: NewsArticle;
   size?: "large" | "medium" | "small";
+  priority?: boolean;
 };
 
 export default function FeaturedNewsCard({
   article,
   size = "small",
+  priority = false,
 }: FeaturedNewsCardProps) {
   if (size === "large") {
     return (
@@ -17,10 +21,13 @@ export default function FeaturedNewsCard({
         className="group relative block min-h-[380px] overflow-hidden rounded-sm bg-primary-dark shadow-xl shadow-black/10 sm:min-h-[460px] lg:min-h-[560px]"
       >
         <span className="image-shine absolute inset-0 overflow-hidden">
-          <img
+          <SafeImage
             src={article.image}
             alt={article.title}
-            className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+            className="object-cover transition duration-700 group-hover:scale-105"
+            displayWidth={IMAGE_WIDTHS.hero}
+            sizes="(max-width: 1024px) 100vw, 900px"
+            priority={priority}
           />
         </span>
         <div className="absolute inset-0 bg-gradient-to-t from-[#1f272b] via-[#1f272b]/55 to-transparent" />
@@ -49,10 +56,12 @@ export default function FeaturedNewsCard({
         className="group flex flex-col overflow-hidden rounded-sm bg-white editorial-card transition hover:-translate-y-0.5 hover:border-primary/45"
       >
         <div className="image-shine relative aspect-[16/10] overflow-hidden bg-surface-alt">
-          <img
+          <SafeImage
             src={article.image}
             alt={article.title}
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+            className="object-cover transition duration-500 group-hover:scale-105"
+            displayWidth={IMAGE_WIDTHS.card}
+            sizes="(max-width: 768px) 50vw, 400px"
           />
         </div>
 
@@ -77,11 +86,13 @@ export default function FeaturedNewsCard({
       href={`/travel-news/${article.slug}`}
       className="group grid min-h-[128px] grid-cols-[112px_1fr] overflow-hidden rounded-sm bg-white editorial-card transition hover:-translate-y-0.5 hover:border-primary/45"
     >
-      <div className="image-shine relative overflow-hidden">
-        <img
+      <div className="image-shine relative aspect-square overflow-hidden bg-surface-alt">
+        <SafeImage
           src={article.image}
           alt={article.title}
-          className="h-full w-full object-cover transition group-hover:scale-105"
+          className="object-cover transition group-hover:scale-105"
+          displayWidth={IMAGE_WIDTHS.thumb}
+          sizes="112px"
         />
       </div>
 
