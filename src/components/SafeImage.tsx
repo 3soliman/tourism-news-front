@@ -43,6 +43,7 @@ export default function SafeImage({
         alt={alt}
         width={width}
         height={height}
+        fill={false}
         sizes={sizes ?? `${width}px`}
         className={className}
         priority={priority}
@@ -55,7 +56,7 @@ export default function SafeImage({
     <Image
       src={optimized}
       alt={alt}
-      fill={fill}
+      fill
       sizes={sizes ?? `(max-width: 768px) 50vw, ${displayWidth}px`}
       className={className}
       priority={priority}

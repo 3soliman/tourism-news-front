@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import ApiOfflineMessage from "@/components/ApiOfflineMessage";
 import SafeImage from "@/components/SafeImage";
+import { IMAGE_WIDTHS } from "@/lib/optimize-image";
 import ZoomableImage from "@/components/ZoomableImage";
 import AuthorBox from "@/components/AuthorBox";
 import Breadcrumb from "@/components/Breadcrumb";
@@ -280,7 +281,12 @@ export default async function ArticleDetailsPage({
                 <SafeImage
                   src={author.image}
                   alt={author.name}
-                  className="h-8 w-8 rounded-full object-cover"
+                  width={32}
+                  height={32}
+                  fill={false}
+                  displayWidth={IMAGE_WIDTHS.avatar}
+                  sizes="32px"
+                  className="h-8 w-8 shrink-0 rounded-full object-cover"
                 />
                 {author.name}
               </Link>

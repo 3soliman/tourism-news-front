@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { NewsArticle } from "@/types";
 
 type BreakingNewsBarProps = {
   articles: NewsArticle[];
 };
 
-const TICKER_DURATION_SECONDS = 48;
+const MIN_TICKER_SECONDS = 70;
+const TICKER_PIXELS_PER_SECOND = 42;
 
 function buildTickerItems(articles: NewsArticle[]) {
   if (articles.length === 0) return [];
@@ -24,7 +25,26 @@ function buildTickerItems(articles: NewsArticle[]) {
 }
 
 export default function BreakingNewsBar({ articles }: BreakingNewsBarProps) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [duration, setDuration] = useState(MIN_TICKER_SECONDS);
   const items = useMemo(() => buildTickerItems(articles), [articles]);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const updateDuration = () => {
+      const loopWidth = track.scrollWidth / 2;
+      setDuration(Math.max(MIN_TICKER_SECONDS, loopWidth / TICKER_PIXELS_PER_SECOND));
+    };
+
+    updateDuration();
+
+    const observer = new ResizeObserver(updateDuration);
+    observer.observe(track);
+
+    return () => observer.disconnect();
+  }, [items]);
 
   if (items.length === 0) {
     return null;
@@ -40,9 +60,10 @@ export default function BreakingNewsBar({ articles }: BreakingNewsBarProps) {
 
         <div className="relative min-w-0 flex-1 overflow-hidden border-s border-[#cfe8f4]">
           <div
+            ref={trackRef}
             dir="rtl"
             className="breaking-ticker flex h-10 w-max items-center justify-start gap-10 whitespace-nowrap px-4 text-sm font-semibold text-[#244958]"
-            style={{ animationDuration: `${TICKER_DURATION_SECONDS}s` }}
+            style={{ animationDuration: `${duration}s` }}
           >
             {items.map((item, index) => (
               <Link
