@@ -1,12 +1,15 @@
 import Link from "next/link";
+import SafeImage from "@/components/SafeImage";
 import { fetchAuthorBySlug } from "@/lib/api/authors";
+import type { Author } from "@/types";
 
 type AuthorBoxProps = {
   authorSlug: string;
+  author?: Author | null;
 };
 
-export default async function AuthorBox({ authorSlug }: AuthorBoxProps) {
-  const author = await fetchAuthorBySlug(authorSlug);
+export default async function AuthorBox({ authorSlug, author: initial }: AuthorBoxProps) {
+  const author = initial ?? (await fetchAuthorBySlug(authorSlug));
   if (!author) return null;
 
   return (
@@ -16,7 +19,7 @@ export default async function AuthorBox({ authorSlug }: AuthorBoxProps) {
         href={`/authors/${author.slug}`}
         className="flex items-start gap-4 transition hover:opacity-90"
       >
-        <img
+        <SafeImage
           src={author.image}
           alt={author.name}
           className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-primary/20"

@@ -162,9 +162,13 @@ export function getPopularNews(articles: NewsArticle[], limit = 5) {
 
 export async function recordArticleView(slug: string): Promise<void> {
   try {
-    await apiFetch<{ recorded: boolean; views_count: number }>(`/news/${slug}/view`, {
-      method: "POST",
-    });
+    await apiFetch<{ recorded: boolean; views_count: number }>(
+      `/news/${slug}/view`,
+      {
+        method: "POST",
+        revalidate: false,
+      },
+    );
   } catch {
     // تتبع صامت — لا يؤثر على تجربة القارئ
   }

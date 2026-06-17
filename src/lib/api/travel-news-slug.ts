@@ -13,12 +13,15 @@ export type TravelNewsSlugResult =
 
 export const resolveTravelNewsSlug = cache(
   async (slug: string): Promise<TravelNewsSlugResult> => {
-    const category = await fetchCategoryBySlug(slug);
+    const [category, article] = await Promise.all([
+      fetchCategoryBySlug(slug),
+      fetchNewsBySlug(slug),
+    ]);
+
     if (category) {
       return { kind: "category", category };
     }
 
-    const article = await fetchNewsBySlug(slug);
     if (article) {
       return { kind: "article", article };
     }

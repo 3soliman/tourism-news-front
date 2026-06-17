@@ -156,17 +156,24 @@ export function mapSiteSettings(raw: ApiSiteSettings): SiteConfig {
 export async function enrichArticlesWithCountries(
   articles: NewsArticle[],
 ): Promise<NewsArticle[]> {
+  const needsEnrichment = articles.some(
+    (article) => article.countrySlug && !article.countryFlag,
+  );
+  if (!needsEnrichment) return articles;
+
   const { fetchCountries } = await import("@/lib/api/countries");
   const countries = await fetchCountries();
   const bySlug = new Map(countries.map((country) => [country.slug, country]));
 
   return articles.map((article) => {
+    if (article.countryFlag) return article;
+
     const country = bySlug.get(article.countrySlug);
     if (!country) return article;
 
     return {
       ...article,
-      countryName: country.name,
+      countryName: article.countryName || country.name,
       countryFlag: country.flag,
     };
   });

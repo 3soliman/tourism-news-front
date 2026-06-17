@@ -47,7 +47,7 @@ export default async function TravelNewsPage({
   }
 
   return (
-    <PageWithSidebar>
+    <PageWithSidebar latestSeed={filteredNews.slice(0, 20)}>
       <header className="mb-6">
         <h1 className="border-b-2 border-primary pb-2 text-3xl font-black text-text-dark">
           {searchQuery ? "نتائج البحث" : "أخبار السياحة"}

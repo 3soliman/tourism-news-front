@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ApiOfflineMessage from "@/components/ApiOfflineMessage";
+import SafeImage from "@/components/SafeImage";
+import ZoomableImage from "@/components/ZoomableImage";
 import AuthorBox from "@/components/AuthorBox";
 import Breadcrumb from "@/components/Breadcrumb";
 import CategoryNav from "@/components/CategoryNav";
@@ -275,7 +277,7 @@ export default async function ArticleDetailsPage({
                 href={`/authors/${author.slug}`}
                 className="flex items-center gap-2 font-bold text-text-dark hover:text-primary"
               >
-                <img
+                <SafeImage
                   src={author.image}
                   alt={author.name}
                   className="h-8 w-8 rounded-full object-cover"
@@ -294,7 +296,7 @@ export default async function ArticleDetailsPage({
             <span>{article.readingTime}</span>
           </div>
 
-          <img
+          <ZoomableImage
             src={article.image}
             alt={article.title}
             className="mt-6 aspect-video max-h-[360px] w-full rounded object-cover"
@@ -303,7 +305,7 @@ export default async function ArticleDetailsPage({
           <ArticleBody paragraphs={article.content} />
 
           <ShareButtons title={article.title} url={articleUrl} />
-          <AuthorBox authorSlug={article.authorSlug} />
+          <AuthorBox authorSlug={article.authorSlug} author={author} />
         </article>
 
         {relatedNews.length > 0 ? (

@@ -17,7 +17,7 @@ export default async function PublicLayout({ children }: PublicLayoutProps) {
   const [categories, countries, breakingNews, siteConfig] = await Promise.all([
     fetchCategories(),
     fetchCountries(),
-    fetchNews({ per_page: 15 }),
+    fetchNews({ per_page: 10 }),
     getSiteConfig(),
   ]);
 

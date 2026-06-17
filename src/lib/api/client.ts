@@ -3,6 +3,8 @@ import type { PaginationMeta } from "@/types";
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8070/api";
 
+const PUBLIC_REVALIDATE_SECONDS = 60;
+
 type ApiEnvelope<T> = {
   success: boolean;
   message: string;
@@ -22,18 +24,24 @@ export class ApiError extends Error {
   }
 }
 
-type FetchOptions = RequestInit;
+type FetchOptions = RequestInit & {
+  revalidate?: number | false;
+};
 
 const API_TIMEOUT_MS = 8_000;
 
 async function request<T>(url: string, init: FetchOptions = {}): Promise<T> {
+  const { revalidate = PUBLIC_REVALIDATE_SECONDS, ...fetchInit } = init;
+
   const response = await fetch(url, {
-    ...init,
-    cache: "no-store",
-    signal: init.signal ?? AbortSignal.timeout(API_TIMEOUT_MS),
+    ...fetchInit,
+    ...(revalidate === false
+      ? { cache: "no-store" as const }
+      : { next: { revalidate } }),
+    signal: fetchInit.signal ?? AbortSignal.timeout(API_TIMEOUT_MS),
     headers: {
       Accept: "application/json",
-      ...init.headers,
+      ...fetchInit.headers,
     },
   });
 
@@ -58,14 +66,17 @@ export async function apiFetchPaginated<T>(
   options: FetchOptions = {},
 ): Promise<{ data: T[]; meta: PaginationMeta }> {
   const url = `${API_URL}${path.startsWith("/") ? path : `/${path}`}`;
+  const { revalidate = PUBLIC_REVALIDATE_SECONDS, ...fetchInit } = options;
 
   const response = await fetch(url, {
-    ...options,
-    cache: "no-store",
-    signal: options.signal ?? AbortSignal.timeout(API_TIMEOUT_MS),
+    ...fetchInit,
+    ...(revalidate === false
+      ? { cache: "no-store" as const }
+      : { next: { revalidate } }),
+    signal: fetchInit.signal ?? AbortSignal.timeout(API_TIMEOUT_MS),
     headers: {
       Accept: "application/json",
-      ...options.headers,
+      ...fetchInit.headers,
     },
   });
 

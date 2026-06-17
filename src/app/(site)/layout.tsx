@@ -1,6 +1,6 @@
 import PublicLayout from "@/components/layout/PublicLayout";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default function SiteLayout({
   children,

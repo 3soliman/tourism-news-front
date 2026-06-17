@@ -6,7 +6,9 @@ import NewsSection from "@/components/news/NewsSection";
 import SectionHeader from "@/components/news/SectionHeader";
 import { fetchCategories } from "@/lib/api/categories";
 import { isApiOnline } from "@/lib/api/connection";
-import { fetchNews, fetchNewsByCategory } from "@/lib/api/news";
+import { fetchNews } from "@/lib/api/news";
+
+export const revalidate = 60;
 
 export default async function HomePage() {
   const [categories, allNews] = await Promise.all([
@@ -24,16 +26,17 @@ export default async function HomePage() {
 
   const heroNews = allNews.slice(0, 5);
   const latestNews = allNews.slice(0, 6);
+  const sidebarLatest = allNews.slice(0, 20);
 
-  const categorySections = await Promise.all(
-    categories.map(async (category) => ({
-      category,
-      articles: await fetchNewsByCategory(category.slug, 4),
-    })),
-  );
+  const categorySections = categories.map((category) => ({
+    category,
+    articles: allNews
+      .filter((article) => article.categorySlug === category.slug)
+      .slice(0, 4),
+  }));
 
   return (
-    <PageWithSidebar>
+    <PageWithSidebar latestSeed={sidebarLatest}>
       <HeroNewsGrid articles={heroNews} />
 
       <section className="mt-9 rounded-sm bg-white p-4 shadow-sm ring-1 ring-border/80 sm:p-5">

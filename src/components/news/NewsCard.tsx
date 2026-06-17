@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SafeImage from "@/components/SafeImage";
 import type { NewsArticle } from "@/types";
 
 type NewsCardProps = {
@@ -20,7 +21,7 @@ export default function NewsCard({
           href={`/travel-news/${article.slug}`}
           className="image-shine relative block aspect-[4/3] overflow-hidden rounded-sm bg-surface-alt"
         >
-          <img
+          <SafeImage
             src={article.image}
             alt={article.title}
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
@@ -84,7 +85,7 @@ export default function NewsCard({
         href={`/travel-news/${article.slug}`}
         className="image-shine relative block aspect-[16/10] overflow-hidden bg-surface-alt"
       >
-        <img
+        <SafeImage
           src={article.image}
           alt={article.title}
           className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
