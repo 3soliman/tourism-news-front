@@ -3,6 +3,42 @@ type OptimizeImageOptions = {
   quality?: number;
 };
 
+const NEXT_IMAGE_HOSTS = new Set(["ik.imagekit.io", "images.unsplash.com"]);
+
+function getApiStorageHost(): string | null {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8070/api";
+
+  try {
+    return new URL(apiUrl.replace(/\/api\/?$/, "")).hostname;
+  } catch {
+    return null;
+  }
+}
+
+export function isNextImageUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url.trim());
+
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      return false;
+    }
+
+    if (NEXT_IMAGE_HOSTS.has(parsed.hostname)) {
+      return true;
+    }
+
+    const apiHost = getApiStorageHost();
+
+    return (
+      apiHost !== null &&
+      parsed.hostname === apiHost &&
+      parsed.pathname.startsWith("/storage/")
+    );
+  } catch {
+    return false;
+  }
+}
+
 export function optimizeImageUrl(
   url: string,
   { width, quality = 75 }: OptimizeImageOptions,

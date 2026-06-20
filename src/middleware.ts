@@ -1,10 +1,45 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { ADMIN_TOKEN_COOKIE } from "@/lib/auth/constants";
+import { lookupRedirect } from "@/lib/api/redirects";
+import { isExternalRedirectPath, normalizeRedirectPath } from "@/lib/redirect-path";
 
 const LOGIN_PATH = "/admin/login";
 
-export function middleware(request: NextRequest) {
+const PUBLIC_FILE = /\.(?:svg|png|jpg|jpeg|gif|webp|ico|xml|txt|json)$/i;
+
+function buildRedirectDestination(request: NextRequest, toPath: string): URL {
+  if (isExternalRedirectPath(toPath)) {
+    return new URL(toPath);
+  }
+
+  return new URL(normalizeRedirectPath(toPath), request.url);
+}
+
+async function handlePublicRedirect(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  if (
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/_next") ||
+    PUBLIC_FILE.test(pathname)
+  ) {
+    return null;
+  }
+
+  const redirect = await lookupRedirect(normalizeRedirectPath(pathname));
+
+  if (!redirect) {
+    return null;
+  }
+
+  const destination = buildRedirectDestination(request, redirect.to_path);
+  const statusCode = redirect.status_code === 302 ? 302 : 301;
+
+  return NextResponse.redirect(destination, statusCode);
+}
+
+function handleAdminAuth(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get(ADMIN_TOKEN_COOKIE)?.value;
   const requestHeaders = new Headers(request.headers);
@@ -33,6 +68,26 @@ export function middleware(request: NextRequest) {
   });
 }
 
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  if (pathname.startsWith("/admin")) {
+    return handleAdminAuth(request);
+  }
+
+  const redirectResponse = await handlePublicRedirect(request);
+
+  if (redirectResponse) {
+    return redirectResponse;
+  }
+
+  return NextResponse.next();
+}
+
 export const config = {
-  matcher: ["/admin", "/admin/:path*"],
+  matcher: [
+    "/admin",
+    "/admin/:path*",
+    "/((?!_next/static|_next/image|favicon.ico).*)",
+  ],
 };

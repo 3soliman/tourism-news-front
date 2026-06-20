@@ -70,7 +70,9 @@ const loadNewsBySlug = cache(
     slug: string,
   ): Promise<(NewsArticle & { related: NewsArticle[] }) | null> => {
     try {
-      const article = await apiFetch<ApiNewsArticle>(`/news/${slug}`);
+      const article = await apiFetch<ApiNewsArticle>(`/news/${slug}`, {
+        revalidate: false,
+      });
       const mapped = mapNewsArticle(article);
       const related = mapNewsArticles(article.related ?? []);
       const [enriched, enrichedRelated] = await Promise.all([

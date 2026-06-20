@@ -6,9 +6,14 @@ import {
   loadAdminAuthors,
   loadAdminCategories,
   loadAdminCountries,
+  loadAdminNews,
   loadAdminNewsById,
 } from "@/lib/api/admin";
+import { fetchAdminRedirectForArticle } from "@/lib/api/admin-redirects";
 import { toAdminNewsFormInput } from "@/lib/api/admin-news";
+import { AdminPermission, hasPermission } from "@/lib/admin-permissions";
+import { toArticleRedirectState } from "@/lib/article-redirect";
+import { verifyAdminSession } from "@/lib/auth/verify-session";
 
 export const dynamic = "force-dynamic";
 
@@ -37,11 +42,12 @@ export default async function AdminNewsEditPage({ params }: AdminNewsEditPagePro
     notFound();
   }
 
-  const [article, categories, countries, authors] = await Promise.all([
+  const [article, categories, countries, authors, user] = await Promise.all([
     loadAdminNewsById(articleId),
     loadAdminCategories(),
     loadAdminCountries(),
     loadAdminAuthors(),
+    verifyAdminSession(),
   ]);
 
   if (article.status === "error" && article.message === "not-found") {
@@ -66,6 +72,18 @@ export default async function AdminNewsEditPage({ params }: AdminNewsEditPagePro
     notFound();
   }
 
+  const [newsList, articleRedirect] = await Promise.all([
+    loadAdminNews({ per_page: 100 }),
+    fetchAdminRedirectForArticle(articleId).catch(() => null),
+  ]);
+
+  const articleOptions =
+    newsList.status === "success"
+      ? newsList.data.map((item) => ({ slug: item.slug, title: item.title }))
+      : [{ slug: article.data.slug, title: article.data.title }];
+
+  const canManageRedirect = hasPermission(user, AdminPermission.REDIRECTS_UPDATE);
+
   return (
     <NewsForm
       mode="edit"
@@ -74,6 +92,9 @@ export default async function AdminNewsEditPage({ params }: AdminNewsEditPagePro
       categories={categories.data}
       countries={countries.data}
       authors={authors.data}
+      articleOptions={articleOptions}
+      initialRedirect={toArticleRedirectState(articleRedirect)}
+      canManageRedirect={canManageRedirect}
     />
   );
 }

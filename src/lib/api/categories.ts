@@ -20,7 +20,9 @@ const loadCategories = cache(async (): Promise<Category[]> => {
 
 const loadCategoryBySlug = cache(async (slug: string): Promise<Category | null> => {
   try {
-    const data = await apiFetch<ApiCategory>(`/categories/${slug}`);
+    const data = await apiFetch<ApiCategory>(`/categories/${slug}`, {
+      revalidate: false,
+    });
     return mapCategory(data);
   } catch (error) {
     if (isNotFoundError(error)) return null;

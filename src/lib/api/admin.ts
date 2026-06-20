@@ -23,7 +23,12 @@ import {
   type ManagedUserRecord,
 } from "@/lib/api/admin-users";
 import type { Author, TrustPage } from "@/types";
-import { fetchAdminNewsList, fetchAdminNewsById, type AdminNewsListQuery } from "@/lib/api/admin-news";
+import { fetchAdminRedirectsList } from "@/lib/api/admin-redirects";
+import {
+  fetchAdminNewsList,
+  fetchAdminNewsById,
+  type AdminNewsListQuery,
+} from "@/lib/api/admin-news";
 import { isConnectionError } from "@/lib/api/connection";
 import type { PaginationMeta } from "@/types";
 import type { AdminNewsRecord } from "@/lib/api/admin-news";
@@ -241,6 +246,15 @@ export async function loadAdminRoles(): Promise<AdminLoadResult<AdminRoleRecord[
   try {
     const roles = await fetchAdminRolesList();
     return { status: "success", data: roles };
+  } catch (error) {
+    return toOfflineOrError(error);
+  }
+}
+
+export async function loadAdminRedirects(): Promise<AdminLoadResult<import("@/lib/api/admin-redirects").AdminRedirectRecord[]>> {
+  try {
+    const redirects = await fetchAdminRedirectsList();
+    return { status: "success", data: redirects };
   } catch (error) {
     return toOfflineOrError(error);
   }

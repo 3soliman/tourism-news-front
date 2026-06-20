@@ -1,9 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DashboardSection from "@/components/dashboard/DashboardSection";
+import ArticleCompliancePanel from "@/components/admin/ArticleCompliancePanel";
 import ArticleSeoFields from "@/components/admin/ArticleSeoFields";
+import ArticleRedirectFields, {
+  type ArticleRedirectState,
+} from "@/components/admin/ArticleRedirectFields";
 import AdminFormHeader from "@/components/admin/AdminFormHeader";
 import AdminContentEditor from "@/components/admin/AdminContentEditor";
 import "@/styles/admin-tinymce.css";
@@ -22,6 +26,11 @@ import {
   createAdminNews,
   updateAdminNews,
 } from "@/lib/api/admin-news";
+import { syncArticleRedirect } from "@/lib/api/admin-redirects";
+import {
+  validateArticleComplianceSafe,
+  type ArticleComplianceReport,
+} from "@/lib/api/admin-news-compliance";
 import type { AdminNewsFormInput, AdminNewsPayload } from "@/types";
 import type { Author, Category, Country } from "@/types";
 import {
@@ -47,6 +56,9 @@ type NewsFormProps = {
   countries: Country[];
   authors: Author[];
   currentAuthorName?: string;
+  articleOptions?: Array<{ slug: string; title: string }>;
+  initialRedirect?: ArticleRedirectState;
+  canManageRedirect?: boolean;
 };
 
 export default function NewsForm({
@@ -57,6 +69,9 @@ export default function NewsForm({
   countries,
   authors,
   currentAuthorName,
+  articleOptions = [],
+  initialRedirect = { enabled: false, targetSlug: "" },
+  canManageRedirect = false,
 }: NewsFormProps) {
   const router = useRouter();
   const [form, setForm] = useState<AdminNewsFormInput>(initial);
@@ -75,6 +90,14 @@ export default function NewsForm({
   const [publishedAtSynced, setPublishedAtSynced] = useState(() =>
     mode === "create" ? true : !initial.published_at,
   );
+  const [redirectState, setRedirectState] =
+    useState<ArticleRedirectState>(initialRedirect);
+  const [compliance, setCompliance] = useState<ArticleComplianceReport | null>(null);
+  const [complianceLoading, setComplianceLoading] = useState(false);
+  const complianceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const isPublishing =
+    form.status === "published" || form.status === "scheduled";
 
   const updateField = <K extends keyof AdminNewsFormInput>(
     key: K,
@@ -149,6 +172,66 @@ export default function NewsForm({
     updateField("published_at", published_at);
   };
 
+  useEffect(() => {
+    if (complianceTimerRef.current) {
+      clearTimeout(complianceTimerRef.current);
+    }
+
+    complianceTimerRef.current = setTimeout(async () => {
+      const contentParagraphs = editorHtmlToParagraphs(
+        normalizeMediaUrlsInHtml(contentHtml),
+      );
+
+      if (!form.title.trim() && contentParagraphs.length === 0) {
+        setCompliance(null);
+        return;
+      }
+
+      setComplianceLoading(true);
+
+      const payload = buildNewsPayload(
+        {
+          ...form,
+          published_at:
+            publishedAtSynced && isPublishing
+              ? toDatetimeLocalValue()
+              : form.published_at,
+          content_paragraphs: contentParagraphs,
+          keywords: keywordsText
+            .split(/[،,]/)
+            .map((keyword) => keyword.trim())
+            .filter(Boolean),
+        },
+        { forCreate: mode === "create" },
+      );
+
+      const result = await validateArticleComplianceSafe({
+        ...payload,
+        exclude_article_id: articleId,
+      });
+
+      setComplianceLoading(false);
+
+      if (result.ok) {
+        setCompliance(result.data);
+      }
+    }, 900);
+
+    return () => {
+      if (complianceTimerRef.current) {
+        clearTimeout(complianceTimerRef.current);
+      }
+    };
+  }, [
+    articleId,
+    contentHtml,
+    form,
+    isPublishing,
+    keywordsText,
+    mode,
+    publishedAtSynced,
+  ]);
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setSubmitting(true);
@@ -179,6 +262,12 @@ export default function NewsForm({
         .filter(Boolean),
     };
 
+    if (isPublishing && compliance && !compliance.can_publish) {
+      setSubmitting(false);
+      setError(compliance.summary);
+      return;
+    }
+
     const payload =
       mode === "create"
         ? buildNewsPayload(formForSubmit, { forCreate: true })
@@ -189,12 +278,35 @@ export default function NewsForm({
         ? await createAdminNews(payload)
         : await updateAdminNews(articleId!, payload as AdminNewsPayload);
 
-    setSubmitting(false);
-
     if (!result.ok) {
+      setSubmitting(false);
       setError(result.message);
       return;
     }
+
+    if (canManageRedirect) {
+      const savedArticleId = mode === "create" ? result.data.id : articleId!;
+
+      if (redirectState.enabled && !redirectState.targetSlug) {
+        setSubmitting(false);
+        setError("اختر الخبر الهدف لإعادة التوجيه.");
+        return;
+      }
+
+      const redirectResult = await syncArticleRedirect({
+        article_id: savedArticleId,
+        enabled: redirectState.enabled,
+        target_slug: redirectState.enabled ? redirectState.targetSlug : null,
+      });
+
+      if (!redirectResult.ok) {
+        setSubmitting(false);
+        setError(redirectResult.message);
+        return;
+      }
+    }
+
+    setSubmitting(false);
 
     router.push("/admin/news");
     router.refresh();
@@ -212,7 +324,7 @@ export default function NewsForm({
 
       {error ? <div className={admin.error}>{error}</div> : null}
 
-      <div className="grid gap-3 xl:grid-cols-[1fr_300px]">
+      <div className="grid gap-3 xl:grid-cols-[1fr_320px]">
         <section className={admin.card}>
           <div className={admin.formGrid}>
             <label>
@@ -265,7 +377,14 @@ export default function NewsForm({
           </div>
         </section>
 
-        <DashboardSection title="الربط التحريري">
+        <div className="space-y-3">
+          <ArticleCompliancePanel
+            report={compliance}
+            loading={complianceLoading}
+            publishing={isPublishing}
+          />
+
+          <DashboardSection title="الربط التحريري">
           <div className={admin.formGrid}>
             <label>
               <span className={admin.label}>التصنيف</span>
@@ -383,7 +502,17 @@ export default function NewsForm({
             </label>
           </div>
         </DashboardSection>
+        </div>
       </div>
+
+      {canManageRedirect ? (
+        <ArticleRedirectFields
+          articleSlug={form.slug}
+          value={redirectState}
+          articleOptions={articleOptions}
+          onChange={setRedirectState}
+        />
+      ) : null}
 
       <ArticleSeoFields
         form={form}

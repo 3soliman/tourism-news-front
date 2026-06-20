@@ -4,8 +4,10 @@ import NewsForm from "@/components/admin/NewsForm";
 import {
   loadAdminCategories,
   loadAdminCountries,
+  loadAdminNews,
 } from "@/lib/api/admin";
 import type { AdminNewsFormInput } from "@/types";
+import { AdminPermission, hasPermission } from "@/lib/admin-permissions";
 import { verifyAdminSession } from "@/lib/auth/verify-session";
 import { toDatetimeLocalValue } from "@/lib/datetime-local";
 
@@ -73,6 +75,13 @@ export default async function AdminNewsCreatePage() {
   const currentAuthorName =
     user?.public_name?.trim() || user?.display_name || user?.name || "المستخدم الحالي";
 
+  const newsList = await loadAdminNews({ per_page: 100 });
+  const articleOptions =
+    newsList.status === "success"
+      ? newsList.data.map((item) => ({ slug: item.slug, title: item.title }))
+      : [];
+  const canManageRedirect = hasPermission(user, AdminPermission.REDIRECTS_UPDATE);
+
   return (
     <NewsForm
       mode="create"
@@ -81,6 +90,8 @@ export default async function AdminNewsCreatePage() {
       countries={countries.data}
       authors={[]}
       currentAuthorName={currentAuthorName}
+      articleOptions={articleOptions}
+      canManageRedirect={canManageRedirect}
     />
   );
 }

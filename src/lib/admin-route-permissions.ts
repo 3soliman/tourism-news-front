@@ -47,6 +47,10 @@ const routePermissionRules: RoutePermissionRule[] = [
 
   { pattern: /^\/admin\/seo(?:\/|$)/, permission: AdminPermission.SEO_VIEW },
   {
+    pattern: /^\/admin\/redirects(?:\/|$)/,
+    permission: AdminPermission.REDIRECTS_VIEW,
+  },
+  {
     pattern: /^\/admin\/settings(?:\/|$)/,
     permission: AdminPermission.SETTINGS_VIEW,
   },

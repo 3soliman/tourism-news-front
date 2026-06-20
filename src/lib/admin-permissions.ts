@@ -46,6 +46,11 @@ export const AdminPermission = {
   ROLES_CREATE: "roles.create",
   ROLES_UPDATE: "roles.update",
   ROLES_DELETE: "roles.delete",
+
+  REDIRECTS_VIEW: "redirects.view",
+  REDIRECTS_CREATE: "redirects.create",
+  REDIRECTS_UPDATE: "redirects.update",
+  REDIRECTS_DELETE: "redirects.delete",
 } as const;
 
 export type AdminPermissionSlug =

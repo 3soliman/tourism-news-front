@@ -25,6 +25,8 @@ import { buildNewsArticleSchema } from "@/lib/news-schema";
 import { formatPublishedAt } from "@/lib/news-format";
 import { getSiteConfig } from "@/lib/site";
 
+export const dynamic = "force-dynamic";
+
 type ArticlePageProps = {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ country?: string }>;
@@ -181,15 +183,15 @@ export default async function ArticleDetailsPage({
     );
   }
 
-  if (!isApiOnline()) {
-    return (
-      <PageWithSidebar>
-        <ApiOfflineMessage />
-      </PageWithSidebar>
-    );
-  }
-
   if (resolved.kind !== "article") {
+    if (!isApiOnline()) {
+      return (
+        <PageWithSidebar>
+          <ApiOfflineMessage />
+        </PageWithSidebar>
+      );
+    }
+
     notFound();
   }
 

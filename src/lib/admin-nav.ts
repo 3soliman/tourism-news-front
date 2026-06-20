@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import {
+  ArrowRightLeft,
   BarChart3,
   Eye,
   FileText,
@@ -138,6 +139,12 @@ export const adminNavGroups: AdminNavGroup[] = [
         label: "السيو و Google News",
         icon: BarChart3,
         permission: AdminPermission.SEO_VIEW,
+      },
+      {
+        href: "/admin/redirects",
+        label: "إعادة التوجيه",
+        icon: ArrowRightLeft,
+        permission: AdminPermission.REDIRECTS_VIEW,
       },
       {
         href: "/admin/settings",
