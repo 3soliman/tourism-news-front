@@ -16,22 +16,21 @@ export default function PopularTabs({ latest, popular }: PopularTabsProps) {
     tab === "latest" ? latest : tab === "popular" ? popular : latest;
 
   return (
-    <div className="overflow-hidden rounded-lg editorial-card">
-      <div className="flex border-b border-border bg-page-bg">
+    <div className="overflow-hidden rounded-xl bg-white editorial-card">
+      <div className="flex border-b border-border/60 bg-page-bg p-1">
         {(
           [
             ["popular", "الأكثر قراءة"],
             ["latest", "الأحدث"],
-            ["comments", "تعليقات"],
           ] as const
         ).map(([key, label]) => (
           <button
             key={key}
             type="button"
-            onClick={() => setTab(key)}
-            className={`flex-1 px-2 py-3 text-xs font-black transition ${
+            onClick={() => setTab(key as "popular" | "latest")}
+            className={`flex-1 rounded-lg px-2 py-2.5 text-xs font-black transition ${
               tab === key
-                ? "bg-white text-primary"
+                ? "bg-white text-primary shadow-sm"
                 : "text-text-muted hover:text-primary"
             }`}
           >
@@ -40,34 +39,30 @@ export default function PopularTabs({ latest, popular }: PopularTabsProps) {
         ))}
       </div>
       <div className="p-4">
-        {tab === "comments" ? (
-          <p className="text-sm text-text-muted">
-            قسم التعليقات سيتوفر لاحقًا مع تفعيل النظام التفاعلي.
-          </p>
-        ) : (
-          <ul className="space-y-3">
-            {items.slice(0, 5).map((article, i) => (
-              <li key={article.id} className="flex gap-3 rounded-md transition hover:bg-page-bg">
-                <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded bg-primary-dark text-xs font-black text-white">
-                  {i + 1}
-                </span>
-                <div>
-                  <Link
-                    href={`/travel-news/${article.slug}`}
-                    className="line-clamp-2 text-sm font-bold leading-6 text-text-dark hover:text-primary"
-                  >
-                    {article.title}
-                  </Link>
-                  <p className="mt-1 text-xs text-text-muted">
-                    {tab === "popular" && article.viewsCount > 0
-                      ? `${article.viewsCount.toLocaleString("ar")} قراءة`
-                      : article.publishedAt}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
+        <ul className="space-y-3">
+          {items.slice(0, 5).map((article, i) => (
+            <li key={article.id} className="group flex gap-3 rounded-lg p-1 transition hover:bg-page-bg">
+              <span className={`mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black text-white ${
+                i === 0 ? "bg-amber-500" : i === 1 ? "bg-slate-400" : i === 2 ? "bg-amber-700" : "bg-primary-dark"
+              }`}>
+                {i + 1}
+              </span>
+              <div className="min-w-0">
+                <Link
+                  href={`/travel-news/${article.slug}`}
+                  className="line-clamp-2 text-sm font-bold leading-6 text-text-dark transition group-hover:text-primary"
+                >
+                  {article.title}
+                </Link>
+                <p className="mt-1 text-xs text-text-subtle">
+                  {tab === "popular" && article.viewsCount > 0
+                    ? `${article.viewsCount.toLocaleString("ar")} قراءة`
+                    : article.publishedAt}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

@@ -7,18 +7,20 @@ type FeaturedNewsCardProps = {
   article: NewsArticle;
   size?: "large" | "medium" | "small";
   priority?: boolean;
+  className?: string;
 };
 
 export default function FeaturedNewsCard({
   article,
   size = "small",
   priority = false,
+  className,
 }: FeaturedNewsCardProps) {
   if (size === "large") {
     return (
       <Link
         href={`/travel-news/${article.slug}`}
-        className="group relative block min-h-[380px] overflow-hidden rounded-sm bg-primary-dark shadow-xl shadow-black/10 sm:min-h-[460px] lg:min-h-[560px]"
+        className={`group relative block min-h-[360px] overflow-hidden rounded-2xl bg-primary-dark shadow-xl shadow-primary-dark/15 sm:min-h-[420px] lg:min-h-[540px] ${className ?? ""}`}
       >
         <span className="image-shine absolute inset-0 overflow-hidden">
           <SafeImage
@@ -30,19 +32,21 @@ export default function FeaturedNewsCard({
             priority={priority}
           />
         </span>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1f272b] via-[#1f272b]/55 to-transparent" />
-        <div className="absolute bottom-0 right-0 left-0 p-5 text-white sm:p-7">
-          <span className="inline-flex rounded-sm bg-breaking px-3 py-1 text-xs font-black">
+        <div className="hero-gradient-overlay absolute inset-0" />
+        <div className="absolute bottom-0 right-0 left-0 p-6 text-white sm:p-8">
+          <span className="category-badge bg-breaking/90 text-white">
             {article.category}
           </span>
-          <h2 className="mt-3 max-w-2xl font-display text-3xl font-black leading-tight text-white sm:text-4xl lg:text-5xl">
+          <h2 className="mt-4 max-w-2xl font-display text-3xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.65rem] lg:leading-[1.15]">
             {article.title}
           </h2>
-          <p className="mt-3 max-w-xl line-clamp-2 text-sm leading-7 text-white/86 sm:text-base">
+          <p className="mt-3 max-w-xl line-clamp-2 text-sm leading-7 text-white/80 sm:text-base">
             {article.excerpt}
           </p>
-          <p className="mt-4 text-xs font-semibold text-white/75">
-            {article.publishedAt} · {article.readingTime}
+          <p className="mt-4 flex items-center gap-2 text-xs font-semibold text-white/65">
+            <span>{article.publishedAt}</span>
+            <span className="h-1 w-1 rounded-full bg-white/40" />
+            <span>{article.readingTime}</span>
           </p>
         </div>
       </Link>
@@ -53,7 +57,7 @@ export default function FeaturedNewsCard({
     return (
       <Link
         href={`/travel-news/${article.slug}`}
-        className="group flex flex-col overflow-hidden rounded-sm bg-white editorial-card transition hover:-translate-y-0.5 hover:border-primary/45"
+        className={`group flex flex-col overflow-hidden rounded-xl bg-white editorial-card ${className ?? ""}`}
       >
         <div className="image-shine relative aspect-[16/10] overflow-hidden bg-surface-alt">
           <SafeImage
@@ -64,17 +68,20 @@ export default function FeaturedNewsCard({
             sizes="(max-width: 768px) 50vw, 400px"
           />
         </div>
-
-        <div className="flex flex-col p-3">
-          <span className="text-[11px] font-black text-breaking">{article.category}</span>
-          <h3 className="mt-1.5 line-clamp-2 text-base font-black leading-7 text-text-dark transition group-hover:text-primary">
+        <div className="flex flex-col p-4">
+          <span className="category-badge bg-breaking-bg text-breaking">
+            {article.category}
+          </span>
+          <h3 className="mt-2.5 line-clamp-2 text-base font-black leading-7 text-text-dark transition group-hover:text-primary">
             {article.title}
           </h3>
-          <p className="mt-1.5 line-clamp-2 text-xs leading-6 text-text-muted">
+          <p className="mt-1.5 line-clamp-2 text-sm leading-6 text-text-muted">
             {article.excerpt}
           </p>
-          <p className="mt-2 text-[11px] font-semibold text-text-muted">
-            {article.publishedAt} · {article.readingTime}
+          <p className="mt-3 flex items-center gap-2 text-xs font-semibold text-text-subtle">
+            <span>{article.publishedAt}</span>
+            <span className="h-1 w-1 rounded-full bg-border" />
+            <span>{article.readingTime}</span>
           </p>
         </div>
       </Link>
@@ -84,7 +91,7 @@ export default function FeaturedNewsCard({
   return (
     <Link
       href={`/travel-news/${article.slug}`}
-      className="group grid min-h-[128px] grid-cols-[112px_1fr] overflow-hidden rounded-sm bg-white editorial-card transition hover:-translate-y-0.5 hover:border-primary/45"
+      className={`group grid min-h-[120px] grid-cols-[100px_1fr] overflow-hidden rounded-xl bg-white editorial-card ${className ?? ""}`}
     >
       <div className="image-shine relative aspect-square overflow-hidden bg-surface-alt">
         <SafeImage
@@ -92,16 +99,17 @@ export default function FeaturedNewsCard({
           alt={article.title}
           className="object-cover transition group-hover:scale-105"
           displayWidth={IMAGE_WIDTHS.thumb}
-          sizes="112px"
+          sizes="100px"
         />
       </div>
-
-      <div className="flex min-w-0 flex-col justify-center p-3">
-        <span className="text-[11px] font-black text-breaking">{article.category}</span>
-        <h3 className="mt-1 line-clamp-2 text-sm font-black leading-6 text-text-dark transition group-hover:text-primary">
+      <div className="flex min-w-0 flex-col justify-center p-3.5">
+        <span className="category-badge bg-breaking-bg text-breaking self-start">
+          {article.category}
+        </span>
+        <h3 className="mt-2 line-clamp-2 text-sm font-black leading-6 text-text-dark transition group-hover:text-primary">
           {article.title}
         </h3>
-        <p className="mt-1 line-clamp-2 text-xs leading-5 text-text-muted sm:block">
+        <p className="mt-1 line-clamp-2 text-xs leading-5 text-text-muted">
           {article.excerpt}
         </p>
       </div>

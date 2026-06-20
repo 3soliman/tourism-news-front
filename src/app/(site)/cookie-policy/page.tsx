@@ -12,30 +12,10 @@ export const metadata: Metadata = {
 const LAST_UPDATED = "18 يونيو 2026";
 
 const cookieRows = [
-  {
-    type: "ضرورية",
-    name: "cookie_consent",
-    purpose: "حفظ اختيارك بخصوص ملفات تعريف الارتباط",
-    duration: "6 أشهر",
-  },
-  {
-    type: "ضرورية",
-    name: "admin_token",
-    purpose: "الاحتفاظ بجلسة تسجيل الدخول للوحة التحكم (للمحررين فقط)",
-    duration: "30 يومًا",
-  },
-  {
-    type: "تحليلات",
-    name: "_ga / _gid",
-    purpose: "قياس زيارات الموقع عبر Google Analytics — عند التفعيل فقط",
-    duration: "حتى سنتين / 24 ساعة",
-  },
-  {
-    type: "إعلانات",
-    name: "google_ads_*",
-    purpose: "عرض وقياس الإعلانات عند تفعيل Google AdSense",
-    duration: "حسب سياسة Google",
-  },
+  { type: "ضرورية", name: "cookie_consent", purpose: "حفظ اختيارك بخصوص ملفات تعريف الارتباط", duration: "6 أشهر" },
+  { type: "ضرورية", name: "admin_token", purpose: "الاحتفاظ بجلسة تسجيل الدخول للوحة التحكم (للمحررين فقط)", duration: "30 يومًا" },
+  { type: "تحليلات", name: "_ga / _gid", purpose: "قياس زيارات الموقع عبر Google Analytics — عند التفعيل فقط", duration: "حتى سنتين / 24 ساعة" },
+  { type: "إعلانات", name: "google_ads_*", purpose: "عرض وقياس الإعلانات عند تفعيل Google AdSense", duration: "حسب سياسة Google" },
 ] as const;
 
 export default function CookiePolicyPage() {
@@ -65,52 +45,30 @@ export default function CookiePolicyPage() {
 
       <h2>أنواع الكوكيز التي نستخدمها</h2>
       <ul>
-        <li>
-          <strong>ضرورية:</strong> مطلوبة لتشغيل الموقع وحفظ موافقتك على
-          الكوكيز.
-        </li>
-        <li>
-          <strong>تحليلات:</strong> لفهم عدد الزوار وسلوك التصفح (مثل Google
-          Analytics) — تُفعَّل فقط بعد موافقتك.
-        </li>
-        <li>
-          <strong>إعلانات:</strong> لعرض وقياس الإعلانات عند تفعيل خدمات مثل
-          AdSense — تُفعَّل فقط بعد موافقتك.
-        </li>
-        <li>
-          <strong>تخصيص:</strong> لتذكر تفضيلاتك مثل الدولة أو الاهتمامات —
-          تُفعَّل فقط بعد موافقتك.
-        </li>
+        <li><strong>ضرورية:</strong> مطلوبة لتشغيل الموقع وحفظ موافقتك على الكوكيز.</li>
+        <li><strong>تحليلات:</strong> لفهم عدد الزوار وسلوك التصفح (مثل Google Analytics) — تُفعَّل فقط بعد موافقتك.</li>
+        <li><strong>إعلانات:</strong> لعرض وقياس الإعلانات عند تفعيل خدمات مثل AdSense — تُفعَّل فقط بعد موافقتك.</li>
+        <li><strong>تخصيص:</strong> لتذكر تفضيلاتك مثل الدولة أو الاهتمامات — تُفعَّل فقط بعد موافقتك.</li>
       </ul>
 
       <h2>قائمة ملفات تعريف الارتباط</h2>
-      <div className="not-prose overflow-x-auto">
+      <div className="not-prose overflow-x-auto rounded-xl border border-border/60">
         <table className="w-full min-w-[640px] border-collapse text-sm">
           <thead>
-            <tr className="bg-[#eaf6fb] text-[#244958]">
-              <th className="border border-border px-3 py-2 text-start font-bold">
-                النوع
-              </th>
-              <th className="border border-border px-3 py-2 text-start font-bold">
-                الاسم
-              </th>
-              <th className="border border-border px-3 py-2 text-start font-bold">
-                الغرض
-              </th>
-              <th className="border border-border px-3 py-2 text-start font-bold">
-                المدة
-              </th>
+            <tr className="bg-primary-50 text-text-dark">
+              <th className="border-b border-border/60 px-4 py-3 text-start font-bold">النوع</th>
+              <th className="border-b border-border/60 px-4 py-3 text-start font-bold">الاسم</th>
+              <th className="border-b border-border/60 px-4 py-3 text-start font-bold">الغرض</th>
+              <th className="border-b border-border/60 px-4 py-3 text-start font-bold">المدة</th>
             </tr>
           </thead>
           <tbody>
-            {cookieRows.map((row) => (
-              <tr key={row.name}>
-                <td className="border border-border px-3 py-2">{row.type}</td>
-                <td className="border border-border px-3 py-2 font-mono text-xs">
-                  {row.name}
-                </td>
-                <td className="border border-border px-3 py-2">{row.purpose}</td>
-                <td className="border border-border px-3 py-2">{row.duration}</td>
+            {cookieRows.map((row, i) => (
+              <tr key={row.name} className={i % 2 === 0 ? "bg-white" : "bg-page-bg"}>
+                <td className="border-b border-border/40 px-4 py-3 font-medium">{row.type}</td>
+                <td className="border-b border-border/40 px-4 py-3 font-mono text-xs">{row.name}</td>
+                <td className="border-b border-border/40 px-4 py-3">{row.purpose}</td>
+                <td className="border-b border-border/40 px-4 py-3">{row.duration}</td>
               </tr>
             ))}
           </tbody>
@@ -141,9 +99,7 @@ export default function CookiePolicyPage() {
         يمكنك في أي وقت إعادة فتح لوحة التفضيلات من الرابط أدناه أو من الفوتر
         عبر «إدارة تفضيلات الكوكيز».
       </p>
-      <p>
-        <CookiePreferencesLink />
-      </p>
+      <p><CookiePreferencesLink /></p>
 
       <h2>معلومات التواصل</h2>
       <p>
@@ -154,8 +110,7 @@ export default function CookiePolicyPage() {
         أو{" "}
         <Link href="/contact" className="font-bold text-primary hover:underline">
           اتصل بنا
-        </Link>
-        .
+        </Link>.
       </p>
     </StaticPageLayout>
   );

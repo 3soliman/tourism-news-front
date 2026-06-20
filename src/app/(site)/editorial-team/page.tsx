@@ -12,21 +12,23 @@ export default async function EditorialTeamPage() {
   return (
     <TrustPageView slug="editorial-team">
       {authors.length > 0 ? (
-        <div className="not-prose mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="not-prose mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {authors.map((author) => (
             <Link
               key={author.slug}
               href={`/authors/${author.slug}`}
-              className="rounded border border-border bg-page-bg p-5 text-center transition hover:border-primary hover:shadow-md"
+              className="group rounded-2xl border border-border/60 bg-white p-6 text-center editorial-card"
             >
               <img
                 src={author.image}
                 alt={author.name}
-                className="mx-auto h-24 w-24 rounded-full object-cover ring-2 ring-primary/20"
+                className="mx-auto h-24 w-24 rounded-2xl object-cover ring-2 ring-primary/10 transition group-hover:ring-primary/30"
               />
-              <h3 className="mt-4 text-lg font-black text-text-dark">{author.name}</h3>
+              <h3 className="mt-4 text-lg font-black text-text-dark transition group-hover:text-primary">
+                {author.name}
+              </h3>
               <p className="mt-1 text-xs font-bold text-primary">{author.role}</p>
-              <p className="mt-2 text-sm leading-7 text-text-muted">{author.bio}</p>
+              <p className="mt-3 text-sm leading-7 text-text-muted line-clamp-3">{author.bio}</p>
             </Link>
           ))}
         </div>

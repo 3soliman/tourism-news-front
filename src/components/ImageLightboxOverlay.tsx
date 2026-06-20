@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
@@ -15,18 +15,12 @@ export default function ImageLightboxOverlay({
   alt,
   onClose,
 }: ImageLightboxOverlayProps) {
-  const [mounted, setMounted] = useState(false);
-
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     },
     [onClose],
   );
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -39,7 +33,7 @@ export default function ImageLightboxOverlay({
     };
   }, [handleKeyDown]);
 
-  if (!mounted) return null;
+  if (typeof document === "undefined") return null;
 
   return createPortal(
     <div

@@ -7,7 +7,6 @@ import {
   acceptAllConsent,
   applyConsentScripts,
   COOKIE_CONSENT_OPEN_EVENT,
-  hasConsentChoice,
   readConsentFromDocument,
   rejectOptionalConsent,
   writeConsentToDocument,
@@ -20,10 +19,13 @@ export default function CookieConsentBanner() {
   const [visible, setVisible] = useState(false);
   const [minimized, setMinimized] = useState(false);
   const [customizeOpen, setCustomizeOpen] = useState(false);
-  const [preferences, setPreferences] = useState({
-    analytics: false,
-    marketing: false,
-    personalization: false,
+  const [preferences, setPreferences] = useState(() => {
+    const existing = readConsentFromDocument();
+    return {
+      analytics: existing?.analytics ?? false,
+      marketing: existing?.marketing ?? false,
+      personalization: existing?.personalization ?? false,
+    };
   });
 
   const saveConsent = useCallback((state: CookieConsentState) => {
@@ -47,11 +49,11 @@ export default function CookieConsentBanner() {
   }, []);
 
   useEffect(() => {
-    if (!hasConsentChoice()) {
-      setVisible(true);
+    const existing = readConsentFromDocument();
+    if (existing) {
+      applyConsentScripts(existing);
     } else {
-      const existing = readConsentFromDocument();
-      if (existing) applyConsentScripts(existing);
+      setVisible(true);
     }
 
     const handleOpen = () => openBanner();

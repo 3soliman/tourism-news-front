@@ -17,10 +17,10 @@ export default function NewsCard({
 
   if (variant === "horizontal") {
     return (
-      <article className="group grid grid-cols-[108px_1fr] gap-4 border-b border-border py-4 last:border-0 sm:grid-cols-[150px_1fr]">
+      <article className="group grid grid-cols-[100px_1fr] gap-4 border-b border-border/60 py-4 last:border-0 sm:grid-cols-[130px_1fr]">
         <Link
           href={`/travel-news/${article.slug}`}
-          className="image-shine relative block aspect-[4/3] overflow-hidden rounded-sm bg-surface-alt"
+          className="image-shine relative block aspect-[4/3] overflow-hidden rounded-xl bg-surface-alt"
         >
           <SafeImage
             src={article.image}
@@ -32,31 +32,30 @@ export default function NewsCard({
         </Link>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <Link
-              href={`/travel-news/${article.categorySlug}`}
-              className="text-[11px] font-black text-breaking"
-            >
+            <span className="category-badge bg-breaking-bg text-breaking">
               {article.category}
-            </Link>
+            </span>
             {countryName ? (
               <Link
                 href={`/travel-news?country=${article.countrySlug}`}
-                className="text-[11px] font-black text-primary"
+                className="category-badge bg-primary-50 text-primary"
               >
                 {countryFlag} {countryName}
               </Link>
             ) : null}
           </div>
           <Link href={`/travel-news/${article.slug}`}>
-            <h3 className="mt-1 line-clamp-2 text-base font-black leading-7 text-text-dark transition hover:text-primary">
+            <h3 className="mt-2 line-clamp-2 text-base font-black leading-7 text-text-dark transition hover:text-primary">
               {article.title}
             </h3>
           </Link>
           <p className="mt-1 line-clamp-2 text-sm leading-6 text-text-muted">
             {article.excerpt}
           </p>
-          <p className="mt-2 text-[11px] font-semibold text-text-muted">
-            {article.publishedAt} · {article.readingTime}
+          <p className="mt-2 flex items-center gap-2 text-xs font-semibold text-text-subtle">
+            <span>{article.publishedAt}</span>
+            <span className="h-1 w-1 rounded-full bg-border" />
+            <span>{article.readingTime}</span>
           </p>
         </div>
       </article>
@@ -65,7 +64,7 @@ export default function NewsCard({
 
   if (variant === "compact") {
     return (
-      <article className="border-b border-border py-3 last:border-0">
+      <article className="border-b border-border/60 py-3 last:border-0">
         <Link
           href={`/travel-news/${article.categorySlug}`}
           className="text-xs font-bold text-primary"
@@ -73,17 +72,17 @@ export default function NewsCard({
           {article.category}
         </Link>
         <Link href={`/travel-news/${article.slug}`}>
-          <h3 className="mt-1 line-clamp-2 text-sm font-bold leading-6 text-text-dark transition hover:text-primary">
+          <h3 className="mt-1.5 line-clamp-2 text-sm font-bold leading-6 text-text-dark transition hover:text-primary">
             {article.title}
           </h3>
         </Link>
-        <p className="mt-1 text-xs text-text-muted">{article.publishedAt}</p>
+        <p className="mt-1 text-xs text-text-subtle">{article.publishedAt}</p>
       </article>
     );
   }
 
   return (
-    <article className="group overflow-hidden rounded-sm editorial-card transition hover:-translate-y-0.5 hover:border-primary/45">
+    <article className="group overflow-hidden rounded-xl bg-white editorial-card">
       <Link
         href={`/travel-news/${article.slug}`}
         className="image-shine relative block aspect-[16/10] overflow-hidden bg-surface-alt"
@@ -100,29 +99,31 @@ export default function NewsCard({
         <div className="flex flex-wrap items-center gap-2">
           <Link
             href={`/travel-news/${article.categorySlug}`}
-            className="text-xs font-black text-breaking"
+            className="category-badge bg-breaking-bg text-breaking"
           >
             {article.category}
           </Link>
           {countryName ? (
             <Link
               href={`/travel-news?country=${article.countrySlug}`}
-              className="rounded-sm bg-surface-alt px-2 py-1 text-[11px] font-black text-primary"
+              className="category-badge bg-primary-50 text-primary"
             >
               {countryFlag} {countryName}
             </Link>
           ) : null}
         </div>
         <Link href={`/travel-news/${article.slug}`}>
-          <h3 className="mt-1 line-clamp-2 text-base font-black leading-7 text-text-dark transition hover:text-primary">
+          <h3 className="mt-2.5 line-clamp-2 text-lg font-black leading-8 text-text-dark transition hover:text-primary">
             {article.title}
           </h3>
         </Link>
         <p className="mt-2 line-clamp-2 text-sm leading-6 text-text-muted">
           {article.excerpt}
         </p>
-        <p className="mt-3 text-[11px] font-semibold text-text-muted">
-          {article.publishedAt} · {article.readingTime}
+        <p className="mt-3 flex items-center gap-2 text-xs font-semibold text-text-subtle">
+          <span>{article.publishedAt}</span>
+          <span className="h-1 w-1 rounded-full bg-border" />
+          <span>{article.readingTime}</span>
         </p>
       </div>
     </article>

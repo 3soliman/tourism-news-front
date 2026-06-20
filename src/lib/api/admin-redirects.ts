@@ -62,8 +62,10 @@ function mapRedirect(raw: ApiRedirect): AdminRedirectRecord {
   };
 }
 
-function toMutationError(error: unknown): AdminMutationResult {
-  return toApiMutationError(error);
+function toMutationError<T = AdminRedirectRecord>(
+  error: unknown,
+): AdminMutationResult<T> {
+  return toApiMutationError(error) as AdminMutationResult<T>;
 }
 
 export async function fetchAdminRedirectsList(): Promise<AdminRedirectRecord[]> {
@@ -147,7 +149,7 @@ export async function deleteAdminRedirect(id: number): Promise<AdminMutationResu
 
     return { ok: true, data: null };
   } catch (error) {
-    return toMutationError(error);
+    return toMutationError<null>(error);
   }
 }
 
@@ -167,6 +169,6 @@ export async function syncArticleRedirect(payload: {
       data: json.data ? mapRedirect(json.data) : null,
     };
   } catch (error) {
-    return toMutationError(error);
+    return toMutationError<AdminRedirectRecord | null>(error);
   }
 }

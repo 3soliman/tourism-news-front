@@ -1,23 +1,27 @@
+import { Globe, MessageCircle, Send, ExternalLink } from "lucide-react";
+
 export default function SocialFollowBox() {
   const links = [
-    { label: "فيسبوك", color: "bg-blue-600" },
-    { label: "إكس", color: "bg-primary-dark" },
-    { label: "واتساب", color: "bg-green-600" },
-    { label: "يوتيوب", color: "bg-red-600" },
+    { label: "فيسبوك", icon: Globe, color: "bg-blue-600 hover:bg-blue-700" },
+    { label: "إكس", icon: Send, color: "bg-primary-dark hover:bg-black" },
+    { label: "واتساب", icon: MessageCircle, color: "bg-green-600 hover:bg-green-700" },
+    { label: "يوتيوب", icon: ExternalLink, color: "bg-red-600 hover:bg-red-700" },
   ];
 
   return (
-    <div className="rounded-lg editorial-card p-4">
-      <h3 className="border-b border-border pb-2 text-sm font-black text-text-dark">
+    <div className="rounded-xl bg-white p-5 editorial-card">
+      <h3 className="flex items-center gap-2 border-b border-border/60 pb-3 text-sm font-black text-text-dark">
+        <span className="section-accent" />
         تابعنا
       </h3>
-      <div className="mt-3 grid grid-cols-2 gap-2">
+      <div className="mt-4 grid grid-cols-2 gap-2.5">
         {links.map((item) => (
           <a
             key={item.label}
             href="#"
-            className={`rounded-md px-3 py-2 text-center text-xs font-bold text-white transition opacity-90 hover:opacity-100 ${item.color}`}
+            className={`flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-xs font-bold text-white transition-all ${item.color} shadow-sm`}
           >
+            <item.icon size={14} />
             {item.label}
           </a>
         ))}

@@ -26,7 +26,7 @@ export default function SiteShell({
       <TopBar />
       <SiteHeader headerImages={headerImages} />
 
-      <div className="sticky top-0 z-50 shadow-xl shadow-black/15">
+      <div className="sticky top-0 z-50 shadow-lg shadow-primary-dark/8">
         <MainNav categories={categories} countries={countries} />
         <BreakingNewsBar articles={breakingNews} />
       </div>

@@ -13,9 +13,9 @@ export default function PageWithSidebar({
   latestSeed,
 }: PageWithSidebarProps) {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-5 lg:py-6">
-      <div className="min-w-0">{children}</div>
-      <div className="mt-10 border-t border-border pt-8">
+    <div className="mx-auto grid max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start lg:gap-8 lg:py-8">
+      <div className="min-w-0 space-y-6">{children}</div>
+      <div className="min-w-0 border-t border-border/60 pt-6 lg:sticky lg:top-28 lg:border-t-0 lg:pt-0">
         <Suspense fallback={<SidebarSkeleton />}>
           <SidebarPanel latestSeed={latestSeed} />
         </Suspense>

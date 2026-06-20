@@ -110,7 +110,7 @@ export default function ArticleBody({ paragraphs }: ArticleBodyProps) {
       {safeCss ? <style>{safeCss}</style> : null}
       <div
         ref={containerRef}
-        className="article-body prose prose-lg mt-8 max-w-none leading-9 prose-headings:font-black prose-headings:text-text-dark prose-p:text-text-muted prose-a:text-primary prose-blockquote:border-primary prose-blockquote:text-text-dark"
+        className="article-body prose prose-lg mt-8 max-w-none leading-9 prose-headings:font-black prose-headings:text-text-dark prose-p:text-[#41576a] prose-a:text-primary prose-blockquote:border-primary prose-blockquote:bg-surface-alt prose-blockquote:px-4 prose-blockquote:py-2 prose-blockquote:text-text-dark"
         dangerouslySetInnerHTML={{ __html: safeHtml }}
       />
       {lightbox ? (

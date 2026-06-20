@@ -37,24 +37,27 @@ export default async function HomePage() {
 
   return (
     <PageWithSidebar latestSeed={sidebarLatest}>
-      <HeroNewsGrid articles={heroNews} />
+      <div className="animate-fade-in-up stagger-1">
+        <HeroNewsGrid articles={heroNews} />
+      </div>
 
-      <section className="mt-9 rounded-sm bg-white p-4 shadow-sm ring-1 ring-border/80 sm:p-5">
+      <section className="mt-8 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-border/50 sm:p-6 animate-fade-in-up stagger-2">
         <SectionHeader title="أحدث الأخبار" moreHref="/travel-news" />
-        <div className="grid gap-x-6 gap-y-1 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-2">
           {latestNews.map((article) => (
             <NewsCard key={article.id} article={article} variant="horizontal" />
           ))}
         </div>
       </section>
 
-      {categorySections.map(({ category, articles }) => (
-        <NewsSection
-          key={category.slug}
-          title={category.label}
-          description={category.description}
-          articles={articles}
-        />
+      {categorySections.map(({ category, articles }, i) => (
+        <div key={category.slug} className={`animate-fade-in-up stagger-${Math.min(i + 3, 5)}`}>
+          <NewsSection
+            title={category.label}
+            description={category.description}
+            articles={articles}
+          />
+        </div>
       ))}
     </PageWithSidebar>
   );

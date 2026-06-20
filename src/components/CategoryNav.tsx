@@ -20,13 +20,13 @@ export default function CategoryNav({
   countrySlug,
 }: CategoryNavProps) {
   return (
-    <nav className="mb-6 flex flex-wrap gap-2 border-b border-border pb-4">
+    <nav className="mb-6 flex flex-wrap gap-2 rounded-xl border border-border/60 bg-white p-2 shadow-sm">
       <Link
         href={countrySlug ? `/travel-news?country=${countrySlug}` : "/travel-news"}
-        className={`rounded px-4 py-2 text-sm font-bold transition ${
+        className={`rounded-lg px-4 py-2.5 text-sm font-bold transition ${
           !activeSlug
-            ? "bg-primary text-white"
-            : "bg-surface text-text-dark ring-1 ring-border hover:text-primary"
+            ? "bg-primary text-white shadow-sm shadow-primary/15"
+            : "text-text-dark hover:bg-primary-50 hover:text-primary"
         }`}
       >
         الكل
@@ -35,10 +35,10 @@ export default function CategoryNav({
         <Link
           key={category.slug}
           href={buildCategoryHref(category.slug, countrySlug)}
-          className={`rounded px-4 py-2 text-sm font-bold transition ${
+          className={`rounded-lg px-4 py-2.5 text-sm font-bold transition ${
             activeSlug === category.slug
-              ? "bg-primary text-white"
-              : "bg-surface text-text-dark ring-1 ring-border hover:text-primary"
+              ? "bg-primary text-white shadow-sm shadow-primary/15"
+              : "text-text-dark hover:bg-primary-50 hover:text-primary"
           }`}
         >
           {category.label}

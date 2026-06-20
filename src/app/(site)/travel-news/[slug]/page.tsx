@@ -24,6 +24,7 @@ import { resolveTravelNewsSlug } from "@/lib/api/travel-news-slug";
 import { buildNewsArticleSchema } from "@/lib/news-schema";
 import { formatPublishedAt } from "@/lib/news-format";
 import { getSiteConfig } from "@/lib/site";
+import { Calendar, Clock, User } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -44,7 +45,6 @@ export async function generateMetadata({
 
     if (resolved.kind === "category") {
       const categoryUrl = `${siteConfig.url}/travel-news/${resolved.category.slug}`;
-
       return {
         title: resolved.category.label,
         description: resolved.category.description,
@@ -64,7 +64,6 @@ export async function generateMetadata({
     if (resolved.kind === "article") {
       const article = resolved.article;
       const articleUrl = `${siteConfig.url}/travel-news/${article.slug}`;
-
       return {
         title: article.seoTitle,
         description: article.seoDescription,
@@ -142,11 +141,12 @@ export default async function ArticleDetailsPage({
 
     return (
       <PageWithSidebar>
-        <header className="mb-6">
-          <h1 className="border-b-2 border-primary pb-2 text-3xl font-black text-text-dark">
+        <header className="mb-6 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-border/50">
+          <p className="text-sm font-bold text-primary">تصنيف إخباري</p>
+          <h1 className="mt-2 text-3xl font-black tracking-tight text-text-dark">
             {categoryPage.label}
           </h1>
-          <p className="mt-3 text-text-muted">{categoryPage.description}</p>
+          <p className="mt-3 leading-8 text-text-muted">{categoryPage.description}</p>
         </header>
 
         <CategoryNav
@@ -156,26 +156,26 @@ export default async function ArticleDetailsPage({
         />
 
         {activeCountry ? (
-          <div className="mb-5 rounded-sm border border-[#cfe8f4] bg-[#eaf6fb] p-4 text-[#244958]">
-            <p className="text-sm font-bold text-[#53657f]">النتائج الحالية</p>
-            <h2 className="mt-1 text-2xl font-black">
+          <div className="mb-5 rounded-xl border border-primary-100 bg-primary-50 p-5">
+            <p className="text-sm font-bold text-text-muted">النتائج الحالية</p>
+            <h2 className="mt-1 text-2xl font-black text-text-dark">
               {activeCountry.flag} أخبار {categoryPage.label} المرتبطة بـ{" "}
               {activeCountry.name}
             </h2>
-            <p className="mt-2 text-sm font-bold">
+            <p className="mt-2 text-sm font-bold text-text-muted">
               {categoryNews.length} خبر في هذا الفلتر
             </p>
           </div>
         ) : null}
 
         {categoryNews.length > 0 ? (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-5 sm:grid-cols-2">
             {categoryNews.map((item) => (
               <NewsCard key={item.id} article={item} variant="vertical" />
             ))}
           </div>
         ) : (
-          <p className="rounded border border-border bg-surface p-8 text-center text-text-muted">
+          <p className="rounded-2xl border border-border/60 bg-surface p-10 text-center text-text-muted">
             لا توجد أخبار في هذا التصنيف حاليًا.
           </p>
         )}
@@ -191,7 +191,6 @@ export default async function ArticleDetailsPage({
         </PageWithSidebar>
       );
     }
-
     notFound();
   }
 
@@ -257,57 +256,67 @@ export default async function ArticleDetailsPage({
         <ArticleScrollFocus slug={article.slug} />
         <article
           id="article-top"
-          className="scroll-mt-[5.5rem] rounded border border-border bg-surface p-5 md:p-8"
+          className="scroll-mt-[5.5rem] space-y-6 rounded-2xl border border-border/60 bg-surface p-5 shadow-sm md:p-8"
         >
           <Breadcrumb items={breadcrumbItems} />
 
-          <Link
-            href={`/travel-news/${article.categorySlug}`}
-            className="inline-block bg-primary/10 px-3 py-1 text-xs font-bold text-primary"
-          >
-            {article.category}
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/travel-news/${article.categorySlug}`}
+              className="category-badge bg-primary-50 text-primary"
+            >
+              {article.category}
+            </Link>
+          </div>
 
-          <h1 className="mt-4 text-3xl font-black leading-[1.5] text-text-dark md:text-4xl">
+          <h1 className="text-3xl font-black leading-[1.4] tracking-tight text-text-dark md:text-4xl lg:text-[2.65rem]">
             {article.title}
           </h1>
 
-          <p className="mt-4 text-lg leading-8 text-text-muted">{article.excerpt}</p>
+          <div className="border-r-4 border-primary bg-gradient-to-l from-primary-50/50 to-transparent px-5 py-4 rounded-xl">
+            <p className="text-lg leading-8 text-text-muted">
+              {article.excerpt}
+            </p>
+          </div>
 
-          <div className="mt-5 flex flex-wrap items-center gap-4 border-y border-border py-4 text-sm text-text-muted">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2.5 border-y border-border/60 py-4 text-sm text-text-muted">
             {author ? (
               <Link
                 href={`/authors/${author.slug}`}
-                className="flex items-center gap-2 font-bold text-text-dark hover:text-primary"
+                className="flex items-center gap-2.5 font-bold text-text-dark transition hover:text-primary"
               >
                 <SafeImage
                   src={author.image}
                   alt={author.name}
-                  width={32}
-                  height={32}
+                  width={36}
+                  height={36}
                   fill={false}
                   displayWidth={IMAGE_WIDTHS.avatar}
-                  sizes="32px"
-                  className="h-8 w-8 shrink-0 rounded-full object-cover"
+                  sizes="36px"
+                  className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-primary/10"
                 />
+                <User size={14} className="text-text-subtle" />
                 {author.name}
               </Link>
             ) : null}
-            <span>
-              نشر:{" "}
-              <time dateTime={article.publishedAtISO}>{article.publishedAt}</time>
+            <span className="flex items-center gap-1.5">
+              <Calendar size={14} className="text-text-subtle" />
+              نشر: <time dateTime={article.publishedAtISO}>{article.publishedAt}</time>
             </span>
-            <span>
-              آخر تحديث:{" "}
-              <time dateTime={article.updatedAtISO}>{updatedAt}</time>
+            <span className="flex items-center gap-1.5">
+              <Calendar size={14} className="text-text-subtle" />
+              آخر تحديث: <time dateTime={article.updatedAtISO}>{updatedAt}</time>
             </span>
-            <span>{article.readingTime}</span>
+            <span className="flex items-center gap-1.5">
+              <Clock size={14} className="text-text-subtle" />
+              {article.readingTime}
+            </span>
           </div>
 
           <ZoomableImage
             src={article.image}
             alt={article.title}
-            className="mt-6 aspect-video max-h-[360px] w-full rounded object-cover"
+            className="aspect-video max-h-[480px] w-full rounded-2xl object-cover shadow-lg"
           />
 
           <ArticleBody paragraphs={article.content} />
@@ -317,9 +326,9 @@ export default async function ArticleDetailsPage({
         </article>
 
         {relatedNews.length > 0 ? (
-          <section className="mt-8">
+          <section className="mt-8 animate-fade-in-up">
             <SectionHeader title="أخبار ذات صلة" />
-            <div className="space-y-0">
+            <div className="rounded-2xl border border-border/50 bg-white px-1">
               {relatedNews.slice(0, 4).map((item) => (
                 <NewsCard key={item.id} article={item} variant="horizontal" />
               ))}
