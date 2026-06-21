@@ -1,5 +1,6 @@
 import Link from "next/link";
 import CookiePreferencesLink from "@/components/cookies/CookiePreferencesLink";
+import NewsletterSubscribeForm from "@/components/newsletter/NewsletterSubscribeForm";
 import type { Category } from "@/types";
 import { Mail, MapPin, Newspaper } from "lucide-react";
 
@@ -105,19 +106,7 @@ export default function Footer({ categories }: FooterProps) {
             <p className="mt-4 text-sm leading-7 text-text-muted">
               اشترك لتصلك أهم أخبار السياحة مباشرة إلى بريدك الإلكتروني.
             </p>
-            <form className="mt-4 space-y-3" action="/contact">
-              <input
-                type="email"
-                placeholder="بريدك الإلكتروني"
-                className="w-full rounded-xl border border-border bg-page-bg px-4 py-3 text-sm text-text-dark outline-none transition focus:border-primary/50 focus:ring-2 focus:ring-primary/10"
-              />
-              <button
-                type="submit"
-                className="w-full rounded-xl bg-gradient-to-l from-primary to-primary-hover px-5 py-3 text-sm font-bold text-white shadow-md shadow-primary/20 transition hover:shadow-lg hover:shadow-primary/30"
-              >
-                اشتراك ←
-              </button>
-            </form>
+            <NewsletterSubscribeForm />
           </div>
         </div>
       </div>

@@ -36,12 +36,51 @@ export type ValidateArticleComplianceInput = Partial<AdminNewsPayload> & {
   exclude_article_id?: number;
 };
 
+const DUPLICATE_ERROR_KEYS = new Set(["unique_title", "similar_content"]);
+
+export function getBlockingComplianceIssue(
+  report: ArticleComplianceReport,
+  publishing: boolean,
+  excludeArticleId?: number,
+): string | null {
+  const duplicateError = report.checks.find((check) => {
+    if (check.level !== "error" || !DUPLICATE_ERROR_KEYS.has(check.key)) {
+      return false;
+    }
+
+    if (!excludeArticleId) {
+      return true;
+    }
+
+    if (check.matches.length === 0) {
+      return false;
+    }
+
+    return check.matches.some((match) => match.id !== excludeArticleId);
+  });
+
+  if (duplicateError) {
+    return duplicateError.message;
+  }
+
+  if (publishing && !report.can_publish) {
+    return report.summary;
+  }
+
+  return null;
+}
+
 export async function validateArticleCompliance(
   payload: ValidateArticleComplianceInput,
+  excludeArticleId?: number,
 ): Promise<ArticleComplianceReport> {
   const json = await adminRequest<ArticleComplianceReport>("/admin/news/validate", {
     method: "POST",
-    body: JSON.stringify(payload),
+    body: JSON.stringify(
+      excludeArticleId
+        ? { ...payload, exclude_article_id: excludeArticleId }
+        : payload,
+    ),
   });
 
   return json.data;
@@ -49,12 +88,13 @@ export async function validateArticleCompliance(
 
 export async function validateArticleComplianceSafe(
   payload: ValidateArticleComplianceInput,
+  excludeArticleId?: number,
 ): Promise<
   | { ok: true; data: ArticleComplianceReport }
   | { ok: false; message: string; offline?: boolean }
 > {
   try {
-    const data = await validateArticleCompliance(payload);
+    const data = await validateArticleCompliance(payload, excludeArticleId);
 
     return { ok: true, data };
   } catch (error) {

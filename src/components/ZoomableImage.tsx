@@ -40,7 +40,13 @@ export default function ZoomableImage({
           className="relative block w-full cursor-zoom-in overflow-hidden rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           aria-label={`تكبير الصورة: ${alt}`}
         >
-          <img src={displaySrc} alt={alt} className={className} loading="lazy" />
+          <img
+            src={displaySrc}
+            alt={alt}
+            className={className}
+            loading="lazy"
+            decoding="async"
+          />
           <span
             className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 transition duration-200 group-hover:bg-black/20"
             aria-hidden

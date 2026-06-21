@@ -63,6 +63,8 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
         <img
           src={author.image}
           alt={author.name}
+          loading="lazy"
+          decoding="async"
           className="h-32 w-32 rounded-full object-cover ring-4 ring-primary/20"
         />
         <div>

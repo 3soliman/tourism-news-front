@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import NextImage from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import HeaderSearchSuspense from "@/components/layout/HeaderSearchQuery";
 import { Compass, MapPin } from "lucide-react";
+import almohitLogo from "../../../almohit.png";
 
 const ROTATE_MS = 7000;
 
@@ -16,30 +18,21 @@ function SiteLogo({ compact = false }: { compact?: boolean }) {
   return (
     <Link
       href="/"
-      className={`group flex items-center gap-3 rounded-xl ${
+      className={`group flex items-center justify-center rounded-xl ${
         compact
-          ? "bg-white/95 px-3 py-1.5 shadow-lg shadow-primary-dark/10 ring-1 ring-white/60"
-          : "bg-white/90 px-4 py-2 shadow-xl shadow-primary-dark/15 ring-1 ring-white/70 backdrop-blur-sm"
+          ? "min-h-12 bg-white/95 px-3 py-2 shadow-lg shadow-primary-dark/10 ring-1 ring-white/60"
+          : "min-h-16 bg-white/95 px-5 py-3 shadow-xl shadow-primary-dark/15 ring-1 ring-white/70 backdrop-blur-sm"
       }`}
+      aria-label="شركة المحيط للسياحة والسفر"
     >
-      <span
-        className={`grid place-items-center rounded-xl font-black text-white transition group-hover:scale-105 ${
-          compact
-            ? "h-9 w-9 rounded-lg text-base"
-            : "h-12 w-12 rounded-xl text-xl"
+      <NextImage
+        src={almohitLogo}
+        alt="شركة المحيط للسياحة والسفر"
+        priority={!compact}
+        className={`w-auto object-contain transition group-hover:scale-[1.02] ${
+          compact ? "h-9 max-w-[135px]" : "h-12 max-w-[190px]"
         }`}
-        style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)" }}
-      >
-        س
-      </span>
-      <span className="leading-tight">
-        <span className={`block font-black tracking-tight text-primary-dark ${compact ? "text-xs" : "text-sm"}`}>
-          أخبار السياحة
-        </span>
-        <span className={`block font-bold tracking-wider text-primary/70 ${compact ? "text-[10px]" : "text-[10px]"}`}>
-          Tourism News
-        </span>
-      </span>
+      />
     </Link>
   );
 }

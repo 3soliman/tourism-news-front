@@ -49,7 +49,12 @@ export function mapNewsArticle(raw: ApiNewsArticle): NewsArticle {
     seoTitle: raw.seo?.title ?? raw.title,
     seoDescription: raw.seo?.description ?? raw.excerpt,
     keywords: raw.seo?.keywords ?? [],
-    content: raw.content_paragraphs ?? [],
+    content:
+      raw.content_paragraphs?.length
+        ? raw.content_paragraphs
+        : raw.content
+          ? raw.content.split(/\n{2,}/).map((part) => part.trim()).filter(Boolean)
+          : [],
     viewsCount: raw.views_count ?? 0,
   };
 }

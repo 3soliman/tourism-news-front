@@ -12,7 +12,18 @@ type ArticleBodyProps = {
 };
 
 const SANITIZE_OPTIONS = {
-  ADD_ATTR: ["target", "rel", "style", "class", "href", "src", "alt", "dir"],
+  ADD_ATTR: [
+    "target",
+    "rel",
+    "style",
+    "class",
+    "href",
+    "src",
+    "alt",
+    "dir",
+    "loading",
+    "decoding",
+  ],
   ADD_TAGS: [
     "section",
     "figure",
@@ -62,6 +73,8 @@ export default function ArticleBody({ paragraphs }: ArticleBodyProps) {
     const images = container.querySelectorAll<HTMLImageElement>("img");
     images.forEach((image) => {
       image.classList.add("article-zoomable-image");
+      image.loading = "lazy";
+      image.decoding = "async";
       image.setAttribute("role", "button");
       image.setAttribute("tabindex", "0");
       image.setAttribute(

@@ -6,12 +6,12 @@ import {
   FileText,
   Home,
   LayoutGrid,
+  Mail,
   MapPin,
   Newspaper,
   Settings,
   Shield,
   UserCog,
-  Users,
 } from "lucide-react";
 import { AdminPermission } from "@/lib/admin-permissions";
 import type { AdminPermissionSlug } from "@/lib/admin-permissions";
@@ -145,6 +145,12 @@ export const adminNavGroups: AdminNavGroup[] = [
         label: "إعادة التوجيه",
         icon: ArrowRightLeft,
         permission: AdminPermission.REDIRECTS_VIEW,
+      },
+      {
+        href: "/admin/newsletter",
+        label: "النشرة البريدية",
+        icon: Mail,
+        permission: AdminPermission.SETTINGS_VIEW,
       },
       {
         href: "/admin/settings",

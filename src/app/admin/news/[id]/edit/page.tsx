@@ -83,11 +83,12 @@ export default async function AdminNewsEditPage({ params }: AdminNewsEditPagePro
       : [{ slug: article.data.slug, title: article.data.title }];
 
   const canManageRedirect = hasPermission(user, AdminPermission.REDIRECTS_UPDATE);
+  const canManageNewsletter = hasPermission(user, AdminPermission.SETTINGS_UPDATE);
 
   return (
     <NewsForm
       mode="edit"
-      articleId={articleId}
+      articleId={article.data.id}
       initial={toAdminNewsFormInput(article.data)}
       categories={categories.data}
       countries={countries.data}
@@ -95,6 +96,7 @@ export default async function AdminNewsEditPage({ params }: AdminNewsEditPagePro
       articleOptions={articleOptions}
       initialRedirect={toArticleRedirectState(articleRedirect)}
       canManageRedirect={canManageRedirect}
+      canManageNewsletter={canManageNewsletter}
     />
   );
 }

@@ -67,7 +67,7 @@ export default function ArticleCompliancePanel({
     score >= 80 ? "text-emerald-700" : score >= 55 ? "text-amber-700" : "text-rose-700";
 
   return (
-    <section className={`${admin.card} sticky top-4`}>
+    <section className={`${admin.card} max-h-[420px] overflow-y-auto xl:max-h-[calc(100vh-7rem)]`}>
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">

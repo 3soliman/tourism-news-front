@@ -26,8 +26,10 @@ import {
   createAdminNews,
   updateAdminNews,
 } from "@/lib/api/admin-news";
+import { sendNewsletterCampaign } from "@/lib/api/admin-newsletter";
 import { syncArticleRedirect } from "@/lib/api/admin-redirects";
 import {
+  getBlockingComplianceIssue,
   validateArticleComplianceSafe,
   type ArticleComplianceReport,
 } from "@/lib/api/admin-news-compliance";
@@ -59,6 +61,7 @@ type NewsFormProps = {
   articleOptions?: Array<{ slug: string; title: string }>;
   initialRedirect?: ArticleRedirectState;
   canManageRedirect?: boolean;
+  canManageNewsletter?: boolean;
 };
 
 export default function NewsForm({
@@ -72,6 +75,7 @@ export default function NewsForm({
   articleOptions = [],
   initialRedirect = { enabled: false, targetSlug: "" },
   canManageRedirect = false,
+  canManageNewsletter = false,
 }: NewsFormProps) {
   const router = useRouter();
   const [form, setForm] = useState<AdminNewsFormInput>(initial);
@@ -92,12 +96,42 @@ export default function NewsForm({
   );
   const [redirectState, setRedirectState] =
     useState<ArticleRedirectState>(initialRedirect);
+  const [notifyNewsletter, setNotifyNewsletter] = useState(false);
+  const [newsletterSubject, setNewsletterSubject] = useState(initial.title);
   const [compliance, setCompliance] = useState<ArticleComplianceReport | null>(null);
   const [complianceLoading, setComplianceLoading] = useState(false);
   const complianceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const editingArticleId =
+    mode === "edit" && articleId != null && Number(articleId) > 0
+      ? Number(articleId)
+      : undefined;
 
   const isPublishing =
     form.status === "published" || form.status === "scheduled";
+
+  const buildCompliancePayload = () => {
+    const contentParagraphs = editorHtmlToParagraphs(
+      normalizeMediaUrlsInHtml(contentHtml),
+    );
+
+    const payload = buildNewsPayload(
+      {
+        ...form,
+        published_at:
+          publishedAtSynced && isPublishing
+            ? toDatetimeLocalValue()
+            : form.published_at,
+        content_paragraphs: contentParagraphs,
+        keywords: keywordsText
+          .split(/[،,]/)
+          .map((keyword) => keyword.trim())
+          .filter(Boolean),
+      },
+      { forCreate: mode === "create" },
+    );
+
+    return { payload, contentParagraphs };
+  };
 
   const updateField = <K extends keyof AdminNewsFormInput>(
     key: K,
@@ -107,6 +141,10 @@ export default function NewsForm({
   };
 
   const handleTitleChange = (title: string) => {
+    if (!newsletterSubject.trim() || newsletterSubject === form.title) {
+      setNewsletterSubject(title);
+    }
+
     setForm((current) => {
       const next = { ...current, title };
 
@@ -178,9 +216,7 @@ export default function NewsForm({
     }
 
     complianceTimerRef.current = setTimeout(async () => {
-      const contentParagraphs = editorHtmlToParagraphs(
-        normalizeMediaUrlsInHtml(contentHtml),
-      );
+      const { contentParagraphs, payload } = buildCompliancePayload();
 
       if (!form.title.trim() && contentParagraphs.length === 0) {
         setCompliance(null);
@@ -189,26 +225,10 @@ export default function NewsForm({
 
       setComplianceLoading(true);
 
-      const payload = buildNewsPayload(
-        {
-          ...form,
-          published_at:
-            publishedAtSynced && isPublishing
-              ? toDatetimeLocalValue()
-              : form.published_at,
-          content_paragraphs: contentParagraphs,
-          keywords: keywordsText
-            .split(/[،,]/)
-            .map((keyword) => keyword.trim())
-            .filter(Boolean),
-        },
-        { forCreate: mode === "create" },
+      const result = await validateArticleComplianceSafe(
+        payload,
+        editingArticleId,
       );
-
-      const result = await validateArticleComplianceSafe({
-        ...payload,
-        exclude_article_id: articleId,
-      });
 
       setComplianceLoading(false);
 
@@ -224,6 +244,7 @@ export default function NewsForm({
     };
   }, [
     articleId,
+    editingArticleId,
     contentHtml,
     form,
     isPublishing,
@@ -237,41 +258,38 @@ export default function NewsForm({
     setSubmitting(true);
     setError(null);
 
-    const contentParagraphs = editorHtmlToParagraphs(
-      normalizeMediaUrlsInHtml(contentHtml),
-    );
+    const { payload, contentParagraphs } = buildCompliancePayload();
+
     if (contentParagraphs.length === 0) {
       setSubmitting(false);
       setError("محتوى الخبر مطلوب.");
       return;
     }
 
-    const resolvedPublishedAt =
-      publishedAtSynced &&
-      (form.status === "published" || form.status === "scheduled")
-        ? toDatetimeLocalValue()
-        : form.published_at;
+    const complianceResult = await validateArticleComplianceSafe(
+      payload,
+      editingArticleId,
+    );
 
-    const formForSubmit = {
-      ...form,
-      published_at: resolvedPublishedAt,
-      content_paragraphs: contentParagraphs,
-      keywords: keywordsText
-        .split(/[،,]/)
-        .map((keyword) => keyword.trim())
-        .filter(Boolean),
-    };
-
-    if (isPublishing && compliance && !compliance.can_publish) {
+    if (!complianceResult.ok) {
       setSubmitting(false);
-      setError(compliance.summary);
+      setError(complianceResult.message);
       return;
     }
 
-    const payload =
-      mode === "create"
-        ? buildNewsPayload(formForSubmit, { forCreate: true })
-        : buildNewsPayload(formForSubmit);
+    setCompliance(complianceResult.data);
+
+    const blockingIssue = getBlockingComplianceIssue(
+      complianceResult.data,
+      isPublishing,
+      editingArticleId,
+    );
+
+    if (blockingIssue) {
+      setSubmitting(false);
+      setError(blockingIssue);
+      return;
+    }
 
     const result =
       mode === "create"
@@ -302,6 +320,22 @@ export default function NewsForm({
       if (!redirectResult.ok) {
         setSubmitting(false);
         setError(redirectResult.message);
+        return;
+      }
+    }
+
+    if (canManageNewsletter && notifyNewsletter) {
+      const savedArticleId = mode === "create" ? result.data.id : articleId!;
+      const campaignResult = await sendNewsletterCampaign({
+        article_id: savedArticleId,
+        subject: newsletterSubject.trim() || form.title,
+        preheader: form.excerpt,
+        send_now: form.status === "published",
+      });
+
+      if (!campaignResult.ok) {
+        setSubmitting(false);
+        setError(`تم حفظ الخبر، لكن فشل إرسال إشعار النشرة: ${campaignResult.message}`);
         return;
       }
     }
@@ -504,6 +538,42 @@ export default function NewsForm({
         </DashboardSection>
         </div>
       </div>
+
+      {canManageNewsletter ? (
+        <DashboardSection
+          title="إشعار النشرة البريدية"
+          description="أرسل تنبيهًا للمشتركين عند نشر خبر مهم."
+        >
+          <div className={admin.formGrid2}>
+            <label className={`${admin.checkboxRow} md:col-span-2`}>
+              <input
+                type="checkbox"
+                checked={notifyNewsletter}
+                onChange={(event) => setNotifyNewsletter(event.target.checked)}
+              />
+              إرسال إشعار بريدي للمشتركين بعد حفظ الخبر
+            </label>
+
+            {notifyNewsletter ? (
+              <>
+                <label className="md:col-span-2">
+                  <span className={admin.label}>عنوان الإشعار</span>
+                  <input
+                    value={newsletterSubject}
+                    onChange={(event) => setNewsletterSubject(event.target.value)}
+                    className={admin.input}
+                    placeholder={form.title || "عنوان الرسالة البريدية"}
+                  />
+                </label>
+                <div className={`${admin.panel} md:col-span-2 text-xs leading-6 text-slate-600`}>
+                  إذا كانت حالة الخبر <strong>منشور</strong> سيتم الإرسال الآن.
+                  إذا كان <strong>مجدول</strong> يرسل الباك اند الإشعار عند وقت النشر.
+                </div>
+              </>
+            ) : null}
+          </div>
+        </DashboardSection>
+      ) : null}
 
       {canManageRedirect ? (
         <ArticleRedirectFields

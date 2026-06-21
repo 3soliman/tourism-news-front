@@ -22,6 +22,8 @@ export default async function EditorialTeamPage() {
               <img
                 src={author.image}
                 alt={author.name}
+                loading="lazy"
+                decoding="async"
                 className="mx-auto h-24 w-24 rounded-2xl object-cover ring-2 ring-primary/10 transition group-hover:ring-primary/30"
               />
               <h3 className="mt-4 text-lg font-black text-text-dark transition group-hover:text-primary">

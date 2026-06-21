@@ -81,6 +81,7 @@ export default async function AdminNewsCreatePage() {
       ? newsList.data.map((item) => ({ slug: item.slug, title: item.title }))
       : [];
   const canManageRedirect = hasPermission(user, AdminPermission.REDIRECTS_UPDATE);
+  const canManageNewsletter = hasPermission(user, AdminPermission.SETTINGS_UPDATE);
 
   return (
     <NewsForm
@@ -92,6 +93,7 @@ export default async function AdminNewsCreatePage() {
       currentAuthorName={currentAuthorName}
       articleOptions={articleOptions}
       canManageRedirect={canManageRedirect}
+      canManageNewsletter={canManageNewsletter}
     />
   );
 }
