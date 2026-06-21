@@ -24,7 +24,7 @@ export default async function AdminRootLayout({
 
   if (pathname === "/admin/login") {
     return (
-      <div className="min-h-screen bg-[#f7faff] text-[#17243a] antialiased">
+      <div className="min-h-screen bg-[#020303] text-[#17243a] antialiased">
         {children}
       </div>
     );
