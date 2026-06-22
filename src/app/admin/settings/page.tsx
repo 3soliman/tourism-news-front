@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import AdminDataState from "@/components/admin/AdminDataState";
 import AdminHeaderImagesForm from "@/components/admin/AdminHeaderImagesForm";
@@ -55,10 +54,10 @@ export default async function AdminSettingsPage() {
               title="إعدادات الموقع"
               description="صور الخلفية، Publisher Center، News Sitemap، وإعدادات الفهرسة."
             />
-            <Link href="/admin/seo" className={admin.backLink}>
+            <a href="/admin/seo" className={admin.backLink}>
               <ArrowRight size={13} />
               العودة إلى لوحة السيو
-            </Link>
+            </a>
           </div>
 
           <div className={admin.card}>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import CookiePreferencesLink from "@/components/cookies/CookiePreferencesLink";
 import NewsletterSubscribeForm from "@/components/newsletter/NewsletterSubscribeForm";
 import type { Category } from "@/types";
@@ -33,8 +34,14 @@ export default function Footer({ categories }: FooterProps) {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3">
-              <span className="grid h-10 w-10 place-items-center rounded-xl font-black text-white" style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)" }}>
-                س
+              <span className="flex h-11 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white ring-1 ring-border/70">
+                <Image
+                  src="/brand-logo.png"
+                  alt="أخبار السياحة"
+                  width={9296}
+                  height={3379}
+                  className="h-full w-full object-contain"
+                />
               </span>
               <div>
                 <p className="text-sm font-black text-primary-dark">أخبار السياحة</p>

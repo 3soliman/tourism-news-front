@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { FilePenLine, Plus, UserRound } from "lucide-react";
 import AdminDataState from "@/components/admin/AdminDataState";
 import AdminListHeader from "@/components/admin/AdminListHeader";
@@ -31,10 +30,10 @@ export default async function AdminUsersPage() {
         description="إنشاء حسابات الفريق وربطها بالأدوار المناسبة."
         actions={
           canCreate ? (
-            <Link href="/admin/users/create" className={admin.btnPrimary}>
+            <a href="/admin/users/create" className={admin.btnPrimary}>
               <Plus size={14} />
               إضافة مستخدم
-            </Link>
+            </a>
           ) : undefined
         }
       />
@@ -111,13 +110,13 @@ export default async function AdminUsersPage() {
                         <td className={admin.td}>
                           <div className="flex gap-1 text-slate-500">
                             {canUpdate ? (
-                              <Link
+                              <a
                                 href={`/admin/users/${managedUser.id}/edit`}
                                 className="grid h-7 w-7 place-items-center rounded border border-slate-200 hover:bg-slate-50"
                                 aria-label="تعديل"
                               >
                                 <FilePenLine size={14} strokeWidth={1.85} />
-                              </Link>
+                              </a>
                             ) : null}
                             {canDelete ? (
                               <DeleteUserButton user={managedUser} />

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { API_LOAD_FAILED_MESSAGE, API_OFFLINE_MESSAGE } from "@/lib/api/messages";
 import { RefreshCw, ServerOff } from "lucide-react";
 
@@ -29,12 +28,12 @@ export default function AdminOfflineMessage({
           <RefreshCw size={16} />
           إعادة المحاولة
         </button>
-        <Link
+        <a
           href="/admin"
           className="inline-flex items-center gap-2 rounded-lg border border-[#dce7f5] bg-white px-5 py-3 text-sm font-bold text-[#17243a] transition hover:text-[#0677e8]"
         >
           العودة للوحة التحكم
-        </Link>
+        </a>
       </div>
     </section>
   );

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Eye } from "lucide-react";
 import AdminListHeader from "@/components/admin/AdminListHeader";
 import { admin } from "@/components/admin/admin-ui";
@@ -133,14 +132,14 @@ export default async function AdminAnalyticsPage({ searchParams }: AdminAnalytic
           </p>
           <div className="flex gap-1.5">
             {page > 1 ? (
-              <Link href={`/admin/analytics?page=${page - 1}`} className={admin.btnSecondary}>
+              <a href={`/admin/analytics?page=${page - 1}`} className={admin.btnSecondary}>
                 السابق
-              </Link>
+              </a>
             ) : null}
             {page < (meta.last_page ?? 1) ? (
-              <Link href={`/admin/analytics?page=${page + 1}`} className={admin.btnSecondary}>
+              <a href={`/admin/analytics?page=${page + 1}`} className={admin.btnSecondary}>
                 التالي
-              </Link>
+              </a>
             ) : null}
           </div>
         </div>

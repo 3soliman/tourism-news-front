@@ -65,7 +65,7 @@ export default function NewsletterSubscribeForm({
         disabled={submitting}
         className={
           isSidebar
-            ? "w-full rounded-xl bg-gradient-to-l from-accent to-amber-400 py-3 text-sm font-black text-primary-dark shadow-lg shadow-amber-500/20 transition hover:shadow-xl hover:shadow-amber-500/30 disabled:opacity-60"
+            ? "w-full rounded-xl bg-gradient-to-l from-accent to-[#ffad5f] py-3 text-sm font-black text-primary-dark shadow-lg shadow-[#f38726]/20 transition hover:shadow-xl hover:shadow-[#f38726]/30 disabled:opacity-60"
             : "w-full rounded-xl bg-gradient-to-l from-primary to-primary-hover px-5 py-3 text-sm font-bold text-white shadow-md shadow-primary/20 transition hover:shadow-lg hover:shadow-primary/30 disabled:opacity-60"
         }
       >
@@ -76,8 +76,8 @@ export default function NewsletterSubscribeForm({
           className={`text-xs font-bold ${
             status === "success"
               ? isSidebar
-                ? "text-emerald-200"
-                : "text-emerald-600"
+                ? "text-primary-100"
+                : "text-primary-hover"
               : isSidebar
                 ? "text-red-200"
                 : "text-red-600"

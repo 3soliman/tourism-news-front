@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ExternalLink } from "lucide-react";
 import DashboardSection from "@/components/dashboard/DashboardSection";
@@ -17,7 +16,6 @@ type PageFormProps = {
 };
 
 export default function PageForm({ slug, initial }: PageFormProps) {
-  const router = useRouter();
   const [form, setForm] = useState<AdminPageFormInput>(initial);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -64,8 +62,7 @@ export default function PageForm({ slug, initial }: PageFormProps) {
       return;
     }
 
-    router.push("/admin/pages");
-    router.refresh();
+    window.location.assign("/admin/pages");
   };
 
   return (

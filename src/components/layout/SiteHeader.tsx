@@ -132,7 +132,7 @@ export default function SiteHeader({ headerImages = [] }: SiteHeaderProps) {
       </div>
 
       <div className="relative mx-auto flex min-h-[270px] max-w-7xl flex-col items-center justify-center px-4 py-12 text-center sm:min-h-[320px]">
-        <div className="mb-6 h-1 w-20 rounded-full bg-gradient-to-r from-accent to-amber-400" />
+        <div className="mb-6 h-1 w-20 rounded-full bg-gradient-to-r from-accent to-[#ffad5f]" />
         {isHomePage ? (
           <h1 className="font-display text-4xl font-black leading-tight tracking-tight text-white drop-shadow-sm sm:text-5xl lg:text-6xl">
             أخبار السياحة والسفر
@@ -148,17 +148,10 @@ export default function SiteHeader({ headerImages = [] }: SiteHeaderProps) {
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/travel-news"
-            className="group inline-flex min-w-48 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-accent to-amber-400 px-7 py-3.5 text-base font-black text-primary-dark shadow-lg shadow-amber-500/25 transition-all hover:shadow-xl hover:shadow-amber-500/30 hover:scale-[1.02]"
+            className="group inline-flex min-w-48 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-accent to-[#ffad5f] px-7 py-3.5 text-base font-black text-primary-dark shadow-lg shadow-[#f38726]/25 transition-all hover:shadow-xl hover:shadow-[#f38726]/30 hover:scale-[1.02]"
           >
             تصفّح أخبار السياحة
             <span className="transition-transform group-hover:translate-x-1">←</span>
-          </Link>
-          <Link
-            href="/destinations"
-            className="inline-flex min-w-40 items-center justify-center gap-2 rounded-xl border-2 border-white/25 bg-white/10 px-6 py-3.5 text-sm font-bold text-white backdrop-blur-sm transition-all hover:bg-white/20 hover:border-white/40"
-          >
-            <MapPin size={16} />
-            اكتشف الوجهات
           </Link>
         </div>
       </div>

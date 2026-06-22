@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Suspense } from "react";
 import { FilePenLine, Newspaper, Plus } from "lucide-react";
 import AdminDataState from "@/components/admin/AdminDataState";
@@ -117,10 +116,10 @@ export default async function AdminNewsPage({ searchParams }: AdminNewsPageProps
         description="إدارة المحتوى المنشور والمسودات من شاشة واحدة."
         actions={
           canCreate ? (
-            <Link href="/admin/news/create" className={admin.btnPrimary}>
+            <a href="/admin/news/create" className={admin.btnPrimary}>
               <Plus size={14} />
               إضافة خبر جديد
-            </Link>
+            </a>
           ) : undefined
         }
       />
@@ -242,14 +241,14 @@ export default async function AdminNewsPage({ searchParams }: AdminNewsPageProps
                                 <FilePenLine size={14} strokeWidth={1.85} />
                               </a>
                             ) : null}
-                            <Link
+                            <a
                               href={`/travel-news/${article.slug}`}
                               target="_blank"
                               className="grid h-7 w-7 place-items-center rounded hover:bg-sky-50 hover:text-sky-600"
                               aria-label="عرض في الموقع"
                             >
                               <Newspaper size={14} strokeWidth={1.85} />
-                            </Link>
+                            </a>
                             {canDelete ? (
                               <DeleteNewsButton articleId={article.id} title={article.title} />
                             ) : null}

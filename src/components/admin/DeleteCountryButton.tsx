@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import {
@@ -14,7 +13,6 @@ type DeleteCountryButtonProps = {
 };
 
 export default function DeleteCountryButton({ country }: DeleteCountryButtonProps) {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const blocked = countryHasRelations(country);
 
@@ -36,7 +34,7 @@ export default function DeleteCountryButton({ country }: DeleteCountryButtonProp
       return;
     }
 
-    router.refresh();
+    window.location.reload();
   };
 
   return (

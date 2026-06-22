@@ -28,7 +28,7 @@ export default function ShareButtons({ title, url }: ShareButtonsProps) {
           href={`https://wa.me/?text=${whatsappText}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-green-700 hover:shadow-md"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#f38726] px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#d96f18] hover:shadow-md"
         >
           <MessageCircle size={16} />
           واتساب
@@ -37,7 +37,7 @@ export default function ShareButtons({ title, url }: ShareButtonsProps) {
           href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-xl bg-blue-700 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-800 hover:shadow-md"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#2b6eb3] px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#245f9b] hover:shadow-md"
         >
           <Globe size={16} />
           فيسبوك

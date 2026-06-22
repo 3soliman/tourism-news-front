@@ -2,10 +2,10 @@ import { Globe, MessageCircle, Send, ExternalLink } from "lucide-react";
 
 export default function SocialFollowBox() {
   const links = [
-    { label: "فيسبوك", icon: Globe, color: "bg-blue-600 hover:bg-blue-700" },
+    { label: "فيسبوك", icon: Globe, color: "bg-[#2b6eb3] hover:bg-[#245f9b]" },
     { label: "إكس", icon: Send, color: "bg-primary-dark hover:bg-black" },
-    { label: "واتساب", icon: MessageCircle, color: "bg-green-600 hover:bg-green-700" },
-    { label: "يوتيوب", icon: ExternalLink, color: "bg-red-600 hover:bg-red-700" },
+    { label: "واتساب", icon: MessageCircle, color: "bg-[#f38726] hover:bg-[#d96f18]" },
+    { label: "يوتيوب", icon: ExternalLink, color: "bg-[#2b6eb3] hover:bg-[#245f9b]" },
   ];
 
   return (

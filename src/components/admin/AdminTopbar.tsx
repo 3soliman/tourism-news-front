@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { ExternalLink, LogOut, Menu, Plus, Search } from "lucide-react";
 import CanAccess from "@/components/admin/CanAccess";
@@ -15,7 +13,6 @@ type AdminTopbarProps = {
 };
 
 export default function AdminTopbar({ user, onMenuClick }: AdminTopbarProps) {
-  const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
   const [query, setQuery] = useState("");
   const roleLabel = user.roles[0]?.name ?? "مدير النظام";
@@ -24,14 +21,13 @@ export default function AdminTopbar({ user, onMenuClick }: AdminTopbarProps) {
     setLoggingOut(true);
     await logoutAdmin();
     setLoggingOut(false);
-    router.push("/admin/login");
-    router.refresh();
+    window.location.assign("/admin/login");
   };
 
   const handleSearch = (event: FormEvent) => {
     event.preventDefault();
     const trimmed = query.trim();
-    router.push(trimmed ? `/admin/news?search=${encodeURIComponent(trimmed)}` : "/admin/news");
+    window.location.assign(trimmed ? `/admin/news?search=${encodeURIComponent(trimmed)}` : "/admin/news");
   };
 
   return (
@@ -62,23 +58,23 @@ export default function AdminTopbar({ user, onMenuClick }: AdminTopbarProps) {
 
         <div className="mr-auto flex items-center gap-2">
           <CanAccess permission={AdminPermission.NEWS_CREATE}>
-            <Link
+            <a
               href="/admin/news/create"
               className="hidden items-center gap-1.5 rounded-lg bg-sky-600 px-3 py-2 text-xs font-black text-white sm:inline-flex"
             >
               <Plus size={14} />
               خبر جديد
-            </Link>
+            </a>
           </CanAccess>
 
-          <Link
+          <a
             href="/"
             target="_blank"
             className="hidden h-9 items-center gap-1.5 rounded-lg border border-slate-200 px-3 text-xs font-bold text-slate-700 lg:inline-flex"
           >
             الموقع
             <ExternalLink size={13} />
-          </Link>
+          </a>
 
           <div className="hidden items-center gap-2 rounded-lg border border-slate-200 px-2.5 py-1.5 sm:flex">
             <span className="grid h-7 w-7 place-items-center rounded-full bg-sky-100 text-xs font-black text-sky-700">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { RotateCcw, Search } from "lucide-react";
 import { admin } from "@/components/admin/admin-ui";
@@ -30,7 +30,6 @@ export default function AdminNewsFilters({
   countries,
   authors,
 }: AdminNewsFiltersProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
@@ -58,7 +57,7 @@ export default function AdminNewsFilters({
     });
 
     const qs = params.toString();
-    router.push(qs ? `/admin/news?${qs}` : "/admin/news");
+    window.location.assign(qs ? `/admin/news?${qs}` : "/admin/news");
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -72,7 +71,7 @@ export default function AdminNewsFilters({
     setCategory("");
     setCountry("");
     setAuthor("");
-    router.push("/admin/news");
+    window.location.assign("/admin/news");
   };
 
   const hasActiveFilters =

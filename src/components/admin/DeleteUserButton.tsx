@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import {
@@ -13,7 +12,6 @@ type DeleteUserButtonProps = {
 };
 
 export default function DeleteUserButton({ user }: DeleteUserButtonProps) {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
@@ -29,7 +27,7 @@ export default function DeleteUserButton({ user }: DeleteUserButtonProps) {
       return;
     }
 
-    router.refresh();
+    window.location.reload();
   };
 
   return (

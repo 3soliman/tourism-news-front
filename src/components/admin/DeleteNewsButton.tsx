@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import { deleteAdminNews } from "@/lib/api/admin-news";
@@ -11,7 +10,6 @@ type DeleteNewsButtonProps = {
 };
 
 export default function DeleteNewsButton({ articleId, title }: DeleteNewsButtonProps) {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
@@ -27,7 +25,7 @@ export default function DeleteNewsButton({ articleId, title }: DeleteNewsButtonP
       return;
     }
 
-    router.refresh();
+    window.location.reload();
   };
 
   return (

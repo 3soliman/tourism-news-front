@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { ArrowRight, Save } from "lucide-react";
 import type { ReactNode } from "react";
 import { admin } from "@/components/admin/admin-ui";
@@ -25,10 +24,10 @@ export default function AdminFormHeader({
   return (
     <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2.5">
       <div>
-        <Link href={backHref} className={admin.backLink}>
+        <a href={backHref} className={admin.backLink}>
           <ArrowRight size={13} />
           {backLabel}
-        </Link>
+        </a>
         <h1 className={admin.pageTitle}>{title}</h1>
         {subtitle ? <p className={admin.pageDesc}>{subtitle}</p> : null}
       </div>

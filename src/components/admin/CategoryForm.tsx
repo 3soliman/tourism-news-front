@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import DashboardSection from "@/components/dashboard/DashboardSection";
 import AdminFormHeader from "@/components/admin/AdminFormHeader";
@@ -23,7 +22,6 @@ export default function CategoryForm({
   categoryId,
   initial,
 }: CategoryFormProps) {
-  const router = useRouter();
   const [form, setForm] = useState<AdminCategoryFormInput>(initial);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -74,8 +72,7 @@ export default function CategoryForm({
       return;
     }
 
-    router.push("/admin/categories");
-    router.refresh();
+    window.location.assign("/admin/categories");
   };
 
   return (

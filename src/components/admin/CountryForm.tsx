@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import DashboardSection from "@/components/dashboard/DashboardSection";
 import AdminFormHeader from "@/components/admin/AdminFormHeader";
@@ -24,7 +23,6 @@ export default function CountryForm({
   countryId,
   initial,
 }: CountryFormProps) {
-  const router = useRouter();
   const [form, setForm] = useState<AdminCountryFormInput>(initial);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,8 +59,7 @@ export default function CountryForm({
       return;
     }
 
-    router.push("/admin/countries");
-    router.refresh();
+    window.location.assign("/admin/countries");
   };
 
   return (

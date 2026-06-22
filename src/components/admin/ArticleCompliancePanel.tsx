@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { AlertTriangle, CheckCircle2, Loader2, ShieldCheck, XCircle } from "lucide-react";
 import { admin } from "@/components/admin/admin-ui";
 import type { ArticleComplianceReport, ComplianceCheck } from "@/lib/api/admin-news-compliance";
@@ -36,13 +35,13 @@ function CheckRow({ check }: { check: ComplianceCheck }) {
             <ul className="mt-2 space-y-1 text-xs">
               {check.matches.map((match) => (
                 <li key={`${check.key}-${match.id}`}>
-                  <Link
+                  <a
                     href={match.url}
                     target="_blank"
                     className="font-bold underline underline-offset-2"
                   >
                     {match.title}
-                  </Link>
+                  </a>
                   <span className="opacity-80">
                     {" "}
                     — تشابه {match.similarity}%

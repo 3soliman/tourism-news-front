@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import DashboardSection from "@/components/dashboard/DashboardSection";
 import AdminFormHeader from "@/components/admin/AdminFormHeader";
@@ -27,7 +26,6 @@ export default function UserForm({
   initial,
   roles,
 }: UserFormProps) {
-  const router = useRouter();
   const [form, setForm] = useState<ManagedUserFormInput>(initial);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -94,8 +92,7 @@ export default function UserForm({
       return;
     }
 
-    router.push("/admin/users");
-    router.refresh();
+    window.location.assign("/admin/users");
   };
 
   return (

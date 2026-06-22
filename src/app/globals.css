@@ -2,43 +2,43 @@
 @plugin "@tailwindcss/typography";
 
 @theme inline {
-  --color-primary: #0891b2;
-  --color-primary-dark: #0c2230;
-  --color-primary-hover: #0e7490;
-  --color-primary-light: #e0f2fe;
-  --color-primary-50: #ecfeff;
-  --color-primary-100: #cffafe;
-  --color-primary-200: #a5f3fc;
-  --color-primary-900: #164e63;
+  --color-primary: #2b6eb3;
+  --color-primary-dark: #17365d;
+  --color-primary-hover: #245f9b;
+  --color-primary-light: #eaf2fb;
+  --color-primary-50: #f3f8fd;
+  --color-primary-100: #d9e9f8;
+  --color-primary-200: #b6d3ef;
+  --color-primary-900: #1d4f85;
 
-  --color-page-bg: #f0f7fc;
+  --color-page-bg: #f3f8fd;
   --color-surface: #ffffff;
-  --color-surface-alt: #f1f9fe;
+  --color-surface-alt: #eef5fc;
   --color-surface-glass: rgba(255, 255, 255, 0.82);
 
-  --color-text-dark: #0c1b29;
-  --color-text-muted: #5b6f82;
+  --color-text-dark: #10243d;
+  --color-text-muted: #5b718a;
   --color-text-subtle: #94a3b8;
-  --color-border: #d1e3ed;
-  --color-border-light: #e6f0f5;
+  --color-border: #d4e3f2;
+  --color-border-light: #e8f1fa;
 
-  --color-accent: #f59e0b;
-  --color-gold: #f59e0b;
+  --color-accent: #f38726;
+  --color-gold: #f38726;
   --color-breaking: #ef4444;
   --color-breaking-bg: #fef2f2;
 
   --font-sans: "Segoe UI", Tahoma, "Noto Sans Arabic", sans-serif;
   --font-display: "Segoe UI", Tahoma, "Noto Sans Arabic", sans-serif;
 
-  --shadow-card: 0 1px 3px rgba(12, 34, 48, 0.08), 0 1px 2px rgba(12, 34, 48, 0.06);
-  --shadow-card-hover: 0 10px 30px -8px rgba(12, 34, 48, 0.15), 0 4px 8px -4px rgba(12, 34, 48, 0.06);
-  --shadow-elevated: 0 20px 40px -12px rgba(12, 34, 48, 0.2);
-  --shadow-glass: 0 8px 32px rgba(12, 34, 48, 0.1);
+  --shadow-card: 0 1px 3px rgba(23, 54, 93, 0.08), 0 1px 2px rgba(23, 54, 93, 0.06);
+  --shadow-card-hover: 0 10px 30px -8px rgba(23, 54, 93, 0.15), 0 4px 8px -4px rgba(23, 54, 93, 0.06);
+  --shadow-elevated: 0 20px 40px -12px rgba(23, 54, 93, 0.2);
+  --shadow-glass: 0 8px 32px rgba(23, 54, 93, 0.1);
 }
 
 :root {
-  --background: #f0f7fc;
-  --foreground: #0c1b29;
+  --background: #f3f8fd;
+  --foreground: #10243d;
 }
 
 html {
@@ -49,7 +49,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   overflow-x: hidden;
-  background: linear-gradient(180deg, #e6f4fa 0%, #f0f7fc 320px, #f0f7fc 100%);
+  background: linear-gradient(180deg, #eaf2fb 0%, #f3f8fd 320px, #f3f8fd 100%);
   min-height: 100vh;
 }
 
@@ -62,7 +62,7 @@ body {
 }
 
 ::selection {
-  background: #0891b2;
+  background: #2b6eb3;
   color: #fff;
 }
 
@@ -134,8 +134,8 @@ body {
 }
 
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 8px rgba(8, 145, 178, 0.3); }
-  50% { box-shadow: 0 0 20px rgba(8, 145, 178, 0.6); }
+  0%, 100% { box-shadow: 0 0 8px rgba(43, 110, 179, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(43, 110, 179, 0.6); }
 }
 
 @keyframes marquee {
@@ -247,14 +247,14 @@ body {
 }
 
 .admin-rich-editor blockquote {
-  border-right: 3px solid #0891b2;
+  border-right: 3px solid #2b6eb3;
   margin: 0.75rem 0;
   padding: 0.25rem 0.75rem;
   color: #475569;
 }
 
 .admin-rich-editor a {
-  color: #0e7490;
+  color: #245f9b;
   text-decoration: underline;
 }
 
@@ -294,7 +294,7 @@ body {
 /* Decorative gradient bar */
 .gradient-bar {
   height: 3px;
-  background: linear-gradient(90deg, #0891b2, #0ea5e9, #38bdf8, #0ea5e9, #0891b2);
+  background: linear-gradient(90deg, #2b6eb3, #f38726, #2b6eb3);
   background-size: 200% 100%;
   animation: gradient-shift 3s ease infinite;
 }
@@ -310,7 +310,7 @@ body {
   width: 40px;
   height: 3px;
   border-radius: 2px;
-  background: linear-gradient(90deg, #0891b2, #38bdf8);
+  background: linear-gradient(90deg, #2b6eb3, #f38726);
 }
 
 /* Card with image gradient */

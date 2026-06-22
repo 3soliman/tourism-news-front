@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import DashboardSection from "@/components/dashboard/DashboardSection";
 import ArticleCompliancePanel from "@/components/admin/ArticleCompliancePanel";
@@ -77,7 +76,6 @@ export default function NewsForm({
   canManageRedirect = false,
   canManageNewsletter = false,
 }: NewsFormProps) {
-  const router = useRouter();
   const [form, setForm] = useState<AdminNewsFormInput>(initial);
   const [contentHtml, setContentHtml] = useState(
     resolveMediaUrlsInHtml(paragraphsToEditorHtml(initial.content_paragraphs)),
@@ -342,8 +340,7 @@ export default function NewsForm({
 
     setSubmitting(false);
 
-    router.push("/admin/news");
-    router.refresh();
+    window.location.assign("/admin/news");
   };
 
   return (

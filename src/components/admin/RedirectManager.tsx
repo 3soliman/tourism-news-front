@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { ArrowRightLeft, Pencil, Plus } from "lucide-react";
 import DashboardSection from "@/components/dashboard/DashboardSection";
@@ -35,7 +34,6 @@ export default function RedirectManager({
   canUpdate,
   canDelete,
 }: RedirectManagerProps) {
-  const router = useRouter();
   const [editingId, setEditingId] = useState<number | null>(null);
   const [form, setForm] = useState<AdminRedirectFormInput>(emptyForm);
   const [submitting, setSubmitting] = useState(false);
@@ -89,8 +87,7 @@ export default function RedirectManager({
       return;
     }
 
-    resetForm();
-    router.refresh();
+    window.location.reload();
   };
 
   const canSubmit = editingId !== null ? canUpdate : canCreate;

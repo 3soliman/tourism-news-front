@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -65,9 +64,9 @@ export default async function AdminSeoPage() {
             title="السيو و Google News"
             description="مراقبة Sitemap، جاهزية Google News، وحالة NewsArticle Schema."
             actions={
-              <Link href="/admin/settings" className={admin.btnPrimary}>
+              <a href="/admin/settings" className={admin.btnPrimary}>
                 إعدادات Publisher Center
-              </Link>
+              </a>
             }
           />
 

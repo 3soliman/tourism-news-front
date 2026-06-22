@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ExternalLink, FilePenLine, ShieldCheck } from "lucide-react";
 import AdminDataState from "@/components/admin/AdminDataState";
 import AdminListHeader from "@/components/admin/AdminListHeader";
@@ -74,13 +73,13 @@ export default async function AdminPagesPage() {
                         <td className={admin.td}>
                           <div className="flex gap-1 text-slate-500">
                             {canUpdate ? (
-                              <Link
+                              <a
                                 href={`/admin/pages/${page.slug}/edit`}
                                 className="grid h-7 w-7 place-items-center rounded border border-slate-200 hover:bg-slate-50"
                                 aria-label="تعديل"
                               >
                                 <FilePenLine size={14} strokeWidth={1.85} />
-                              </Link>
+                              </a>
                             ) : null}
                             <a
                               href={getTrustPagePath(page.slug)}

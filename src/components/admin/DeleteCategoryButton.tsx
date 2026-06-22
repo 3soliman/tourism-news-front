@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import { deleteAdminCategory } from "@/lib/api/admin-categories";
@@ -16,7 +15,6 @@ export default function DeleteCategoryButton({
   label,
   articlesCount = 0,
 }: DeleteCategoryButtonProps) {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
@@ -37,7 +35,7 @@ export default function DeleteCategoryButton({
       return;
     }
 
-    router.refresh();
+    window.location.reload();
   };
 
   return (

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import {
   ArrowUpRight,
   BarChart3,
@@ -194,7 +193,7 @@ export default function AdminDashboard({
           href={hasPermission(user, AdminPermission.SEO_VIEW) ? "/admin/seo" : undefined}
           tone="border-slate-200 bg-white"
         />
-        <Link
+        <a
           href="/"
           target="_blank"
           className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-900 px-3 py-2.5 text-white transition hover:bg-slate-800"
@@ -204,7 +203,7 @@ export default function AdminDashboard({
             <p className="mt-0.5 text-sm font-black">معاينة</p>
           </div>
           <ArrowUpRight size={16} />
-        </Link>
+        </a>
       </div>
 
       <div className="grid gap-4 xl:grid-cols-12">

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { FilePenLine, FolderOpen, Plus } from "lucide-react";
 import AdminDataState from "@/components/admin/AdminDataState";
 import AdminListHeader from "@/components/admin/AdminListHeader";
@@ -31,10 +30,10 @@ export default async function AdminCategoriesPage() {
         description="إضافة وتعديل وحذف تصنيفات الأخبار وترتيبها."
         actions={
           canCreate ? (
-            <Link href="/admin/categories/create" className={admin.btnPrimary}>
+            <a href="/admin/categories/create" className={admin.btnPrimary}>
               <Plus size={14} />
               إضافة تصنيف جديد
-            </Link>
+            </a>
           ) : undefined
         }
       />
@@ -87,22 +86,22 @@ export default async function AdminCategoriesPage() {
                         <td className={admin.td}>
                           <div className="flex gap-1 text-slate-500">
                             {canUpdate ? (
-                              <Link
+                              <a
                                 href={`/admin/categories/${category.id}/edit`}
                                 className="grid h-7 w-7 place-items-center rounded border border-slate-200 hover:bg-slate-50"
                                 aria-label="تعديل"
                               >
                                 <FilePenLine size={14} strokeWidth={1.85} />
-                              </Link>
+                              </a>
                             ) : null}
-                            <Link
+                            <a
                               href={`/travel-news/${category.slug}`}
                               target="_blank"
                               className="grid h-7 w-7 place-items-center rounded border border-slate-200 hover:bg-slate-50"
                               aria-label="عرض في الموقع"
                             >
                               <FolderOpen size={14} strokeWidth={1.85} />
-                            </Link>
+                            </a>
                             {canDelete ? (
                               <DeleteCategoryButton
                                 categoryId={category.id}

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { admin } from "@/components/admin/admin-ui";
 import type { PaginationMeta } from "@/types";
@@ -37,9 +36,9 @@ export default function AdminNewsPagination({ meta }: AdminNewsPaginationProps) 
 
       <div className="flex items-center gap-1.5">
         {currentPage > 1 ? (
-          <Link href={buildPageUrl(currentPage - 1)} className={admin.btnSecondary}>
+          <a href={buildPageUrl(currentPage - 1)} className={admin.btnSecondary}>
             السابق
-          </Link>
+          </a>
         ) : (
           <span className="rounded-md border border-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-300">
             السابق
@@ -47,9 +46,9 @@ export default function AdminNewsPagination({ meta }: AdminNewsPaginationProps) 
         )}
 
         {currentPage < lastPage ? (
-          <Link href={buildPageUrl(currentPage + 1)} className={admin.btnSecondary}>
+          <a href={buildPageUrl(currentPage + 1)} className={admin.btnSecondary}>
             التالي
-          </Link>
+          </a>
         ) : (
           <span className="rounded-md border border-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-300">
             التالي

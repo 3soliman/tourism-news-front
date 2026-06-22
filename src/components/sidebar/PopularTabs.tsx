@@ -43,7 +43,7 @@ export default function PopularTabs({ latest, popular }: PopularTabsProps) {
           {items.slice(0, 5).map((article, i) => (
             <li key={article.id} className="group flex gap-3 rounded-lg p-1 transition hover:bg-page-bg">
               <span className={`mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black text-white ${
-                i === 0 ? "bg-amber-500" : i === 1 ? "bg-slate-400" : i === 2 ? "bg-amber-700" : "bg-primary-dark"
+                i === 0 ? "bg-accent" : i === 1 ? "bg-primary" : i === 2 ? "bg-[#d96f18]" : "bg-primary-dark"
               }`}>
                 {i + 1}
               </span>

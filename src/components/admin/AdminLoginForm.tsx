@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { ArrowRight, LockKeyhole, LogIn, Mail, Newspaper } from "lucide-react";
 import { loginAdmin } from "@/lib/api/auth";
@@ -19,7 +18,6 @@ function resolveInitialError(searchParams: URLSearchParams) {
 }
 
 export default function AdminLoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,8 +39,7 @@ export default function AdminLoginForm() {
     }
 
     const nextPath = searchParams.get("next") || "/admin";
-    router.push(nextPath);
-    router.refresh();
+    window.location.assign(nextPath);
   };
 
   return (
@@ -143,13 +140,14 @@ export default function AdminLoginForm() {
         </div>
 
         <div className="mt-5 text-center">
-          <Link
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a
             href="/"
             className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-500 transition hover:text-sky-600"
           >
             <ArrowRight size={14} />
             العودة إلى الموقع
-          </Link>
+          </a>
         </div>
       </div>
     </div>
