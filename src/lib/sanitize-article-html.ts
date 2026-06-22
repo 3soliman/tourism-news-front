@@ -1,4 +1,5 @@
 import DOMPurify from "isomorphic-dompurify";
+import type { Config } from "dompurify";
 
 const ALLOWED_EMBED_HOSTS = [
   "youtube.com",
@@ -10,7 +11,7 @@ const ALLOWED_EMBED_HOSTS = [
   "dai.ly",
 ];
 
-const SANITIZE_OPTIONS: DOMPurify.Config = {
+const SANITIZE_OPTIONS: Config = {
   ADD_ATTR: [
     "target",
     "rel",
@@ -98,9 +99,10 @@ function registerSanitizeHooks() {
 
   DOMPurify.addHook("uponSanitizeElement", (node, data) => {
     if (data.tagName === "iframe") {
-      const src = node.getAttribute("src") ?? "";
+      const element = node as Element;
+      const src = element.getAttribute("src") ?? "";
       if (!isAllowedEmbedUrl(src)) {
-        node.parentNode?.removeChild(node);
+        element.parentNode?.removeChild(element);
       }
     }
   });
@@ -110,7 +112,9 @@ function registerSanitizeHooks() {
       return;
     }
 
-    if (node.tagName === "VIDEO" || node.tagName === "AUDIO") {
+    const element = node as Element;
+
+    if (element.tagName === "VIDEO" || element.tagName === "AUDIO") {
       if (!isAllowedEmbedUrl(data.attrValue)) {
         data.keepAttr = false;
       }
@@ -121,5 +125,5 @@ function registerSanitizeHooks() {
 export function sanitizeArticleHtml(html: string): string {
   registerSanitizeHooks();
 
-  return DOMPurify.sanitize(html, SANITIZE_OPTIONS);
+  return String(DOMPurify.sanitize(html, SANITIZE_OPTIONS));
 }
