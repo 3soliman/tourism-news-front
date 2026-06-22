@@ -215,7 +215,7 @@ export default async function AdminSeoPage() {
             <DashboardSection title={`أخبار آخر ${data.google_news.recent_window.hours} ساعة`}>
               <div className="space-y-2">
                 {data.google_news.recent_articles.map((article) => (
-                  <Link
+                  <a
                     key={article.id}
                     href={`/admin/news/${article.id}/edit`}
                     className="flex items-center justify-between gap-2 rounded-md border border-slate-100 p-2 transition hover:bg-slate-50"
@@ -233,7 +233,7 @@ export default async function AdminSeoPage() {
                       {statusBadge(article.schema_status)}
                       {statusBadge(article.google_news_status)}
                     </div>
-                  </Link>
+                  </a>
                 ))}
                 {data.google_news.recent_articles.length === 0 ? (
                   <p className="text-sm text-[#6e7e99]">لا توجد أخبار في هذه النافذة.</p>

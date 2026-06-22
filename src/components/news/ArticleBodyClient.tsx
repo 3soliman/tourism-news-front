@@ -1,54 +1,14 @@
 "use client";
 
-import DOMPurify from "isomorphic-dompurify";
 import { useEffect, useRef, useState } from "react";
 import ImageLightboxOverlay from "@/components/ImageLightboxOverlay";
 import { paragraphsToDisplayHtml, parseEditorContent } from "@/lib/article-content";
 import { resolveMediaUrlsInHtml } from "@/lib/media-url";
+import { sanitizeArticleHtml } from "@/lib/sanitize-article-html";
 import "@/styles/article-builder.css";
 
 type ArticleBodyProps = {
   paragraphs: string[];
-};
-
-const SANITIZE_OPTIONS = {
-  ADD_ATTR: [
-    "target",
-    "rel",
-    "style",
-    "class",
-    "href",
-    "src",
-    "alt",
-    "dir",
-    "loading",
-    "decoding",
-  ],
-  ADD_TAGS: [
-    "section",
-    "figure",
-    "figcaption",
-    "blockquote",
-    "cite",
-    "hr",
-    "ul",
-    "li",
-    "h2",
-    "h3",
-    "h4",
-    "table",
-    "thead",
-    "tbody",
-    "tr",
-    "th",
-    "td",
-    "div",
-    "a",
-    "img",
-    "p",
-    "strong",
-    "span",
-  ],
 };
 
 function sanitizeCss(css: string) {
@@ -63,7 +23,7 @@ export default function ArticleBody({ paragraphs }: ArticleBodyProps) {
 
   const raw = resolveMediaUrlsInHtml(paragraphsToDisplayHtml(paragraphs));
   const { html, css } = parseEditorContent(raw);
-  const safeHtml = DOMPurify.sanitize(html, SANITIZE_OPTIONS);
+  const safeHtml = sanitizeArticleHtml(html);
   const safeCss = sanitizeCss(css);
 
   useEffect(() => {

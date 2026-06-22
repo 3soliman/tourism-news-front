@@ -82,6 +82,17 @@ export default function AdminTinyEditor({
             p { margin: 0 0 1em; }
             h2, h3, h4 { line-height: 1.5; margin: 1em 0 0.5em; }
             img { max-width: 100%; height: auto; border-radius: 4px; }
+            iframe, video {
+              max-width: 100%;
+              width: 100%;
+              aspect-ratio: 16 / 9;
+              height: auto;
+              min-height: 220px;
+              border: 0;
+              border-radius: 8px;
+              display: block;
+              margin: 1rem 0;
+            }
             blockquote {
               border-right: 4px solid #0284c7;
               background: #f0f9ff;
@@ -102,6 +113,7 @@ export default function AdminTinyEditor({
             return resolveMediaUrl(result.data.url);
           },
           paste_data_images: true,
+          media_live_embeds: true,
           image_caption: true,
           table_toolbar:
             "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",

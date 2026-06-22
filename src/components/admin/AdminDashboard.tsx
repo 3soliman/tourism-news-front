@@ -85,9 +85,9 @@ function KpiTile({
   if (!href) return content;
 
   return (
-    <Link href={href} className="block transition hover:opacity-90">
+    <a href={href} className="block transition hover:opacity-90">
       {content}
-    </Link>
+    </a>
   );
 }
 
@@ -127,14 +127,14 @@ export default function AdminDashboard({
 
         <div className="flex flex-wrap gap-2">
           {visibleQuickActions.map((action) => (
-            <Link
+            <a
               key={action.href}
               href={action.href}
               className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-black text-white ${action.accent}`}
             >
               <action.icon size={14} />
               {action.label}
-            </Link>
+            </a>
           ))}
         </div>
       </div>
@@ -214,9 +214,9 @@ export default function AdminDashboard({
               <Newspaper size={16} className="text-sky-600" />
               <h2 className="text-sm font-black text-slate-900">أحدث الأخبار</h2>
             </div>
-            <Link href="/admin/news" className="text-xs font-black text-sky-600">
+            <a href="/admin/news" className="text-xs font-black text-sky-600">
               عرض الكل
-            </Link>
+            </a>
           </div>
 
           <div className="overflow-x-auto">
@@ -234,7 +234,7 @@ export default function AdminDashboard({
                 {data.latest_news.slice(0, 6).map((article) => (
                   <tr key={article.id} className="border-t border-slate-100">
                     <td className="px-4 py-2.5">
-                      <Link
+                      <a
                         href={`/admin/news/${article.id}/edit`}
                         className="flex items-center gap-2.5 hover:text-sky-600"
                       >
@@ -246,7 +246,7 @@ export default function AdminDashboard({
                         <span className="line-clamp-1 font-bold text-slate-800">
                           {article.title}
                         </span>
-                      </Link>
+                      </a>
                     </td>
                     <td className="px-3 py-2.5 text-xs font-medium text-slate-500">
                       {article.category}
@@ -280,17 +280,17 @@ export default function AdminDashboard({
                 <BarChart3 size={16} className="text-sky-600" />
                 <h2 className="text-sm font-black text-slate-900">أداء SEO</h2>
               </div>
-              <Link href="/admin/seo" className="text-xs font-black text-sky-600">
+              <a href="/admin/seo" className="text-xs font-black text-sky-600">
                 التفاصيل
-              </Link>
+              </a>
             </div>
             <div className="mt-3 flex items-end justify-between">
               <p className={`text-3xl font-black ${seoTone}`}>{data.seo_average}%</p>
               <div className="text-left text-[11px] font-bold text-slate-500">
                 <p>Google News</p>
-                <Link href="/admin/seo" className="text-sky-600">
+                <a href="/admin/seo" className="text-sky-600">
                   مراجعة الجاهزية
-                </Link>
+                </a>
               </div>
             </div>
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
@@ -307,9 +307,9 @@ export default function AdminDashboard({
                 <Eye size={16} className="text-sky-600" />
                 <h2 className="text-sm font-black text-slate-900">الأكثر قراءة</h2>
               </div>
-              <Link href="/admin/analytics" className="text-xs font-black text-sky-600">
+              <a href="/admin/analytics" className="text-xs font-black text-sky-600">
                 التفاصيل
-              </Link>
+              </a>
             </div>
             <div className="space-y-2">
               {data.top_by_views.length > 0 ? (
@@ -318,13 +318,13 @@ export default function AdminDashboard({
                     key={article.id}
                     className="flex items-center justify-between gap-2 text-sm"
                   >
-                    <Link
+                    <a
                       href={`/admin/news/${article.id}/edit`}
                       className="min-w-0 flex-1 font-bold text-slate-700 hover:text-sky-600"
                     >
                       <span className="ml-2 text-xs text-slate-400">{i + 1}</span>
                       <span className="line-clamp-1">{article.title}</span>
-                    </Link>
+                    </a>
                     <div className="shrink-0 text-left text-[11px] font-bold text-slate-500">
                       <p className="text-sky-700">{article.views_count}</p>
                       <p>{formatViewDateTime(article.last_viewed_at)}</p>
@@ -410,14 +410,14 @@ export default function AdminDashboard({
               icon: FileEdit,
             },
           ].map((item) => (
-            <Link
+            <a
               key={item.href}
               href={item.href}
               className="flex items-center gap-2 rounded-lg border border-slate-100 px-3 py-2.5 text-xs font-bold text-slate-700 transition hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700"
             >
               <item.icon size={14} className="shrink-0" />
               {item.label}
-            </Link>
+            </a>
           ))}
         </div>
       </section>

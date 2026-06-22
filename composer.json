@@ -1,0 +1,5 @@
+{
+    "require": {
+        "sadi/brevo-mailer": "^2.0"
+    }
+}

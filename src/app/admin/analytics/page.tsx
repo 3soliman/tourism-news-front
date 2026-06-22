@@ -106,12 +106,12 @@ export default async function AdminAnalyticsPage({ searchParams }: AdminAnalytic
                     {formatViewDateTime(article.last_viewed_at)}
                   </td>
                   <td className={admin.td}>
-                    <Link
+                    <a
                       href={`/admin/news/${article.id}/edit`}
                       className={admin.btnSecondary}
                     >
                       التفاصيل
-                    </Link>
+                    </a>
                   </td>
                 </tr>
               ))}

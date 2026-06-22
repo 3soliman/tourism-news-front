@@ -234,13 +234,13 @@ export default async function AdminNewsPage({ searchParams }: AdminNewsPageProps
                         <td className={admin.td}>
                           <div className="flex gap-0.5 text-slate-500">
                             {canUpdate ? (
-                              <Link
+                              <a
                                 href={`/admin/news/${article.id}/edit`}
                                 className="grid h-7 w-7 place-items-center rounded hover:bg-sky-50 hover:text-sky-600"
                                 aria-label="تعديل"
                               >
                                 <FilePenLine size={14} strokeWidth={1.85} />
-                              </Link>
+                              </a>
                             ) : null}
                             <Link
                               href={`/travel-news/${article.slug}`}
