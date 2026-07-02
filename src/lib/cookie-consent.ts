@@ -1,6 +1,7 @@
 export const COOKIE_CONSENT_NAME = "cookie_consent";
 export const COOKIE_CONSENT_MAX_AGE = 60 * 60 * 24 * 180;
 export const COOKIE_CONSENT_OPEN_EVENT = "cookie-consent:open";
+export const COOKIE_CONSENT_UPDATED_EVENT = "cookie-consent:updated";
 
 export type CookieConsentCategories = {
   necessary: true;
@@ -11,6 +12,15 @@ export type CookieConsentCategories = {
 
 export type CookieConsentState = CookieConsentCategories & {
   updatedAt: string;
+};
+
+/** Snapshot used during SSR so the banner is not rendered server-side. */
+export const COOKIE_CONSENT_SERVER_SNAPSHOT: CookieConsentState = {
+  necessary: true,
+  analytics: false,
+  marketing: false,
+  personalization: false,
+  updatedAt: "server",
 };
 
 export const COOKIE_CONSENT_REJECTED: CookieConsentState = {
@@ -74,6 +84,20 @@ export function writeConsentToDocument(state: CookieConsentState): void {
   const encoded = encodeURIComponent(JSON.stringify(state));
 
   document.cookie = `${COOKIE_CONSENT_NAME}=${encoded}; path=/; max-age=${COOKIE_CONSENT_MAX_AGE}; SameSite=Lax`;
+
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event(COOKIE_CONSENT_UPDATED_EVENT));
+  }
+}
+
+export function subscribeCookieConsent(onStoreChange: () => void): () => void {
+  window.addEventListener(COOKIE_CONSENT_OPEN_EVENT, onStoreChange);
+  window.addEventListener(COOKIE_CONSENT_UPDATED_EVENT, onStoreChange);
+
+  return () => {
+    window.removeEventListener(COOKIE_CONSENT_OPEN_EVENT, onStoreChange);
+    window.removeEventListener(COOKIE_CONSENT_UPDATED_EVENT, onStoreChange);
+  };
 }
 
 export function hasConsentChoice(): boolean {

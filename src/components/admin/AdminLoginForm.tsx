@@ -2,7 +2,15 @@
 
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { ArrowRight, LockKeyhole, LogIn, Mail, Newspaper } from "lucide-react";
+import {
+  ArrowRight,
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  LogIn,
+  Mail,
+  Newspaper,
+} from "lucide-react";
 import { loginAdmin } from "@/lib/api/auth";
 
 function resolveInitialError(searchParams: URLSearchParams) {
@@ -21,6 +29,7 @@ export default function AdminLoginForm() {
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(resolveInitialError(searchParams));
 
@@ -116,15 +125,24 @@ export default function AdminLoginForm() {
                   className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400"
                 />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   autoComplete="current-password"
                   dir="ltr"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   placeholder="••••••••"
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-2.5 pl-3 pr-10 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50/80 py-2.5 pl-10 pr-10 text-sm text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((visible) => !visible)}
+                  className="absolute left-2 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center text-slate-400 transition hover:text-sky-600 focus-visible rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200"
+                  aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
+                  aria-pressed={showPassword}
+                >
+                  {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                </button>
               </span>
             </label>
 

@@ -49,6 +49,11 @@ export async function adminRequest<T>(
   const json = (await response.json()) as ApiEnvelope<T>;
 
   if (!response.ok) {
+    if (response.status === 401 && typeof window !== "undefined") {
+      const { redirectToAdminLogin } = await import("@/lib/auth/session-expired");
+      redirectToAdminLogin();
+    }
+
     const error = new ApiError(response.status, url);
     (error as ApiError & { body?: ApiEnvelope<T> }).body = json;
     throw error;

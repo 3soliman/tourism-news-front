@@ -3,7 +3,7 @@ type OptimizeImageOptions = {
   quality?: number;
 };
 
-const NEXT_IMAGE_HOSTS = new Set(["ik.imagekit.io", "images.unsplash.com"]);
+const NEXT_IMAGE_HOSTS = new Set(["ik.imagekit.io"]);
 
 function getApiStorageHost(): string | null {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8070/api";

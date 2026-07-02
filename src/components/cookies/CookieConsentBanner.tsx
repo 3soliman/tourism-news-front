@@ -2,21 +2,33 @@
 
 import Link from "next/link";
 import { ChevronDown, Cookie } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import {
   acceptAllConsent,
   applyConsentScripts,
   COOKIE_CONSENT_OPEN_EVENT,
+  COOKIE_CONSENT_SERVER_SNAPSHOT,
   readConsentFromDocument,
   rejectOptionalConsent,
+  subscribeCookieConsent,
   writeConsentToDocument,
   type CookieConsentState,
 } from "@/lib/cookie-consent";
 
 type PreferenceKey = "analytics" | "marketing" | "personalization";
 
+function readConsentSnapshot(): CookieConsentState | null {
+  return readConsentFromDocument();
+}
+
 export default function CookieConsentBanner() {
-  const [visible, setVisible] = useState(false);
+  const consent = useSyncExternalStore(
+    subscribeCookieConsent,
+    readConsentSnapshot,
+    () => COOKIE_CONSENT_SERVER_SNAPSHOT,
+  );
+
+  const [forceOpen, setForceOpen] = useState(false);
   const [minimized, setMinimized] = useState(false);
   const [customizeOpen, setCustomizeOpen] = useState(false);
   const [preferences, setPreferences] = useState(() => {
@@ -28,10 +40,12 @@ export default function CookieConsentBanner() {
     };
   });
 
+  const visible = forceOpen || consent === null;
+
   const saveConsent = useCallback((state: CookieConsentState) => {
     writeConsentToDocument(state);
     applyConsentScripts(state);
-    setVisible(false);
+    setForceOpen(false);
     setMinimized(false);
     setCustomizeOpen(false);
   }, []);
@@ -45,17 +59,16 @@ export default function CookieConsentBanner() {
     });
     setCustomizeOpen(false);
     setMinimized(false);
-    setVisible(true);
+    setForceOpen(true);
   }, []);
 
   useEffect(() => {
-    const existing = readConsentFromDocument();
-    if (existing) {
-      applyConsentScripts(existing);
-    } else {
-      setVisible(true);
+    if (consent) {
+      applyConsentScripts(consent);
     }
+  }, [consent]);
 
+  useEffect(() => {
     const handleOpen = () => openBanner();
     window.addEventListener(COOKIE_CONSENT_OPEN_EVENT, handleOpen);
 
