@@ -12,6 +12,11 @@ type AdminTinyEditorProps = {
   value: string;
   onChange: (html: string) => void;
 };
+type TinyMceBlobInfo = {
+  blob: () => Blob;
+  filename: () => string;
+};
+
 
 export default function AdminTinyEditor({
   label,
@@ -100,7 +105,7 @@ export default function AdminTinyEditor({
               padding: 0.75rem 1rem;
             }
           `,
-          images_upload_handler: async (blobInfo) => {
+          images_upload_handler: async (blobInfo: TinyMceBlobInfo) => {
             const file = new File([blobInfo.blob()], blobInfo.filename(), {
               type: blobInfo.blob().type,
             });
