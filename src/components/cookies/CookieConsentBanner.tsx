@@ -7,7 +7,6 @@ import {
   acceptAllConsent,
   applyConsentScripts,
   COOKIE_CONSENT_OPEN_EVENT,
-  COOKIE_CONSENT_SERVER_SNAPSHOT,
   readConsentFromDocument,
   rejectOptionalConsent,
   subscribeCookieConsent,
@@ -17,15 +16,15 @@ import {
 
 type PreferenceKey = "analytics" | "marketing" | "personalization";
 
-function readConsentSnapshot(): CookieConsentState | null {
-  return readConsentFromDocument();
+function getHasConsentSnapshot(): boolean {
+  return readConsentFromDocument() !== null;
 }
 
 export default function CookieConsentBanner() {
-  const consent = useSyncExternalStore(
+  const hasConsent = useSyncExternalStore(
     subscribeCookieConsent,
-    readConsentSnapshot,
-    () => COOKIE_CONSENT_SERVER_SNAPSHOT,
+    getHasConsentSnapshot,
+    () => true,
   );
 
   const [forceOpen, setForceOpen] = useState(false);
@@ -40,7 +39,7 @@ export default function CookieConsentBanner() {
     };
   });
 
-  const visible = forceOpen || consent === null;
+  const visible = forceOpen || !hasConsent;
 
   const saveConsent = useCallback((state: CookieConsentState) => {
     writeConsentToDocument(state);
@@ -63,10 +62,11 @@ export default function CookieConsentBanner() {
   }, []);
 
   useEffect(() => {
-    if (consent) {
-      applyConsentScripts(consent);
+    const existing = readConsentFromDocument();
+    if (existing) {
+      applyConsentScripts(existing);
     }
-  }, [consent]);
+  }, [hasConsent]);
 
   useEffect(() => {
     const handleOpen = () => openBanner();
